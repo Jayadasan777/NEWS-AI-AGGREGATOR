@@ -1,193 +1,258 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import axios from '../api/axios';
+import { FlagshipCard, BentoCard } from '../components/BentoCard';
+import { useHUD } from '../context/HUDContext';
 
-const Home = () => {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+/* ─── Loading State ─── */
+const LoadingState = () => (
+  <div className="min-h-[70vh] flex flex-col items-center justify-center gap-6">
+    <div className="relative w-16 h-16">
+      <div className="absolute inset-0 rounded-full border border-[#F59E0B]/40 animate-ping" />
+      <div className="absolute inset-0 rounded-full border border-[#F59E0B]/20 flex items-center justify-center">
+        <div className="w-3 h-3 rounded-full bg-[#F59E0B] animate-pulse" />
+      </div>
+    </div>
+    <div className="font-mono text-xs text-[#F59E0B] tracking-[0.3em] uppercase animate-pulse font-bold">
+      // ACQUIRING MULTI-SOURCE FEED SIGNAL...
+    </div>
+  </div>
+);
+
+/* ─── Error State ─── */
+const ErrorState = ({ message }) => (
+  <div className="min-h-[70vh] flex items-center justify-center p-6">
+    <div className="glass-panel rounded-3xl p-10 max-w-md text-center border border-[#F59E0B]/40 shadow-2xl">
+      <div className="font-mono text-xs text-[#F59E0B] tracking-[0.28em] uppercase mb-2 font-bold">// SIGNAL ERROR</div>
+      <p className="text-paper font-semibold mb-3">{message}</p>
+      <p className="text-muted/70 text-xs font-mono">Verify backend server is running on localhost:5000.</p>
+    </div>
+  </div>
+);
+
+/* ─── Animated Number Counter ─── */
+function AnimCounter({ to, duration = 1.5 }) {
+  const [val, setVal] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !started.current) {
+        started.current = true;
+        const t0 = performance.now();
+        const tick = (now) => {
+          const p = Math.min((now - t0) / (duration * 1000), 1);
+          setVal(Math.floor(p * to));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    });
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, [to, duration]);
+
+  return <span ref={ref}>{val}</span>;
+}
+
+/* ─── Section Header (Editorial Styling) ─── */
+const SectionHead = ({ tag, title, right }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 16 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: '-40px' }}
+    transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    className="flex items-end justify-between mb-10 pb-5 border-b border-white/15"
+  >
+    <div>
+      <span className="font-mono text-[10px] text-[#F59E0B] tracking-[0.3em] uppercase block mb-1.5 font-bold">{tag}</span>
+      <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-paper tracking-tight">{title}</h2>
+    </div>
+    {right && <div className="font-mono text-xs text-muted tracking-[0.2em] uppercase hidden sm:block font-bold">{right}</div>}
+  </motion.div>
+);
+
+export default function Home() {
+  const [articles, setArticles] = useState([]);
+  const [events,   setEvents]   = useState([]);
+  const [loading,  setLoading]  = useState(true);
+  const [error,    setError]    = useState(null);
+  const { triggerGlitch, sectors } = useHUD();
+
+  useEffect(() => {
+    const fetchAll = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('/articles');
-        const dataArray = Array.isArray(response.data) 
-          ? response.data 
-          : (response.data?.articles || response.data?.data || []);
-        setArticles(dataArray);
-      } catch (err) {
-        console.error('❌ Failed to fetch news articles:', err);
-        setError('Failed to load intelligence feed. Please ensure the backend server is running.');
+        const [artRes, evtRes] = await Promise.all([
+          axios.get('/articles'),
+          axios.get('/events'),
+        ]);
+        setArticles(Array.isArray(artRes.data) ? artRes.data : artRes.data?.data || []);
+        setEvents(Array.isArray(evtRes.data)   ? evtRes.data : evtRes.data?.data   || []);
+      } catch {
+        setError('Failed to synchronize global intelligence feed.');
       } finally {
         setLoading(false);
       }
     };
-    fetchArticles();
+    fetchAll();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#030305] flex items-center justify-center font-mono">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-purple-400 text-xs tracking-[0.4em] uppercase">Initializing Intelligence Core...</p>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingState />;
+  if (error)   return <ErrorState message={error} />;
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-[#030305] flex items-center justify-center p-4 font-mono">
-        <div className="bg-[#09090e] border border-red-500/20 p-8 rounded-3xl max-w-md text-center shadow-2xl">
-          <p className="text-red-400 text-xs font-semibold">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  const heroArticle = articles[0];
-  const gridArticles = articles.slice(1);
+  const flagship      = events[0] || articles[0];
+  const isFlagEvent   = !!events[0];
+  const bentoEvents   = events.slice(1, 4);
+  const bentoArticles = articles.slice(0, 6);
 
   return (
-    <div className="min-h-screen bg-[#030305] text-slate-100 selection:bg-purple-600 selection:text-white font-sans antialiased overflow-x-hidden">
-      
-      {/* 1. CINEMATIC VIGNETTE HERO SECTION */}
-      <section className="relative pt-28 pb-20 px-6 sm:px-10 lg:px-16 border-b border-white/10 bg-gradient-to-b from-[#09090e] via-[#030305] to-[#030305]">
-        {/* Organic Violet & Nebula Glow Lighting */}
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
-        <div className="absolute top-20 right-1/4 w-[400px] h-[300px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div className="space-y-24">
 
-        <div className="max-w-7xl mx-auto relative z-10 text-center">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[11px] font-mono tracking-[0.3em] uppercase mb-8 shadow-inner">
-            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
-            NISE Core // Live Multi-Source Synthesis
-          </div>
-          
-          <h1 className="text-6xl sm:text-8xl lg:text-9xl font-black tracking-tighter uppercase text-white leading-[0.9] mb-8">
-            GLOBAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-500 to-indigo-500">INTELLIGENCE</span>
-          </h1>
-          
-          <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto font-normal leading-relaxed">
-            An elite zero-noise situational awareness engine combining Jaccard clustering with Llama 3 generative synthesis for real-time global tracking.
-          </p>
+      {/* ════ 1. TOP EDITORIAL HERO HEADER ════ */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="pt-8"
+      >
+        <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#F59E0B]/15 border border-[#F59E0B]/40 text-[#F59E0B] font-mono text-[10px] uppercase tracking-[0.28em] mb-6 font-extrabold shadow-lg">
+          <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
+          <span>AUTONOMOUS FEED SYNTHESIS // ONLINE</span>
         </div>
-      </section>
 
-      {/* 2. FLAGSHIP CINEMATIC HERO ARTICLE */}
-      {heroArticle && (
-        <section className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16">
-          <div className="group relative bg-[#09090e] rounded-[2.5rem] border border-white/10 hover:border-purple-500/50 transition-all duration-700 overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.8)] flex flex-col lg:flex-row">
-            
-            <div className="relative lg:w-3/5 h-80 sm:h-96 lg:h-[520px] overflow-hidden bg-slate-950">
-              <img 
-                src={heroArticle.image_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1400&q=80'} 
-                alt={heroArticle.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-[#09090e] via-transparent to-transparent opacity-90" />
+        {/* Playfair Display Serif Hero Title */}
+        <h1 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl text-paper tracking-tight max-w-4xl leading-[1.04] mb-6">
+          GLOBAL WIRE <span className="gradient-text-gold">// INTELLIGENCE</span>
+        </h1>
+
+        <p className="text-paper-dim text-base sm:text-lg max-w-2xl leading-relaxed font-sans font-light">
+          Real-time curation across 14 global domains. Incoming dispatches are algorithmically deduplicated, clustered via Jaccard similarity, and synthesized into executive briefs by Llama 3 neural fusion.
+        </p>
+      </motion.div>
+
+      {/* ════ 2. REAL-TIME TELEMETRY STATS BAR ════ */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+        {[
+          { v: 14,              s: '',  l: 'Active Domains',  sub: 'MULTI-SOURCE RSS',      color: '#0EA5E9' },
+          { v: articles.length, s: '+', l: 'Live Dispatches', sub: 'REAL-TIME WIRE',        color: '#F59E0B' },
+          { v: events.length,   s: '+', l: 'Neural Clusters', sub: 'LLAMA 3 FUSED',         color: '#10B981' },
+          { v: 92,              s: '%', l: 'Avg Confidence',  sub: 'VERIFICATION SCORE',    color: '#8B5CF6' },
+        ].map(({ v, s, l, sub, color }, i) => (
+          <motion.div
+            key={l}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: i * 0.1 }}
+            className="glass-panel rounded-3xl p-6 hover:border-white/25 transition-all group"
+          >
+            <div className="font-mono text-[10px] text-muted/60 tracking-[0.25em] uppercase mb-1.5 font-bold flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
+              <span>{sub}</span>
             </div>
-
-            <div className="lg:w-2/5 p-8 sm:p-12 flex flex-col justify-between bg-[#09090e]">
-              <div>
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="px-3.5 py-1.5 rounded-full text-[11px] font-mono font-bold tracking-widest uppercase bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                    {heroArticle.sector}
-                  </span>
-                  <span className="px-3 py-1.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    Flagship Feature
-                  </span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug group-hover:text-purple-400 transition-colors duration-300">
-                  {heroArticle.title}
-                </h2>
-                <p className="text-slate-400 text-sm sm:text-base mt-4 line-clamp-4 leading-relaxed font-normal">
-                  {heroArticle.unique_summary}
-                </p>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                <span className="text-slate-500">VERIFIED AI SYNTHESIS</span>
-                <Link
-                  to={`/article/${heroArticle._id}`}
-                  className="text-purple-400 font-bold flex items-center gap-2 group-hover:translate-x-2 transition-transform duration-300"
-                >
-                  EXPLORE FEATURE <span aria-hidden="true">&rarr;</span>
-                </Link>
-              </div>
+            <div className="font-display font-extrabold text-4xl sm:text-5xl text-paper mb-1 tracking-tight">
+              <AnimCounter to={v} />{s}
             </div>
+            <div className="font-mono text-xs uppercase tracking-widest font-extrabold" style={{ color }}>{l}</div>
+          </motion.div>
+        ))}
+      </div>
 
-          </div>
-        </section>
+      {/* ════ 3. LEAD PRIORITY MAGAZINE COVER STORY ════ */}
+      {flagship && (
+        <div>
+          <SectionHead
+            tag="// PRIORITY COVER STORY"
+            title="Lead Intelligence Report"
+            right="FUSION STATUS: VERIFIED MULTI-SOURCE"
+          />
+          <FlagshipCard article={flagship} isEvent={isFlagEvent} />
+        </div>
       )}
 
-      {/* 3. ASYMMETRIC BENTO GRID SHOWCASE */}
-      <section className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-20">
-        <div className="flex items-center justify-between mb-12 border-b border-white/10 pb-4">
-          <h3 className="text-xs font-mono font-bold tracking-[0.3em] text-purple-400 uppercase">
-            Curated Intelligence Stream // Bento Grid
-          </h3>
-          <span className="text-xs font-mono text-slate-500">{gridArticles.length} Active Feeds</span>
+      {/* ════ 4. LATEST SYNTHESIZED EVENT CLUSTERS ════ */}
+      {bentoEvents.length > 0 && (
+        <div>
+          <SectionHead
+            tag="// AI NEURAL CLUSTERING"
+            title="Synthesized Events"
+            right={
+              <Link
+                to="/search"
+                onClick={() => triggerGlitch(200)}
+                className="hover:text-[#F59E0B] transition-colors flex items-center gap-1.5 font-bold text-[#10B981]"
+              >
+                VIEW ALL CLUSTERS →
+              </Link>
+            }
+          />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {bentoEvents.map((ev, i) => (
+              <BentoCard key={ev._id} article={ev} isEvent delay={i * 0.1} />
+            ))}
+          </div>
         </div>
+      )}
 
-        {gridArticles.length === 0 ? (
-          <div className="text-center py-28 bg-[#09090e] rounded-[2rem] border border-white/10">
-            <p className="text-slate-500 text-xs font-mono">NO ADDITIONAL EXHIBITS FOUND IN ARCHIVE.</p>
+      {/* ════ 5. LIVE EDITORIAL DISPATCHES ════ */}
+      {bentoArticles.length > 0 && (
+        <div>
+          <SectionHead
+            tag="// CONTINUOUS WIRE STREAM"
+            title="Live Editorial Dispatches"
+            right="100% ORIGINAL AI REWRITTEN COPY"
+          />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-min">
+            <div className="md:col-span-2">
+              {bentoArticles[0] && <BentoCard article={bentoArticles[0]} delay={0} className="h-full" />}
+            </div>
+            <div className="md:row-span-2">
+              {bentoArticles[1] && <BentoCard article={bentoArticles[1]} delay={0.1} className="h-full" />}
+            </div>
+            {[bentoArticles[2], bentoArticles[3]].map((a, i) =>
+              a ? <div key={a._id}><BentoCard article={a} delay={i * 0.1 + 0.2} className="h-full" /></div> : null
+            )}
+            {[bentoArticles[4], bentoArticles[5]].map((a, i) =>
+              a ? <div key={a._id}><BentoCard article={a} delay={i * 0.1 + 0.3} className="h-full" /></div> : null
+            )}
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {gridArticles.map((article, index) => {
-              const isWide = index === 2 || index === 5;
-              return (
-                <div 
-                  key={article._id || index}
-                  className={`group relative bg-[#09090e] rounded-[2rem] border border-white/10 hover:border-purple-500/50 transition-all duration-500 overflow-hidden flex flex-col shadow-2xl ${isWide ? 'md:col-span-2 lg:col-span-2' : ''}`}
+        </div>
+      )}
+
+      {/* ════ 6. DOMAIN MATRIX EXPLORER ════ */}
+      <div className="pt-8">
+        <div className="glass-panel rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden border border-white/15 shadow-2xl">
+          <div className="absolute -top-32 -right-32 w-80 h-80 rounded-full bg-[#F59E0B]/10 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-[#0EA5E9]/10 blur-3xl pointer-events-none" />
+          
+          <div className="relative z-10">
+            <div className="font-mono text-[10px] text-[#F59E0B] uppercase tracking-[0.3em] mb-3 font-extrabold">// DOMAIN NAVIGATION MATRIX</div>
+            <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-paper mb-4 tracking-tight">
+              Explore All <span className="gradient-text-gold">14 Intelligence Domains</span>
+            </h2>
+            <p className="text-paper-dim text-sm sm:text-base max-w-xl mx-auto mb-10 font-sans font-light">
+              Select a domain below or from the pinned left HUD sidebar to trigger instant neural feed filtering and a real-time 3D background scene transition.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+              {sectors.map((s) => (
+                <Link
+                  key={s.name}
+                  to={`/sector/${s.name}`}
+                  onClick={() => triggerGlitch(300)}
+                  className="px-5 py-3 rounded-2xl bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/30 text-paper font-mono text-xs uppercase tracking-widest transition-all hover:scale-105 flex items-center gap-2.5 shadow-lg group"
                 >
-                  <div className={`relative w-full overflow-hidden bg-slate-950 ${isWide ? 'h-72 sm:h-80' : 'h-60'}`}>
-                    <img
-                      src={article.image_url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80'}
-                      alt={article.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#09090e] via-transparent to-transparent" />
-                    
-                    <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-                      <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold tracking-widest uppercase bg-[#09090e]/90 text-purple-400 border border-white/10 backdrop-blur-md">
-                        {article.sector}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-7 flex-1 flex flex-col justify-between bg-[#09090e]">
-                    <div>
-                      <h4 className={`text-white font-black tracking-tight group-hover:text-purple-400 transition-colors duration-300 ${isWide ? 'text-xl sm:text-2xl leading-tight' : 'text-lg leading-snug line-clamp-2'}`}>
-                        {article.title}
-                      </h4>
-                      <p className="text-slate-400 text-xs sm:text-sm mt-3 line-clamp-3 leading-relaxed font-normal">
-                        {article.unique_summary}
-                      </p>
-                    </div>
-
-                    <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                      <span className="text-slate-500">VERIFIED AI</span>
-                      <Link
-                        to={`/article/${article._id}`}
-                        className="text-purple-400 font-bold flex items-center gap-1.5 group-hover:translate-x-1.5 transition-transform duration-300"
-                      >
-                        EXPLORE <span aria-hidden="true">&rarr;</span>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                  <span className="w-2 h-2 rounded-full group-hover:scale-125 transition-transform shadow-sm" style={{ backgroundColor: s.color }} />
+                  <span className="font-bold">{s.name}</span>
+                </Link>
+              ))}
+            </div>
           </div>
-        )}
-      </section>
+        </div>
+      </div>
 
     </div>
   );
-};
-
-export default Home;
+}
