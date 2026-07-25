@@ -1,0 +1,69 @@
+[
+  {
+    "headline_a": "Apple unveils new AI chip for iPhone 18",
+    "headline_b": "Apple introduces AI silicon at keynote event",
+    "expected": "SAME",
+    "notes": "Synthetic example: same product announcement, different wording"
+  },
+  {
+    "headline_a": "Apple stock rises 4% after chip announcement",
+    "headline_b": "Apple unveils new AI chip for iPhone 18",
+    "expected": "DIFFERENT",
+    "notes": "Synthetic example: market reaction is a distinct event from the announcement itself"
+  },
+  
+  {
+    "headline_a": "Manchester United signs new striker in £60m deal",
+    "headline_b": "Arsenal set to make £70m bid for Newcastle's Guimaraes",
+    "expected": "DIFFERENT",
+    "notes": "Synthetic example: both football transfers, but unrelated clubs and players"
+  },
+  {
+    "headline_a": "Saudis must recognise Israel for nuclear deal, says Trump",
+    "headline_b": "Trump ties US-Saudi nuclear cooperation to Israel recognition",
+    "expected": "SAME",
+    "notes": "Real headline pair (BBC-sourced), same statement reworded"
+  },
+  {
+    "headline_a": "Oil prices hit $100 for the first time since May",
+    "headline_b": "Google fined €890m by EU for favouring its own apps",
+    "expected": "DIFFERENT",
+    "notes": "Real, unrelated stories"
+  },
+  {
+    "headline_a": "Stock Market Today, July 23: Tesla Drops 15%, Leading Tech Stock Slide",
+    "headline_b": "Stock Market Today (July 23, 2026): Nasdaq falls over 2% as tech capex weighs on market, Iran tensions lift oil prices",
+    "expected": "SAME",
+    "notes": "Real: Yahoo Finance vs TheStreet, both covering the July 23, 2026 US market selloff driven by Tesla/Alphabet earnings and Middle East tensions"
+  },
+  {
+    "headline_a": "Wall Street Suffers Steep Setback as Tech Slumps and Oil Spikes",
+    "headline_b": "Oil Surge From Iran War Sends US Stocks and Bonds Lower Amid AI Spending Fears",
+    "expected": "SAME",
+    "notes": "Real: STL.News vs Bloomberg, both covering the same July 23, 2026 selloff event"
+  },
+  {
+    "headline_a": "Dow drops 507 points as tech selloff deepens on Alphabet, Tesla earnings and Iran tensions",
+    "headline_b": "US stocks fall as oil prices surge amid Middle East conflict, Alphabet AI spending worries weigh on market",
+    "expected": "SAME",
+    "notes": "Real: CNBC vs STL.News style coverage of the same July 23, 2026 market decline"
+  },
+  {
+    "headline_a": "Stock Market Today, July 23: Tesla Drops 15%, Leading Tech Stock Slide",
+    "headline_b": "Stock Market Today, July 23: Cleveland-Cliffs Stock Soars on Robust Steel Demand and Pricing",
+    "expected": "DIFFERENT",
+    "notes": "Real: Motley Fool, same publication and same day, but genuinely different companies and events (Tesla selloff vs Cleveland-Cliffs steel earnings)"
+  },
+  {
+    "headline_a": "Alphabet fined €890 million by EU for favouring its own apps",
+    "headline_b": "Alphabet reports Q2 2026 earnings beat, raises 2026 capex forecast to $205 billion",
+    "expected": "DIFFERENT",
+    "notes": "Real: same company (Alphabet), but an EU antitrust fine and a quarterly earnings report are distinct events"
+  },
+  {
+    "headline_a": "European Central Bank leaves interest rate unchanged at 2.25%",
+    "headline_b": "Fed funds futures price in 82% chance of interest rate hike at September meeting",
+    "expected": "DIFFERENT",
+    "notes": "Real: both about central bank interest rate policy, but ECB and Federal Reserve are different institutions making different decisions"
+  }
+]
