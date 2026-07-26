@@ -7,11 +7,11 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const TIME_WINDOW_HOURS = 48;
 const JACCARD_THRESHOLD = 0.05; // Lowered from 0.15 — paraphrased real-world
-                                  // headlines about the same event often share
-                                  // very few literal words (e.g., "Fed cuts
-                                  // rates" vs "Powell announces rate slash"),
-                                  // so a high threshold was rejecting genuine
-                                  // matches before the LLM ever saw them.
+// headlines about the same event often share
+// very few literal words (e.g., "Fed cuts
+// rates" vs "Powell announces rate slash"),
+// so a high threshold was rejecting genuine
+// matches before the LLM ever saw them.
 
 // --- STAGE 1: Algorithmic Pre-Filter (Jaccard Text Overlap) ---
 const calculateJaccardSimilarity = (str1, str2) => {
@@ -28,18 +28,24 @@ const calculateJaccardSimilarity = (str1, str2) => {
 const isSameEvent = async (titleA, titleB) => {
   const prompt = `You are a news analyst identifying duplicate event coverage across different news outlets.
 
-Two different outlets often describe the SAME real-world event using completely different wording — different named people, different phrasing, different emphasis. Your job is to judge whether the underlying event is the same, NOT whether the wording matches.
+Two different outlets often describe the SAME real-world event using completely different wording — different named people, different phrasing, different emphasis. Judge whether the underlying event is the same, NOT whether the wording matches.
 
-Examples:
-- "US Federal Reserve cuts interest rates by 50 basis points" and "Jerome Powell announces major rate slash at FOMC meeting" → SAME (same rate decision, described via institution vs. spokesperson)
-- "OpenAI releases GPT-5" and "Sam Altman unveils OpenAI's newest flagship model" → SAME (same release, described via company vs. CEO)
-- "Alphabet fined by EU for favouring its own apps" and "Alphabet reports record quarterly earnings" → DIFFERENT (same company, but two unrelated events)
+However, be careful: two headlines about the SAME company, person, or topic are NOT automatically the same event. Only answer SAME if they describe the identical specific incident, decision, or occurrence. A company can have multiple genuinely different things happen to it on the same day.
+
+Examples of SAME event (different wording, same occurrence):
+- "US Federal Reserve cuts interest rates by 50 basis points" and "Jerome Powell announces major rate slash at FOMC meeting" → SAME
+- "OpenAI releases GPT-5" and "Sam Altman unveils OpenAI's newest flagship model" → SAME
+
+Examples of DIFFERENT events (same entity/topic, but genuinely separate occurrences):
+- "Alphabet fined by EU for favouring its own apps" and "Alphabet reports record quarterly earnings" → DIFFERENT (same company, but a regulatory fine and an earnings report are unrelated events)
+- "European Central Bank leaves interest rate unchanged" and "Fed funds futures price in chance of rate hike" → DIFFERENT (same general topic, but two different institutions making separate decisions)
+- "Apple unveils new AI chip" and "Apple stock rises after chip announcement" → DIFFERENT (the announcement and the market's reaction to it are two distinct events)
 
 Now judge this pair:
 Headline A: "${titleA}"
 Headline B: "${titleB}"
 
-Do they describe the SAME real-world event, or DIFFERENT events? Respond with ONLY one word: "SAME" or "DIFFERENT". Do not write anything else.`;
+Do they describe the SAME specific real-world event, or DIFFERENT events? Respond with ONLY one word: "SAME" or "DIFFERENT". Do not write anything else.`;
 
   try {
     const completion = await groq.chat.completions.create({

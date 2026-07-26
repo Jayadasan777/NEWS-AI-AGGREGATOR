@@ -1,15 +1,15 @@
 {
   "total_test_cases": 11,
   "confusion_matrix": {
-    "True_Positives": 3,
+    "True_Positives": 5,
     "True_Negatives": 5,
     "False_Positives": 1,
-    "False_Negatives": 2
+    "False_Negatives": 0
   },
   "metrics": {
-    "accuracy": "72.73%",
-    "precision": "75.00%",
-    "recall": "60.00%",
-    "f1_score": "66.67%"
+    "accuracy": "90.91%",
+    "precision": "83.33%",
+    "recall": "100.00%",
+    "f1_score": "90.91%"
   }
 }
