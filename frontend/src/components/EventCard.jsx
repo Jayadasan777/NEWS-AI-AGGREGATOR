@@ -109,6 +109,13 @@ export default function EventCard({ event }) {
             </div>
           </div>
 
+          {/* Updated Timestamp */}
+          {event.last_updated && (
+            <p className="text-gray-500 text-xs font-mono mb-3">
+              Updated: {new Date(event.last_updated).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
+            </p>
+          )}
+
           {/* Footer */}
           <div className="pt-4 border-t border-white/10 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em]">
             <button

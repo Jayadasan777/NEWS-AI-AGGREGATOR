@@ -123,11 +123,18 @@ export default function EventDetail() {
         </div>
 
         {/* Majestic Playfair Display Serif Title */}
-        <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-paper tracking-tight leading-[1.08] mb-8">
+        <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-paper tracking-tight leading-[1.08] mb-4">
           {event.event_title}
         </h1>
 
-        {/* Interactive Audio Briefing Controls */}
+        {/* Last Updated Timestamp */}
+        {event.last_updated && (
+          <p className="text-gray-500 text-xs font-mono mb-8">
+            Last updated: {new Date(event.last_updated).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
+          </p>
+        )}
+
+
         <div className="glass-panel p-4 sm:p-6 rounded-2xl border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
