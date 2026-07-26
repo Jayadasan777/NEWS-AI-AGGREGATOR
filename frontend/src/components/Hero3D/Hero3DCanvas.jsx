@@ -13,11 +13,11 @@ function NebulaParticles({ count = 3500, mouse }) {
     const col = new Float32Array(count * 3);
 
     const palette = [
-      new THREE.Color('#f43f5e'), // signal red/pink
-      new THREE.Color('#a855f7'), // purple
-      new THREE.Color('#3b82f6'), // blue
-      new THREE.Color('#06b6d4'), // cyan
-      new THREE.Color('#10b981'), // teal
+      new THREE.Color('#FFFFFF'), // crisp white
+      new THREE.Color('#E5E5E5'), // silver
+      new THREE.Color('#C8C8C8'), // light gray
+      new THREE.Color('#A0A0A0'), // mid gray
+      new THREE.Color('#DC2626'), // breaking signal red
     ];
 
     for (let i = 0; i < count; i++) {
@@ -94,12 +94,12 @@ function NebulaMesh({ mouse }) {
     <mesh ref={mesh}>
       <icosahedronGeometry ref={geo} args={[1.4, 5]} />
       <meshStandardMaterial
-        color="#a855f7"
-        emissive="#7c3aed"
-        emissiveIntensity={0.6}
+        color="#F5F5F5"
+        emissive="#A0A0A0"
+        emissiveIntensity={0.4}
         wireframe
         transparent
-        opacity={0.22}
+        opacity={0.18}
       />
     </mesh>
   );
@@ -117,7 +117,7 @@ function Orb({ position, color, radius, speed }) {
   return (
     <mesh ref={mesh} position={position}>
       <sphereGeometry args={[radius, 16, 16]} />
-      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.5} transparent opacity={0.18} />
+      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.2} transparent opacity={0.15} />
     </mesh>
   );
 }
@@ -128,10 +128,10 @@ function Effects() {
   if (reducedMotion) return null;
   return (
     <EffectComposer disableNormalPass>
-      <Bloom luminanceThreshold={0.05} mipmapBlur intensity={0.9} radius={0.6} />
+      <Bloom luminanceThreshold={0.05} mipmapBlur intensity={0.7} radius={0.5} />
       <ChromaticAberration
         blendFunction={BlendFunction.NORMAL}
-        offset={[0.0015, 0.0015]}
+        offset={[0.001, 0.001]}
       />
     </EffectComposer>
   );
@@ -141,18 +141,18 @@ function Effects() {
 function Scene({ mouse }) {
   return (
     <>
-      <color attach="background" args={['#030305']} />
-      <ambientLight intensity={0.3} />
-      <pointLight position={[4, 4, 4]} intensity={2} color="#f43f5e" />
-      <pointLight position={[-4, -4, -4]} intensity={1.5} color="#3b82f6" />
-      <pointLight position={[0, 5, -3]} intensity={1} color="#a855f7" />
+      <color attach="background" args={['#08080A']} />
+      <ambientLight intensity={0.4} />
+      <pointLight position={[4, 4, 4]} intensity={1.5} color="#FFFFFF" />
+      <pointLight position={[-4, -4, -4]} intensity={1.2} color="#C8C8C8" />
+      <pointLight position={[0, 5, -3]} intensity={0.8} color="#A0A0A0" />
 
       <Suspense fallback={null}>
         <NebulaParticles mouse={mouse} />
         <NebulaMesh mouse={mouse} />
-        <Orb position={[-3.5, 1, -2]} color="#f43f5e" radius={0.55} speed={0.6} />
-        <Orb position={[3.5, -1, -2]} color="#3b82f6" radius={0.4}  speed={0.8} />
-        <Orb position={[0, 3, -4]}    color="#a855f7" radius={0.7}  speed={0.5} />
+        <Orb position={[-3.5, 1, -2]} color="#FFFFFF" radius={0.55} speed={0.6} />
+        <Orb position={[3.5, -1, -2]} color="#C8C8C8" radius={0.4}  speed={0.8} />
+        <Orb position={[0, 3, -4]}    color="#A0A0A0" radius={0.7}  speed={0.5} />
         <Effects />
       </Suspense>
     </>

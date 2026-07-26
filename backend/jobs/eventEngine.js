@@ -6,23 +6,40 @@ const Article = require('../models/Article');
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const TIME_WINDOW_HOURS = 48;
-const JACCARD_THRESHOLD = 0.05; // Lowered from 0.15 — paraphrased real-world
-// headlines about the same event often share
-// very few literal words (e.g., "Fed cuts
-// rates" vs "Powell announces rate slash"),
-// so a high threshold was rejecting genuine
-// matches before the LLM ever saw them.
+const JACCARD_THRESHOLD = 0.12; // Optimal threshold with stop-word removal to prevent false positives and rate limits
 
-// --- STAGE 1: Algorithmic Pre-Filter (Jaccard Text Overlap) ---
+const STOP_WORDS = new Set([
+  'the', 'a', 'an', 'in', 'of', 'on', 'at', 'by', 'for', 'with', 'about', 'against', 'between',
+  'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down',
+  'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why',
+  'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no',
+  'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'can', 'will', 'just', 'don',
+  'should', 'now', 'his', 'her', 'its', 'our', 'your', 'their', 'he', 'she', 'it', 'they', 'we',
+  'you', 'i', 'me', 'my', 'him', 'them', 'us', 'who', 'whom', 'whose', 'which', 'what', 'this',
+  'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have',
+  'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'would', 'could', 'may', 'might',
+  'must', 'shall', 'new', 'year', 'first', 'says', 'said', 'amid', 'as', 'over', 'out'
+]);
+
+// --- STAGE 1: Algorithmic Pre-Filter (Jaccard Keyword Overlap) ---
 const calculateJaccardSimilarity = (str1, str2) => {
-  const set1 = new Set(str1.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/));
-  const set2 = new Set(str2.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/));
+  const cleanTokens = (str) =>
+    str.toLowerCase()
+      .replace(/[^\w\s]/g, '')
+      .split(/\s+/)
+      .filter(w => w.length > 2 && !STOP_WORDS.has(w));
+
+  const set1 = new Set(cleanTokens(str1));
+  const set2 = new Set(cleanTokens(str2));
+
+  if (set1.size === 0 || set2.size === 0) return 0;
 
   const intersection = new Set([...set1].filter(x => set2.has(x)));
   const union = new Set([...set1, ...set2]);
 
-  return union.size === 0 ? 0 : intersection.size / union.size;
+  return intersection.size / union.size;
 };
+
 
 // --- STAGE 2: LLM Verification via Meta Llama 3 (Groq LPUs) ---
 const isSameEvent = async (titleA, titleB) => {

@@ -12,6 +12,14 @@ const FALLBACKS = {
   Default: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80',
 };
 
+function formatFullDateTime(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const dayDate = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  return `${dayDate} • ${time}`;
+}
+
 function getTakeaways(summary = '') {
   const sentences = summary.split(/[.!?]+/).map((s) => s.trim()).filter((s) => s.length > 15);
   return sentences.slice(0, 3).map((s) => s + '.');
@@ -26,6 +34,7 @@ export default function EventCard({ event }) {
   const imgSrc = imgError || !event.image_url ? fallback : event.image_url;
   const srcCount = event.source_articles?.length || 1;
   const takeaways = getTakeaways(event.fused_summary);
+  const timestampStr = event.last_updated || event.first_reported;
 
   return (
     <motion.div
@@ -110,11 +119,13 @@ export default function EventCard({ event }) {
           </div>
 
           {/* Updated Timestamp */}
-          {event.last_updated && (
-            <p className="text-gray-500 text-xs font-mono mb-3">
-              Updated: {new Date(event.last_updated).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
-            </p>
+          {timestampStr && (
+            <div className="font-mono text-[10px] text-[#A0A0A0] mb-3 flex items-center gap-1.5 font-medium tracking-wide">
+              <span>📅</span>
+              <span>{formatFullDateTime(timestampStr)}</span>
+            </div>
           )}
+
 
           {/* Footer */}
           <div className="pt-4 border-t border-white/10 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em]">

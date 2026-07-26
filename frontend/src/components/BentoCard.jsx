@@ -7,6 +7,14 @@ import { useHUD } from '../context/HUDContext';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80';
 
+function formatFullDateTime(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const dayDate = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  return `${dayDate} • ${time}`;
+}
+
 /**
  * Helper to split summary into 2-3 executive bullet takeaways for instant preview
  */
@@ -48,6 +56,7 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
     confidence: article.confidence_score,
     tag: 'SYNTHESIZED CLUSTER',
     sources: article.source_articles?.length || 1,
+    timestamp: article.last_updated || article.first_reported,
   } : {
     id: article._id,
     title: article.title,
@@ -58,7 +67,9 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
     confidence: null,
     tag: 'LIVE DISPATCH',
     sources: null,
+    timestamp: article.timestamp,
   };
+
 
   const takeaways = getTakeaways(data.summary);
 
@@ -156,7 +167,16 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/10 font-mono text-[10px] uppercase tracking-[0.2em]">
+          {/* Updated Timestamp */}
+          {data.timestamp && (
+            <div className="font-mono text-[10px] text-[#A0A0A0] mt-4 flex items-center gap-1.5 font-medium tracking-wide">
+              <span>📅</span>
+              <span>{formatFullDateTime(data.timestamp)}</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10 font-mono text-[10px] uppercase tracking-[0.2em]">
+
             <button
               type="button"
               onClick={(e) => {

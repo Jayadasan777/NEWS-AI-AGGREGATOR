@@ -193,7 +193,8 @@ export default function Home() {
       </div>
 
       {/* ════ 3. BREAKING / LATEST STRIP ════ */}
-      <LatestFeed events={latest} />
+      <LatestFeed events={latest} articles={articles} />
+
 
       {/* ════ 4. LEAD PRIORITY STORY ════ */}
       {flagship && (

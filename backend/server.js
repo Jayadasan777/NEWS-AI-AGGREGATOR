@@ -39,9 +39,9 @@ app.get('/api/trigger', (req, res) => {
   });
 });
 
-// --- Scheduled job: runs every 5 minutes (for live testing & verification) ---
-cron.schedule('*/5 * * * *', async () => {
-  console.log('\n⏰ Scheduled job triggered (5-min schedule):', new Date().toLocaleString());
+// --- Scheduled job: runs every 4 hours (optimal balance for fresh intel & API limits) ---
+cron.schedule('0 */4 * * *', async () => {
+  console.log('\n⏰ Scheduled job triggered (4-hour schedule):', new Date().toLocaleString());
   try {
     await runNewsEngine();
   } catch (error) {
@@ -49,7 +49,8 @@ cron.schedule('*/5 * * * *', async () => {
   }
 });
 
-console.log('⏰ Cron job scheduled: news engine will run every 5 minutes.');
+console.log('⏰ Cron job scheduled: news engine will run every 4 hours.');
+
 
 
 const PORT = process.env.PORT || 5000;
