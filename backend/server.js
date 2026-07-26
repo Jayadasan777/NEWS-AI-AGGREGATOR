@@ -16,6 +16,7 @@ app.use(express.json());
 
 // --- Lightweight Health Check / Keep-Alive Route (For cron-job.org) ---
 app.get('/ping', (req, res) => {
+  console.log(`🏓 Keep-alive ping received at ${new Date().toLocaleString()}`);
   res.status(200).send('OK');
 });
 
