@@ -43,6 +43,8 @@ const broadcastArticle = async (articleOrId) => {
       console.log(`--------------------------`);
       
       article.broadcast_status = 'broadcasted';
+      article.broadcast_time = new Date();
+      article.broadcast_error = '';
       await article.save();
       
       return {
@@ -60,6 +62,8 @@ const broadcastArticle = async (articleOrId) => {
     });
 
     article.broadcast_status = 'broadcasted';
+    article.broadcast_time = new Date();
+    article.broadcast_error = '';
     await article.save();
 
     console.log(`✅ Webhook dispatch successful! Status: ${response.status}`);
@@ -72,9 +76,20 @@ const broadcastArticle = async (articleOrId) => {
 
   } catch (error) {
     console.error('❌ Social Broadcast Error:', error.message);
+    if (article && typeof article.save === 'function') {
+      try {
+        article.broadcast_status = 'failed';
+        article.broadcast_time = new Date();
+        article.broadcast_error = error.message || 'Failed to dispatch social broadcast.';
+        await article.save();
+      } catch (dbErr) {
+        console.error('❌ Failed to save error status to DB:', dbErr.message);
+      }
+    }
     return {
       success: false,
-      message: error.message || 'Failed to dispatch social broadcast.'
+      message: error.message || 'Failed to dispatch social broadcast.',
+      error: error.message
     };
   }
 };

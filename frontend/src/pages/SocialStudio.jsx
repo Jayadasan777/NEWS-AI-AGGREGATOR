@@ -18,6 +18,10 @@ export default function SocialStudio() {
   const [broadcastMessage, setBroadcastMessage] = useState(null);
   const [liked, setLiked] = useState(false);
   const [showFullCaption, setShowFullCaption] = useState(false);
+  const [cronSchedule, setCronSchedule] = useState('Every 4 Hours');
+  const [lastIngestionTime, setLastIngestionTime] = useState(null);
+  const [scraping, setScraping] = useState(false);
+  const [scrapeMessage, setScrapeMessage] = useState(null);
 
   const fetchQueue = async () => {
     setLoading(true);
@@ -28,6 +32,8 @@ export default function SocialStudio() {
       setArticles(data);
       setIsAutoEnabled(Boolean(res.data.autoBroadcastEnabled));
       setWebhookConfigured(Boolean(res.data.webhookConfigured));
+      setCronSchedule(res.data.cronSchedule || 'Every 4 Hours');
+      setLastIngestionTime(res.data.lastIngestionTime || null);
       if (data.length > 0 && !selectedArticle) {
         setSelectedArticle(data[0]);
       }
@@ -51,6 +57,23 @@ export default function SocialStudio() {
       }
     } catch {
       alert('Failed to toggle autonomous broadcast setting.');
+    }
+  };
+
+  const handleTriggerScrape = async () => {
+    triggerGlitch(200);
+    setScraping(true);
+    setScrapeMessage(null);
+    try {
+      const res = await API.post('/social/trigger-scrape');
+      if (res.data && res.data.success) {
+        setScrapeMessage({ type: 'success', text: res.data.message });
+        setTimeout(() => { fetchQueue(); }, 5000);
+      }
+    } catch (err) {
+      setScrapeMessage({ type: 'error', text: 'Failed to trigger manual scrape.' });
+    } finally {
+      setScraping(false);
     }
   };
 
@@ -136,6 +159,59 @@ export default function SocialStudio() {
         </div>
       </motion.div>
 
+      {/* ── System Health & Automation Monitor Bar ── */}
+      <div className="bg-[#111111] p-6 rounded-2xl border border-[#2A2A2A] shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex flex-wrap items-center gap-6">
+          <div>
+            <div className="font-mono text-[10px] uppercase tracking-wider text-[#606060] font-bold">AUTOMATION CRON SCHEDULE</div>
+            <div className="font-mono text-sm font-extrabold text-[#F5F5F5] flex items-center gap-2 mt-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#10B981] animate-pulse" />
+              <span>{cronSchedule}</span>
+            </div>
+          </div>
+          <div className="h-8 w-px bg-[#2A2A2A] hidden md:block" />
+          <div>
+            <div className="font-mono text-[10px] uppercase tracking-wider text-[#606060] font-bold">LAST NEWS SCRAPE & INGESTION</div>
+            <div className="font-mono text-sm font-extrabold text-[#A0A0A0] mt-1">
+              {lastIngestionTime ? new Date(lastIngestionTime).toLocaleString() : 'Waiting for initial scrape...'}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          <button
+            onClick={handleTriggerScrape}
+            disabled={scraping}
+            className="w-full sm:w-auto px-5 py-3 rounded-xl font-mono text-xs uppercase tracking-widest font-extrabold transition-all bg-[#202020] hover:bg-[#303030] text-[#F5F5F5] border border-[#3A3A3A] flex items-center justify-center gap-2 shadow-lg"
+          >
+            {scraping ? (
+              <>
+                <span className="w-3 h-3 rounded-full border border-white border-t-transparent animate-spin" />
+                <span>SCRAPING 14 FEEDS...</span>
+              </>
+            ) : (
+              <>
+                <span>⚡ MANUAL OVERRIDE: SCRAPE NOW</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {scrapeMessage && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`p-4 rounded-xl font-mono text-xs text-center border ${
+            scrapeMessage.type === 'error'
+              ? 'bg-[#DC2626]/15 text-[#DC2626] border-[#DC2626]/40'
+              : 'bg-[#10B981]/15 text-[#10B981] font-bold border-[#10B981]/40'
+          }`}
+        >
+          {scrapeMessage.text}
+        </motion.div>
+      )}
+
       {/* ── Studio Content Matrix ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* LEFT COLUMN: Queue & Instructions (7 cols) */}
@@ -147,6 +223,7 @@ export default function SocialStudio() {
                 { id: 'all', label: 'ALL DISPATCHES' },
                 { id: 'pending', label: 'PENDING QUEUE' },
                 { id: 'broadcasted', label: 'BROADCASTED' },
+                { id: 'failed', label: 'FAILED DISPATCHES' },
               ].map((t) => (
                 <button
                   key={t.id}
@@ -192,6 +269,7 @@ export default function SocialStudio() {
               {articles.map((art) => {
                 const isSelected = selectedArticle && selectedArticle._id === art._id;
                 const isBroadcasted = art.broadcast_status === 'broadcasted';
+                const isFailed = art.broadcast_status === 'failed';
                 return (
                   <div
                     key={art._id}
@@ -221,6 +299,16 @@ export default function SocialStudio() {
                         <p className="text-xs text-[#A0A0A0] font-light truncate">
                           {art.social_caption ? art.social_caption.split('\n')[0] : art.unique_summary}
                         </p>
+                        {isFailed && art.broadcast_error && (
+                          <div className="p-2 mt-1 rounded bg-[#DC2626]/15 border border-[#DC2626]/40 text-[#DC2626] font-mono text-[10px]">
+                            ⚠️ FAILURE LOG: {art.broadcast_error}
+                          </div>
+                        )}
+                        {isBroadcasted && art.broadcast_time && (
+                          <div className="font-mono text-[9px] text-[#10B981] uppercase mt-1">
+                            ✓ FB POSTED: {new Date(art.broadcast_time).toLocaleString()}
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -229,10 +317,12 @@ export default function SocialStudio() {
                         className={`px-2.5 py-1 rounded font-mono text-[9px] font-bold tracking-widest uppercase ${
                           isBroadcasted
                             ? 'bg-[#F5F5F5] text-[#0A0A0A]'
+                            : isFailed
+                            ? 'bg-[#DC2626] text-white animate-pulse'
                             : 'bg-[#202020] text-[#A0A0A0] border border-[#3A3A3A]'
                         }`}
                       >
-                        {isBroadcasted ? '✓ BROADCASTED' : '⏳ PENDING'}
+                        {isBroadcasted ? '✓ BROADCASTED' : isFailed ? '✕ FAILED' : '⏳ PENDING'}
                       </span>
                       <span className="font-mono text-xs text-[#F5F5F5] font-bold flex items-center gap-1 group">
                         <span>PREVIEW ON IPHONE</span>
@@ -267,7 +357,7 @@ export default function SocialStudio() {
         {/* RIGHT COLUMN: Interactive iPhone 15 Pro Studio (5 cols) */}
         <div className="lg:col-span-5 sticky top-24 space-y-6">
           <div className="font-mono text-xs text-[#A0A0A0] uppercase tracking-[0.25em] text-center font-bold">
-            LIVE IPHONE 15 PRO // INSTAGRAM PREVIEW
+            LIVE IPHONE 15 PRO // FACEBOOK & SOCIAL PREVIEW
           </div>
 
           {/* The Phone Container */}
@@ -374,12 +464,20 @@ export default function SocialStudio() {
           {/* Broadcast Action Button & Feedback Alert */}
           {selectedArticle && (
             <div className="space-y-3 max-w-[360px] mx-auto">
+              {selectedArticle.broadcast_status === 'failed' && (
+                <div className="p-3 bg-[#DC2626]/15 border border-[#DC2626]/40 rounded-xl text-[#DC2626] font-mono text-xs text-center">
+                  <strong>❌ FB BROADCAST FAILED:</strong> {selectedArticle.broadcast_error || 'Network or Make.com execution error'}
+                </div>
+              )}
+
               <button
                 onClick={() => handleBroadcast(selectedArticle._id)}
                 disabled={broadcastingId === selectedArticle._id}
                 className={`w-full py-4 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-extrabold transition-all flex items-center justify-center gap-3 shadow-2xl border ${
                   selectedArticle.broadcast_status === 'broadcasted'
                     ? 'bg-[#181818] text-[#A0A0A0] border-[#3A3A3A] hover:bg-[#F5F5F5] hover:text-[#0A0A0A]'
+                    : selectedArticle.broadcast_status === 'failed'
+                    ? 'bg-[#DC2626] text-white border-[#DC2626] hover:bg-red-700 animate-pulse'
                     : 'bg-[#F5F5F5] text-[#0A0A0A] border-[#F5F5F5] hover:scale-[1.02]'
                 }`}
               >
@@ -390,11 +488,15 @@ export default function SocialStudio() {
                   </>
                 ) : selectedArticle.broadcast_status === 'broadcasted' ? (
                   <>
-                    <span>✓ RE-BROADCAST TO INSTAGRAM</span>
+                    <span>✓ RE-BROADCAST TO FACEBOOK</span>
+                  </>
+                ) : selectedArticle.broadcast_status === 'failed' ? (
+                  <>
+                    <span>🔄 RETRY FACEBOOK BROADCAST NOW</span>
                   </>
                 ) : (
                   <>
-                    <span>🚀 BROADCAST TO INSTAGRAM NOW</span>
+                    <span>🚀 BROADCAST TO FACEBOOK NOW</span>
                   </>
                 )}
               </button>

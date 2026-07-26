@@ -13,9 +13,11 @@ const articleSchema = new mongoose.Schema({
   social_hashtags: [{ type: String }],
   broadcast_status: { 
     type: String, 
-    enum: ['pending', 'broadcasted', 'skipped'], 
+    enum: ['pending', 'broadcasted', 'failed', 'skipped'], 
     default: 'pending' 
-  }
+  },
+  broadcast_time: { type: Date },
+  broadcast_error: { type: String, default: '' }
 });
 
 module.exports = mongoose.model('Article', articleSchema);

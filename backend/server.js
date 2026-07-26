@@ -42,7 +42,7 @@ app.get('/api/trigger', (req, res) => {
 });
 
 // --- Scheduled job: runs every 4 hours (optimal balance for fresh intel & API limits) ---
-cron.schedule('0 */4 * * *', async () => {
+cron.schedule('0 */6 * * *', async () => {
   console.log('\n⏰ Scheduled job triggered (4-hour schedule):', new Date().toLocaleString());
   try {
     await runNewsEngine();

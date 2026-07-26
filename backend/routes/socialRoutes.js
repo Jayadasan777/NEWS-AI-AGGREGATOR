@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Article = require('../models/Article');
 const { broadcastArticle } = require('../utils/socialBroadcast');
+const runNewsEngine = require('../jobs/newsEngine');
 
 // Global in-memory toggle initialized from environment
 if (typeof global.AUTO_BROADCAST_ENABLED === 'undefined') {
@@ -25,11 +26,15 @@ router.get('/queue', async (req, res) => {
       .sort({ timestamp: -1 })
       .limit(parseInt(limit, 10));
 
+    const latestArt = await Article.findOne().sort({ timestamp: -1 });
+
     res.json({
       success: true,
       count: articles.length,
       autoBroadcastEnabled: global.AUTO_BROADCAST_ENABLED,
       webhookConfigured: Boolean(process.env.SOCIAL_WEBHOOK_URL),
+      cronSchedule: 'Every 4 Hours (0 */6 * * *)',
+      lastIngestionTime: latestArt ? latestArt.timestamp : null,
       data: articles
     });
   } catch (error) {
@@ -37,6 +42,24 @@ router.get('/queue', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to retrieve social queue.' });
   }
 });
+
+/**
+ * POST /api/social/trigger-scrape
+ * Manually trigger an immediate news engine scrape across all 14 feeds.
+ */
+router.post('/trigger-scrape', async (req, res) => {
+  try {
+    console.log('⚡ Manual override: Triggering news engine scrape from Social Studio...');
+    runNewsEngine().catch(err => console.error('❌ Manual Scrape Error:', err.message));
+    res.json({
+      success: true,
+      message: '⚡ Immediate 14-feed AI news scrape triggered! New articles will start appearing in the queue shortly.'
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to trigger news scrape.' });
+  }
+});
+
 
 /**
  * POST /api/social/broadcast/:id
