@@ -27,11 +27,21 @@ app.get('/', (req, res) => {
 app.use('/api/articles', articleRoutes);
 app.use('/api/events', eventRoutes);
 
-// --- Scheduled job: runs twice daily (8 AM and 8 PM) ---
-// Production interval — respects free-tier Gemini daily quota (20/day)
-// with ARTICLES_PER_SECTOR = 1.
-cron.schedule('0 8,20 * * *', async () => {
-  console.log('\n⏰ Scheduled job triggered:', new Date().toLocaleString());
+// --- Manual Trigger Route (For instant testing without waiting for cron) ---
+app.get('/api/trigger', (req, res) => {
+  console.log(`🚀 Manual ingestion triggered via /api/trigger at ${new Date().toLocaleString()}`);
+  // Run in background so request doesn't timeout
+  runNewsEngine().catch(err => console.error('❌ Manual trigger failed:', err.message));
+  res.status(200).json({
+    success: true,
+    message: '🚀 News engine triggered in background! Check Render logs and /api/articles/stats in 1-2 minutes.',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// --- Scheduled job: runs every 5 minutes (for live testing & verification) ---
+cron.schedule('*/5 * * * *', async () => {
+  console.log('\n⏰ Scheduled job triggered (5-min schedule):', new Date().toLocaleString());
   try {
     await runNewsEngine();
   } catch (error) {
@@ -39,7 +49,8 @@ cron.schedule('0 8,20 * * *', async () => {
   }
 });
 
-console.log('⏰ Cron job scheduled: news engine will run twice daily (8 AM & 8 PM).');
+console.log('⏰ Cron job scheduled: news engine will run every 5 minutes.');
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
