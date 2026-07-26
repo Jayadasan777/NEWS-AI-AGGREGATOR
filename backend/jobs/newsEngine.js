@@ -3,6 +3,7 @@ const Parser = require('rss-parser');
 const Groq = require('groq-sdk');
 const Article = require('../models/Article');
 const { processArticleIntoEvent } = require('./eventEngine');
+const { broadcastArticle } = require('../utils/socialBroadcast');
 
 const parser = new Parser();
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -62,24 +63,48 @@ const ARTICLES_PER_FEED = 3;
 // --- API Throttling Utility ---
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// --- Rewrite text using Meta Llama 3 (Groq) ---
-const rewriteWithGroq = async (title, description) => {
-  const prompt = `You are a professional news editor. Rewrite the following news headline and description into a completely original, unique summary of about 150 words. Do not copy phrases directly. Write in a clear, neutral, informative tone.
-  Original Title: ${title}
-  Original Description: ${description}
-  Return ONLY the rewritten summary, nothing else.`;
+// --- Synthesize Article & Generate Instagram/Social Metadata using Llama 3 (Groq) ---
+const synthesizeWithGroq = async (title, description, sector) => {
+  const prompt = `You are a professional news editor and social media manager for an autonomous news agency called NewsAI.
+Based on the following news headline and description, return a valid JSON object with three exact fields:
+1. "summary": A professional editorial summary of about 150 words in a neutral, informative tone. Do not copy phrases directly.
+2. "social_caption": An engaging Instagram caption starting with a catchy emoji hook headline (e.g. 🚨 BREAKING: or 🤖 AI UPDATE:), followed by a brief 2-3 bullet point breakdown, ending with a call to action.
+3. "social_hashtags": An array of 10-14 viral, relevant hashtags (e.g. ["#NewsAI", "#TechNews", "#AI", "#Geopolitics"]).
+
+Original Title: ${title}
+Original Description: ${description}
+Sector: ${sector}
+
+Return ONLY valid JSON without any markdown code blocks or commentary. Example format:
+{"summary": "...", "social_caption": "...", "social_hashtags": ["#NewsAI", "#Breaking"]}`;
 
   try {
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
       model: 'llama-3.1-8b-instant',
       temperature: 0.3,
+      response_format: { type: 'json_object' }
     });
-    return completion.choices[0]?.message?.content?.trim() || description;
+
+    const content = completion.choices[0]?.message?.content?.trim();
+    if (content) {
+      const parsed = JSON.parse(content);
+      return {
+        summary: parsed.summary || description,
+        social_caption: parsed.social_caption || `🚨 ${title}\n\n${description.slice(0, 180)}...\n\nRead full intelligence dispatch on NewsAI.`,
+        social_hashtags: Array.isArray(parsed.social_hashtags) ? parsed.social_hashtags : [`#${sector}`, '#NewsAI', '#BreakingNews']
+      };
+    }
   } catch (error) {
-    console.error('❌ Groq Rewrite Error:', error.message);
-    return description;
+    console.error('❌ Groq Synthesis Error:', error.message);
   }
+
+  // Fallback if LLM fails
+  return {
+    summary: description,
+    social_caption: `🚨 ${title}\n\n${description.slice(0, 180)}...\n\nRead full intelligence dispatch on NewsAI.`,
+    social_hashtags: [`#${sector}`, '#NewsAI', '#BreakingNews', '#TechNews', '#Geopolitics']
+  };
 };
 
 // --- Enterprise Image Pipeline (Dynamic Contextual Generation) ---
@@ -96,7 +121,7 @@ const generateAndHostImage = (summaryText, sector, articleTitle) => {
     
     const encodedPrompt = encodeURIComponent(imagePrompt);
     const randomSeed = Math.floor(Math.random() * 1000000);
-    return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=450&nologo=true&seed=${randomSeed}`;
+    return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=800&nologo=true&seed=${randomSeed}`;
   } catch (error) {
     console.error('❌ Image Pipeline Error:', error.message);
     return ''; 
@@ -116,23 +141,40 @@ const processBatch = async (articlesBatch, sectorName) => {
 
       console.log(`\n⏳ Processing: ${item.title}`);
       
-      const rewrittenSummary = await rewriteWithGroq(item.title, item.contentSnippet || item.title);
+      const { summary, social_caption, social_hashtags } = await synthesizeWithGroq(
+        item.title, 
+        item.contentSnippet || item.title, 
+        sectorName
+      );
       
-      // Synchronous dynamic unique image generation URL
-      const frontendImageUrl = generateAndHostImage(rewrittenSummary, sectorName, item.title);
+      // Synchronous dynamic unique image generation URL (800x800 square for IG / social compatibility)
+      const frontendImageUrl = generateAndHostImage(summary, sectorName, item.title);
 
       const newArticle = new Article({
         title: item.title,
-        unique_summary: rewrittenSummary,
+        unique_summary: summary,
         sector: sectorName,
         image_url: frontendImageUrl,
+        social_caption: social_caption,
+        social_hashtags: social_hashtags,
+        broadcast_status: 'pending'
       });
 
       await newArticle.save();
-      console.log(`✅ Saved successfully (Unique Image ready for frontend)`);
+      console.log(`✅ Saved successfully (Summary + IG Caption + Hashtags generated)`);
 
       // Layer 2: Hybrid Jaccard + Llama 3 Event Clustering
       await processArticleIntoEvent(newArticle);
+
+      // Layer 3: Autonomous Social Media Broadcast (if enabled)
+      const isAutoEnabled = typeof global.AUTO_BROADCAST_ENABLED !== 'undefined' 
+        ? global.AUTO_BROADCAST_ENABLED 
+        : (process.env.AUTO_BROADCAST === 'true');
+
+      if (isAutoEnabled) {
+        console.log(`🤖 AUTO_BROADCAST is enabled! Attempting automated social dispatch...`);
+        await broadcastArticle(newArticle);
+      }
 
     } catch (error) {
       console.error(`❌ Failed to process "${item.title}":`, error.message);

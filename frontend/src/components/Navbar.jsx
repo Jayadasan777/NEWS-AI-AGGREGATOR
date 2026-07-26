@@ -88,6 +88,15 @@ export default function Navbar() {
         </div>
 
         <Link
+          to="/studio"
+          onClick={() => triggerGlitch(250)}
+          className="px-3 py-1.5 rounded-full bg-[#111111] border border-[#2A2A2A] text-[#F5F5F5] font-bold hover:bg-[#F5F5F5] hover:text-[#0A0A0A] transition-all uppercase text-[11px] shadow-lg flex items-center gap-1.5"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-ping" />
+          <span>[ STUDIO ]</span>
+        </Link>
+
+        <Link
           to="/about"
           onClick={() => triggerGlitch(250)}
           className="px-3 py-1.5 rounded-full bg-[#111111] border border-[#2A2A2A] text-[#A0A0A0] hover:text-[#F5F5F5] hover:border-[#3A3A3A] transition-all uppercase text-[11px]"
@@ -249,6 +258,14 @@ export default function Navbar() {
                       className="p-3.5 rounded-xl bg-[#111111] hover:bg-[#181818] text-[#F5F5F5] transition-all border border-[#2A2A2A] hover:border-[#3A3A3A] font-bold"
                     >
                       → SEARCH INTEL
+                    </Link>
+                    <Link
+                      to="/studio"
+                      onClick={() => { triggerGlitch(300); setMenuOpen(false); }}
+                      className="p-3.5 rounded-xl bg-[#111111] hover:bg-[#181818] text-[#F5F5F5] transition-all border border-[#2A2A2A] hover:border-[#3A3A3A] col-span-2 font-bold flex items-center justify-between"
+                    >
+                      <span>→ INSTAGRAM & SOCIAL STUDIO</span>
+                      <span className="text-[10px] bg-[#DC2626] text-white px-2 py-0.5 rounded font-black">NEW</span>
                     </Link>
                     <Link
                       to="/about"

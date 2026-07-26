@@ -13,6 +13,7 @@ import ArticleDetail from './pages/ArticleDetail';
 import EventDetail from './pages/EventDetail';
 import Search from './pages/Search';
 import About from './pages/About';
+import SocialStudio from './pages/SocialStudio';
 
 /* ScrollToTop component ensures we start at the top on route change */
 const ScrollToTop = () => {
@@ -34,6 +35,7 @@ function AnimatedRoutes() {
         <Route path="/event/:id" element={<EventDetail />} />
         <Route path="/search" element={<Search />} />
         <Route path="/about" element={<About />} />
+        <Route path="/studio" element={<SocialStudio />} />
       </Routes>
     </div>
   );

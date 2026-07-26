@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const runNewsEngine = require('./jobs/newsEngine');
 const articleRoutes = require('./routes/articleRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const socialRoutes = require('./routes/socialRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/articles', articleRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/social', socialRoutes);
 
 // --- Manual Trigger Route (For instant testing without waiting for cron) ---
 app.get('/api/trigger', (req, res) => {
