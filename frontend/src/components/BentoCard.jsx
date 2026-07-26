@@ -94,8 +94,8 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
               <SignalMeter score={data.confidence} size="sm" />
             </div>
           ) : (
-            <div className="absolute top-3.5 right-3.5 bg-[#080B11]/80 backdrop-blur-md rounded-xl px-2.5 py-1 border border-white/10 font-mono text-[9px] text-[#10B981] uppercase tracking-widest font-bold">
-              100% AI ORIGINAL
+            <div className="absolute top-3.5 right-3.5 bg-[#111111]/90 backdrop-blur-md rounded-xl px-2.5 py-1 border border-[#3A3A3A] font-mono text-[9px] text-[#A0A0A0] uppercase tracking-widest font-bold">
+              AI ORIGINAL
             </div>
           )}
         </div>
@@ -103,20 +103,20 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
         {/* Content Body */}
         <div className="p-6 flex-1 flex flex-col justify-between z-10 relative">
           <div>
-            <div className="flex items-center justify-between mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-muted">
-              <span className="text-[#F59E0B] font-bold flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
-                <span>// {data.tag}</span>
+            <div className="flex items-center justify-between mb-3 font-mono text-[10px] uppercase tracking-[0.22em]">
+              <span className="text-[#A0A0A0] font-bold flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
+                <span>{data.tag}</span>
               </span>
               {data.sources && (
-                <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-paper font-semibold">
-                  {data.sources} SRCS FUSED
+                <span className="px-2 py-0.5 rounded border border-[#2A2A2A] text-[#A0A0A0] font-semibold text-[9px]">
+                  {data.sources} SRCS
                 </span>
               )}
             </div>
 
             {/* Editorial Serif Headline */}
-            <h3 className="font-display font-bold text-paper text-lg md:text-xl leading-snug line-clamp-2 group-hover:text-[#F59E0B] transition-colors duration-300">
+            <h3 className="font-display font-bold text-[#F5F5F5] text-lg md:text-xl leading-snug line-clamp-2 group-hover:text-white transition-colors duration-300">
               {data.title}
             </h3>
 
@@ -129,14 +129,14 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
-                    className="space-y-1.5 bg-[#080B11]/90 p-3.5 rounded-xl border border-[#F59E0B]/30"
+                    className="space-y-1.5 bg-[#0A0A0A] p-3.5 rounded-xl border border-[#2A2A2A]"
                   >
-                    <div className="font-mono text-[9px] text-[#F59E0B] uppercase tracking-widest font-bold mb-1">
-                      // AI EXECUTIVE TAKEAWAYS:
+                    <div className="font-mono text-[9px] text-[#606060] uppercase tracking-widest font-bold mb-1">
+                      KEY TAKEAWAYS:
                     </div>
                     {takeaways.map((point, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-paper-dim font-sans">
-                        <span className="text-[#10B981] font-bold">▸</span>
+                      <div key={i} className="flex items-start gap-2 text-xs text-[#C8C8C8] font-sans">
+                        <span className="text-[#A0A0A0] font-bold">▸</span>
                         <span className="line-clamp-2">{point}</span>
                       </div>
                     ))}
@@ -164,12 +164,12 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
                 e.stopPropagation();
                 setShowTakeaways(!showTakeaways);
               }}
-              className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-[#F59E0B] transition-colors flex items-center gap-1.5 font-bold border border-white/10"
+              className="px-2.5 py-1 rounded-lg border border-[#2A2A2A] hover:border-[#3A3A3A] text-[#A0A0A0] hover:text-[#F5F5F5] transition-colors flex items-center gap-1.5 font-bold text-[9px]"
             >
-              <span>{showTakeaways ? '✕ VIEW SUMMARY' : '✨ KEY TAKEAWAYS'}</span>
+              <span>{showTakeaways ? '✕ SUMMARY' : '≡ TAKEAWAYS'}</span>
             </button>
-            <span className="text-paper group-hover:text-[#F59E0B] transition-colors flex items-center gap-1 font-bold">
-              READ INTEL <span className="group-hover:translate-x-1.5 transition-transform inline-block">→</span>
+            <span className="text-[#A0A0A0] group-hover:text-[#F5F5F5] transition-colors flex items-center gap-1 font-bold">
+              READ <span className="group-hover:translate-x-1.5 transition-transform inline-block">→</span>
             </span>
           </div>
         </div>
@@ -208,7 +208,7 @@ export function FlagshipCard({ article, isEvent = false }) {
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => triggerGlitch(300)}
-      className="group relative rounded-3xl overflow-hidden border border-white/15 hover:border-[#F59E0B]/70 bg-[#0D121C]/90 backdrop-blur-2xl transition-all duration-500 shadow-2xl cursor-pointer"
+      className="group relative rounded-2xl overflow-hidden border border-[#2A2A2A] hover:border-[#444444] bg-[#111111]/90 backdrop-blur-2xl transition-all duration-500 shadow-2xl cursor-pointer"
       style={{ minHeight: '520px' }}
     >
       <Link to={data.href} className="block w-full h-full">
@@ -223,28 +223,28 @@ export function FlagshipCard({ article, isEvent = false }) {
         </div>
 
         {/* Velvet Obsidian Gradient Mask */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#080B11] via-[#080B11]/75 to-[#080B11]/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/75 to-[#0A0A0A]/25" />
 
         {/* Top Telemetry & Credibility Badges */}
         <div className="absolute top-6 left-6 right-6 flex flex-wrap items-center justify-between gap-4 z-10">
           <div className="flex items-center gap-3">
-            <span className="px-3.5 py-1 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-[0.25em] bg-[#F59E0B] text-[#080B11] shadow-lg shadow-[#F59E0B]/30 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#080B11] animate-ping" />
-              <span>// {data.tag}</span>
+            <span className="px-3 py-1 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-[0.25em] bg-[#DC2626] text-white flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+              <span>{data.tag}</span>
             </span>
             <SectorBadge sector={data.sector} />
           </div>
 
-          <div className="bg-[#080B11]/80 backdrop-blur-md rounded-xl px-4 py-1.5 border border-white/15 flex items-center gap-3 font-mono text-xs shadow-lg">
+          <div className="bg-[#111111]/90 backdrop-blur-md rounded-xl px-4 py-1.5 border border-[#2A2A2A] flex items-center gap-3 font-mono text-xs shadow-lg">
             {data.confidence != null ? (
               <SignalMeter score={data.confidence} size="sm" />
             ) : (
-              <span className="text-[#10B981] font-bold text-[10px] tracking-widest">// 100% ORIGINAL AI COPY</span>
+              <span className="text-[#A0A0A0] font-bold text-[10px] tracking-widest">AI ORIGINAL</span>
             )}
             {data.sources > 1 && (
               <>
-                <span className="text-muted/40">•</span>
-                <span className="text-[10px] text-paper font-semibold tracking-widest">{data.sources} WIRE SOURCES FUSED</span>
+                <span className="text-[#404040]">•</span>
+                <span className="text-[10px] text-[#C8C8C8] font-semibold tracking-widest">{data.sources} SOURCES</span>
               </>
             )}
           </div>
@@ -252,29 +252,29 @@ export function FlagshipCard({ article, isEvent = false }) {
 
         {/* Bottom Magazine Cover Content Panel */}
         <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-12 z-10">
-          <div className="max-w-3xl bg-[#0D121C]/85 backdrop-blur-xl rounded-2xl p-8 sm:p-10 border border-white/10 group-hover:border-white/25 transition-all shadow-2xl">
-            <div className="flex items-center gap-2 font-mono text-[10px] text-[#F59E0B] uppercase tracking-[0.3em] mb-3 font-bold">
-              <span>[ PRIORITY EXECUTIVE BRIEFING ]</span>
-              <span className="text-muted/40">•</span>
-              <span className="text-[#10B981]">LLAMA 3.1 SYNTHESIZED</span>
+          <div className="max-w-3xl bg-[#111111]/90 backdrop-blur-xl rounded-2xl p-8 sm:p-10 border border-[#2A2A2A] group-hover:border-[#404040] transition-all shadow-2xl">
+            <div className="flex items-center gap-2 font-mono text-[10px] text-[#606060] uppercase tracking-[0.3em] mb-3 font-bold">
+              <span>PRIORITY BRIEFING</span>
+              <span className="text-[#404040]">•</span>
+              <span className="text-[#A0A0A0]">Llama 3.1 Synthesized</span>
             </div>
 
-            {/* Majestic Cover Story Serif Headline */}
-            <h2 className="font-display font-extrabold text-paper text-2xl sm:text-4xl md:text-5xl leading-tight mb-4 group-hover:text-[#F59E0B] transition-colors duration-300">
+            {/* Cover Story Serif Headline */}
+            <h2 className="font-display font-extrabold text-[#F5F5F5] text-2xl sm:text-4xl md:text-5xl leading-tight mb-4 group-hover:text-white transition-colors duration-300">
               {data.title}
             </h2>
 
-            <p className="text-paper-dim text-sm sm:text-base leading-relaxed line-clamp-3 mb-6 font-sans font-light">
+            <p className="text-[#C8C8C8] text-sm sm:text-base leading-relaxed line-clamp-3 mb-6 font-sans">
               {data.summary}
             </p>
 
-            <div className="flex items-center justify-between font-mono text-xs uppercase tracking-[0.2em] pt-5 border-t border-white/10">
-              <span className="text-muted/70 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#10B981]" />
-                <span>MULTI-SOURCE VERIFICATION ONLINE</span>
+            <div className="flex items-center justify-between font-mono text-xs uppercase tracking-[0.2em] pt-5 border-t border-[#2A2A2A]">
+              <span className="text-[#606060] flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
+                <span>Multi-Source Verified</span>
               </span>
-              <span className="text-paper group-hover:text-[#F59E0B] transition-colors font-extrabold flex items-center gap-2">
-                OPEN EXECUTIVE BRIEF <span className="group-hover:translate-x-2 transition-transform inline-block">→</span>
+              <span className="text-[#A0A0A0] group-hover:text-[#F5F5F5] transition-colors font-extrabold flex items-center gap-2">
+                OPEN BRIEF <span className="group-hover:translate-x-2 transition-transform inline-block">→</span>
               </span>
             </div>
           </div>

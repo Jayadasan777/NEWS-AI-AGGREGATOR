@@ -2,6 +2,20 @@ const express = require('express');
 const router = express.Router();
 const Event = require('../models/Event');
 
+// GET /api/events/latest?limit=6
+router.get('/latest', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 6;
+    const events = await Event.find()
+      .sort({ last_updated: -1 })
+      .limit(limit)
+      .populate('source_articles', 'title sector timestamp');
+    res.status(200).json({ success: true, data: events });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch latest events', error: error.message });
+  }
+});
+
 // GET /api/events?sector=Tech
 router.get('/', async (req, res) => {
   try {

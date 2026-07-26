@@ -58,18 +58,18 @@ export default function EventCard({ event }) {
         {/* Content Body */}
         <div className="p-6 flex flex-col flex-grow justify-between relative z-10">
           <div>
-            <div className="flex items-center justify-between mb-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
-              <span className="text-[#F59E0B] font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B] animate-pulse" />
-                <span>// SYNTHESIZED CLUSTER</span>
+            <div className="flex items-center justify-between mb-2.5 font-mono text-[10px] uppercase tracking-[0.2em]">
+              <span className="text-[#A0A0A0] font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
+                <span>SYNTHESIZED CLUSTER</span>
               </span>
-              <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-paper font-semibold">
-                {srcCount} SRC{srcCount > 1 ? 'S' : ''} FUSED
+              <span className="px-2 py-0.5 rounded border border-[#2A2A2A] text-[#A0A0A0] font-semibold text-[9px]">
+                {srcCount} SRC{srcCount > 1 ? 'S' : ''}
               </span>
             </div>
 
             {/* Editorial Serif Headline */}
-            <h3 className="font-display font-bold text-paper text-base md:text-lg leading-snug group-hover:text-[#F59E0B] transition-colors duration-300 line-clamp-2 mb-3">
+            <h3 className="font-display font-bold text-[#F5F5F5] text-base md:text-lg leading-snug group-hover:text-white transition-colors duration-300 line-clamp-2 mb-3">
               {event.event_title}
             </h3>
 
@@ -82,14 +82,14 @@ export default function EventCard({ event }) {
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
-                    className="space-y-1.5 bg-[#080B11]/90 p-3.5 rounded-xl border border-[#F59E0B]/30"
+                    className="space-y-1.5 bg-[#0A0A0A] p-3.5 rounded-xl border border-[#2A2A2A]"
                   >
-                    <div className="font-mono text-[9px] text-[#F59E0B] uppercase tracking-widest font-bold mb-1">
-                      // EXECUTIVE BRIEFING POINTS:
+                    <div className="font-mono text-[9px] text-[#606060] uppercase tracking-widest font-bold mb-1">
+                      KEY TAKEAWAYS:
                     </div>
                     {takeaways.map((point, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-paper-dim font-sans">
-                        <span className="text-[#10B981] font-bold">▸</span>
+                      <div key={i} className="flex items-start gap-2 text-xs text-[#C8C8C8] font-sans">
+                        <span className="text-[#A0A0A0] font-bold">▸</span>
                         <span className="line-clamp-2">{point}</span>
                       </div>
                     ))}
@@ -125,11 +125,11 @@ export default function EventCard({ event }) {
                 e.stopPropagation();
                 setShowTakeaways(!showTakeaways);
               }}
-              className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 text-[#F59E0B] transition-colors flex items-center gap-1.5 font-bold border border-white/10"
+              className="px-2.5 py-1 rounded-lg border border-[#2A2A2A] hover:border-[#3A3A3A] text-[#A0A0A0] hover:text-[#F5F5F5] transition-colors flex items-center gap-1.5 font-bold text-[9px]"
             >
-              <span>{showTakeaways ? '✕ VIEW SUMMARY' : '✨ KEY TAKEAWAYS'}</span>
+              <span>{showTakeaways ? '✕ SUMMARY' : '≡ TAKEAWAYS'}</span>
             </button>
-            <span className="text-paper group-hover:text-[#F59E0B] transition-colors font-extrabold flex items-center gap-1">
+            <span className="text-[#A0A0A0] group-hover:text-[#F5F5F5] transition-colors font-extrabold flex items-center gap-1">
               OPEN REPORT <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
             </span>
           </div>

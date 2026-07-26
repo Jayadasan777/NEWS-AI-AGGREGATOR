@@ -63,44 +63,44 @@ export default function Navbar() {
             triggerGlitch(350);
             setActiveSector('AI');
           }}
-          className="group flex items-center gap-3 font-display font-extrabold text-xl md:text-2xl tracking-tight text-paper hover:text-[#F59E0B] transition-colors"
+          className="group flex items-center gap-3 font-display font-extrabold text-xl md:text-2xl tracking-tight text-[#F5F5F5] hover:text-white transition-colors"
         >
           <div className="relative flex items-center justify-center w-3 h-3">
-            <span className="absolute inline-flex w-full h-full rounded-full bg-[#10B981] opacity-75 animate-ping" />
-            <span className="relative inline-flex w-2.5 h-2.5 rounded-full bg-[#10B981] shadow-[0_0_10px_#10B981]" />
+            <span className="absolute inline-flex w-full h-full rounded-full bg-[#DC2626] opacity-75 animate-ping" />
+            <span className="relative inline-flex w-2.5 h-2.5 rounded-full bg-[#DC2626] shadow-[0_0_8px_#DC2626]" />
           </div>
           <span className="tracking-tighter">NEWSAI</span>
         </Link>
 
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full glass-nav border border-white/10 font-mono text-[10px] text-muted tracking-[0.2em] uppercase">
-          <span className="text-[#F59E0B] font-bold">// INTEL WIRE</span>
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full glass-nav border border-[#2A2A2A] font-mono text-[10px] text-[#606060] tracking-[0.2em] uppercase">
+          <span className="text-[#A0A0A0] font-bold">INTEL WIRE</span>
           <span>•</span>
-          <span className="text-[#10B981]">14 DOMAINS LIVE</span>
+          <span className="text-[#DC2626]">LIVE</span>
         </div>
       </div>
 
       {/* ── TOP-RIGHT: System Status & Menu Drawer Controls ── */}
       <div className="fixed top-6 right-6 md:right-8 z-50 flex items-center gap-4 font-mono text-xs tracking-[0.2em] pointer-events-auto">
-        <div className="hidden xl:flex items-center gap-3 px-3.5 py-1.5 rounded-full glass-nav border border-white/10 text-[10px] text-muted/70 uppercase">
-          <span>ENGINE: LLAMA 3.1 70B</span>
+        <div className="hidden xl:flex items-center gap-3 px-3.5 py-1.5 rounded-full glass-nav border border-[#2A2A2A] text-[10px] text-[#606060] uppercase">
+          <span>ENGINE: LLAMA 3.1</span>
           <span>•</span>
-          <span className="text-paper">JACCARD FUSION</span>
+          <span className="text-[#A0A0A0]">JACCARD FUSION</span>
         </div>
 
         <Link
           to="/about"
           onClick={() => triggerGlitch(250)}
-          className="px-3 py-1.5 rounded-full glass-nav border border-white/10 text-muted hover:text-paper hover:border-white/30 transition-all uppercase text-[11px]"
+          className="px-3 py-1.5 rounded-full glass-nav border border-[#2A2A2A] text-[#A0A0A0] hover:text-[#F5F5F5] hover:border-[#3A3A3A] transition-all uppercase text-[11px]"
         >
           [ ABOUT ]
         </Link>
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="flex items-center gap-2.5 text-paper hover:text-[#F59E0B] transition-all py-1.5 px-4 glass-nav hover:bg-white/15 rounded-full border border-white/15 shadow-lg font-mono text-xs tracking-widest uppercase"
+          className="flex items-center gap-2.5 text-[#F5F5F5] hover:text-white transition-all py-1.5 px-4 glass-nav hover:bg-white/5 rounded-full border border-[#2A2A2A] shadow-lg font-mono text-xs tracking-widest uppercase"
         >
           <span>{menuOpen ? 'CLOSE' : 'MENU'}</span>
-          <div className="w-2 h-2 rounded-full bg-[#F59E0B] shadow-[0_0_8px_#F59E0B] animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-[#DC2626] shadow-[0_0_6px_#DC2626] animate-pulse" />
         </button>
       </div>
 
@@ -192,10 +192,10 @@ export default function Navbar() {
       </div>
 
       {/* ── BOTTOM-RIGHT: Telemetry Indicator ── */}
-      <div className="fixed bottom-6 right-6 md:right-8 z-40 hidden sm:flex items-center gap-4 font-mono text-[10px] text-muted/60 tracking-[0.25em] uppercase pointer-events-none">
+      <div className="fixed bottom-6 right-6 md:right-8 z-40 hidden sm:flex items-center gap-4 font-mono text-[10px] text-[#606060] tracking-[0.25em] uppercase pointer-events-none">
         <span className="flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-          <span>SYS::ONLINE</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
+          <span>LIVE</span>
         </span>
         <span>•</span>
         <span>RSS INGESTION ACTIVE</span>
@@ -220,8 +220,8 @@ export default function Navbar() {
               className="fixed top-0 right-0 bottom-0 w-80 md:w-96 bg-[#0D121C] border-l border-white/10 z-[90] flex flex-col p-8 shadow-2xl overflow-y-auto"
             >
               <div className="flex items-center justify-between pb-6 border-b border-white/10 mb-6">
-                <span className="font-display font-extrabold text-xl text-paper tracking-wide">
-                  SYSTEM <span className="text-[#F59E0B]">// DIRECTORY</span>
+                <span className="font-display font-extrabold text-xl text-[#F5F5F5] tracking-wide">
+                  SYSTEM <span className="text-[#A0A0A0]">// DIRECTORY</span>
                 </span>
                 <button
                   onClick={() => setMenuOpen(false)}
@@ -233,7 +233,7 @@ export default function Navbar() {
 
               <div className="space-y-8 flex-1">
                 <div>
-                  <div className="font-mono text-[10px] text-[#F59E0B] tracking-[0.28em] uppercase mb-3">
+                  <div className="font-mono text-[10px] text-[#606060] tracking-[0.28em] uppercase mb-3">
                     // CORE NAVIGATION
                   </div>
                   <div className="grid grid-cols-2 gap-2.5 font-mono text-xs tracking-wider">
@@ -262,7 +262,7 @@ export default function Navbar() {
                 </div>
 
                 <div>
-                  <div className="font-mono text-[10px] text-[#10B981] tracking-[0.28em] uppercase mb-3">
+                  <div className="font-mono text-[10px] text-[#A0A0A0] tracking-[0.28em] uppercase mb-3">
                     // ALL 14 NEWS DOMAINS
                   </div>
                   <div className="grid grid-cols-1 gap-2 font-mono text-[11px] uppercase tracking-widest">
@@ -285,7 +285,7 @@ export default function Navbar() {
 
               <div className="pt-6 border-t border-white/10 font-mono text-[10px] text-muted/60 uppercase tracking-[0.2em] flex justify-between items-center">
                 <span>NEWSAI ENGINE v2.5</span>
-                <span className="text-[#10B981] font-bold">● ONLINE</span>
+                <span className="text-[#DC2626] font-bold">● LIVE</span>
               </div>
             </motion.div>
           </>
