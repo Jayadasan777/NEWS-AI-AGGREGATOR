@@ -82,4 +82,28 @@ router.post('/toggle-auto', (req, res) => {
   }
 });
 
+/**
+ * GET /api/social/test
+ * Instantly broadcast the most recent article in MongoDB to test the webhook!
+ */
+router.get('/test', async (req, res) => {
+  try {
+    const latestArticle = await Article.findOne().sort({ timestamp: -1 });
+    if (!latestArticle) {
+      return res.status(404).json({ success: false, message: 'No articles found in DB to test.' });
+    }
+    console.log(`🧪 Test webhook triggered for latest article: "${latestArticle.title}"`);
+    const result = await broadcastArticle(latestArticle);
+    res.json({
+      success: true,
+      message: '🧪 Test broadcast dispatched successfully to Make.com!',
+      articleTitle: latestArticle.title,
+      webhookResult: result
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 module.exports = router;
+
