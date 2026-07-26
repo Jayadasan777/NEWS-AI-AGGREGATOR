@@ -14,6 +14,11 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// --- Lightweight Health Check / Keep-Alive Route (For cron-job.org) ---
+app.get('/ping', (req, res) => {
+  res.status(200).send('OK');
+});
+
 app.get('/', (req, res) => {
   res.send('AI News Aggregator API is running...');
 });
