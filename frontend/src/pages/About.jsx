@@ -43,6 +43,12 @@ export default function About() {
       desc: 'When a cluster exceeds threshold similarity, Llama 3 synthesizes all contributing articles into a comprehensive intelligence briefing.',
       tag: 'CONFIDENCE VERIFIED',
     },
+    {
+      num: '07',
+      title: 'Autonomous Social Media Broadcast',
+      desc: 'Synthesized articles, custom AI images, and viral hashtags are dispatched 24/7 via real-time webhooks (Make.com/Zapier) directly to Facebook and Instagram channels.',
+      tag: '24/7 AUTONOMOUS MEDIA HOUSE',
+    },
   ];
 
   return (
@@ -70,7 +76,7 @@ export default function About() {
 
         <div className="font-mono text-[11px] text-[#606060] uppercase tracking-[0.3em] mb-4 font-extrabold flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse" />
-          <span>AUTONOMOUS NEURAL ARCHITECTURE v2.5</span>
+          <span>AUTONOMOUS MEDIA HOUSE & NEURAL ARCHITECTURE v3.0</span>
         </div>
 
         <h1 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl text-[#F5F5F5] tracking-tight leading-[1.04] mb-6">
@@ -106,14 +112,15 @@ export default function About() {
           {/* Spec table */}
           <div className="md:col-span-5 flex flex-col gap-0 border-t md:border-t-0 md:border-l border-[#2A2A2A] pt-6 md:pt-0 md:pl-8 font-mono text-[11px] tracking-widest uppercase">
             {[
-              { label: 'LLM INFERENCING',  value: 'LLAMA 3.1 70B',      highlight: false },
+              { label: 'LLM INFERENCING',  value: 'LLAMA 3.1 70B & 8B',  highlight: false },
               { label: 'CLUSTERING ALGO',  value: 'JACCARD IoU (0.35)',  highlight: false },
               { label: 'DATABASE ENGINE',  value: 'MONGODB CLUSTER',     highlight: false },
-              { label: 'SCHEDULE',         value: '8 AM & 8 PM IST',     highlight: false },
-            ].map(({ label, value }) => (
+              { label: 'SCHEDULE',         value: 'EVERY 4 HOURS / CRON', highlight: false },
+              { label: 'SOCIAL BROADCAST', value: 'MAKE.COM / ZAPIER',   highlight: true },
+            ].map(({ label, value, highlight }) => (
               <div key={label} className="flex justify-between py-3 border-b border-[#1A1A1A] last:border-b-0">
                 <span className="text-[#606060]">{label}:</span>
-                <span className="text-[#F5F5F5] font-bold">{value}</span>
+                <span className={`font-bold ${highlight ? 'text-[#F5F5F5] bg-[#181818] px-2 py-0.5 rounded border border-[#333]' : 'text-[#F5F5F5]'}`}>{value}</span>
               </div>
             ))}
             {/* Live status */}
@@ -140,7 +147,7 @@ export default function About() {
                 Processing Pipeline
               </span>
               <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-[#F5F5F5]">
-                6-Stage Autonomous Engine
+                7-Stage Autonomous Media Engine
               </h2>
             </div>
             <span className="font-mono text-[10px] text-[#606060] tracking-[0.2em] uppercase hidden sm:block font-bold">
@@ -195,13 +202,22 @@ export default function About() {
           Experience real-time news intelligence across all 14 global domains with
           instant AI executive takeaways and multi-source verified briefings.
         </p>
-        <Link
-          to="/"
-          onClick={() => triggerGlitch(300)}
-          className="px-8 py-4 rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-[#0A0A0A] font-mono font-extrabold text-xs uppercase tracking-[0.25em] transition-all hover:bg-transparent hover:text-[#F5F5F5] inline-block"
-        >
-          ENTER THE CORE WIRE →
-        </Link>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          <Link
+            to="/"
+            onClick={() => triggerGlitch(300)}
+            className="px-8 py-4 rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-[#0A0A0A] font-mono font-extrabold text-xs uppercase tracking-[0.25em] transition-all hover:bg-transparent hover:text-[#F5F5F5] inline-block shadow-xl"
+          >
+            ENTER THE CORE WIRE →
+          </Link>
+          <Link
+            to="/studio"
+            onClick={() => triggerGlitch(300)}
+            className="px-8 py-4 rounded-full border border-[#3A3A3A] bg-[#111111] text-[#F5F5F5] font-mono font-extrabold text-xs uppercase tracking-[0.25em] transition-all hover:border-[#F5F5F5] hover:bg-[#181818] inline-block shadow-xl"
+          >
+            GO TO SOCIAL STUDIO →
+          </Link>
+        </div>
       </div>
 
     </div>
