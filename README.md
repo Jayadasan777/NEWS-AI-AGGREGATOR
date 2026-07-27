@@ -153,7 +153,9 @@ The frontend dev server will launch at `http://localhost:5173`. Open this URL in
 ---
 
 ## 📚 Documentation Directory
-- **[Backend & Academic Documentation](file:///e:/ai-news-aggregator/backend/PROJECT_DOCUMENTATION.md):** In-depth technical breakdown of all 4 development phases, algorithmic formulas, challenges encountered, prompt engineering iterations, and evaluation results.
+- **[Academic Research Paper & Analysis](file:///e:/ai-news-aggregator/docs/PROJECT_ANALYSIS.md):** Comprehensive 500+ line academic paper draft detailing theoretical foundations, data flow diagrams, Jaccard IoU & Cosine formulas, technology stack matrices, $N=45$ empirical benchmark results (**97.78% Accuracy, 100% Recall**), and system audit logs.
+- **[System Feature Catalog](file:///e:/ai-news-aggregator/docs/SYSTEM_FEATURES.md):** Complete catalog enumerating all 11 core feature suites across multi-source RSS ingestion, Llama 3 synthesis, FLUX photojournalism, NISE two-stage clustering, stance detection, social webhooks, 3D Cosmic UI, and cloud monitoring.
+- **[Backend & System Architecture Documentation](file:///e:/ai-news-aggregator/backend/PROJECT_DOCUMENTATION.md):** In-depth technical breakdown of all 4 development phases, algorithmic formulas, challenges encountered, prompt engineering iterations, and evaluation results.
 - **[Frontend Architecture Guide](file:///e:/ai-news-aggregator/frontend/README.md):** Detailed guide on the Three.js / React Three Fiber setup, Cosmic Glassmorphism design system, component hierarchy, and routing.
 
 ---
