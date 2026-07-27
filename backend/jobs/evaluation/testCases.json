@@ -11,7 +11,6 @@
     "expected": "DIFFERENT",
     "notes": "Synthetic example: market reaction is a distinct event from the announcement itself"
   },
-  
   {
     "headline_a": "Manchester United signs new striker in £60m deal",
     "headline_b": "Arsenal set to make £70m bid for Newcastle's Guimaraes",
@@ -65,5 +64,209 @@
     "headline_b": "Fed funds futures price in 82% chance of interest rate hike at September meeting",
     "expected": "DIFFERENT",
     "notes": "Real: both about central bank interest rate policy, but ECB and Federal Reserve are different institutions making different decisions"
+  },
+  {
+    "headline_a": "Nvidia quarterly revenue reaches record $57 billion on Blackwell demand",
+    "headline_b": "Chipmaker Nvidia posts 62% sales surge as AI infrastructure boom continues",
+    "expected": "SAME",
+    "notes": "Category 1 (Tech/AI): Reuters vs Bloomberg covering same Nvidia quarterly earnings release"
+  },
+  {
+    "headline_a": "NASA's Artemis II crew completes final launch pad dress rehearsal",
+    "headline_b": "Astronauts clear major milestone ahead of upcoming lunar flyby mission",
+    "expected": "SAME",
+    "notes": "Category 1 (Space): Space.com vs BBC reporting on identical Artemis moon mission milestone"
+  },
+  {
+    "headline_a": "Bitcoin crosses $100,000 mark for the first time in history",
+    "headline_b": "World's largest cryptocurrency surges past landmark six-figure threshold",
+    "expected": "SAME",
+    "notes": "Category 1 (Crypto): CoinDesk vs Financial Times reporting identical price landmark"
+  },
+  {
+    "headline_a": "Tesla delivers record 1.8 million electric vehicles in full-year report",
+    "headline_b": "Musk's EV giant hits annual delivery target despite global market slowdown",
+    "expected": "SAME",
+    "notes": "Category 1 (Automotive): CNBC vs Wall Street Journal reporting annual Tesla delivery numbers"
+  },
+  {
+    "headline_a": "Pentagon awards $2.5 billion defense contract to Lockheed Martin for missile defense",
+    "headline_b": "US Defense Department selects Lockheed Martin for multi-billion dollar interceptor project",
+    "expected": "SAME",
+    "notes": "Category 1 (Defense): Defense News vs Reuters reporting identical Pentagon missile defense contract"
+  },
+  {
+    "headline_a": "UN Security Council passes resolution demanding immediate ceasefire in Middle East conflict",
+    "headline_b": "United Nations votes unanimously for emergency cessation of hostilities",
+    "expected": "SAME",
+    "notes": "Category 1 (Geopolitics): Al Jazeera vs The Guardian reporting identical UN resolution vote"
+  },
+  {
+    "headline_a": "AI startup Anthropic raises $4 billion in new funding round led by Amazon",
+    "headline_b": "Amazon doubles down on AI with multi-billion dollar investment in Claude creator Anthropic",
+    "expected": "SAME",
+    "notes": "Category 1 (Startups/AI): TechCrunch vs VentureBeat reporting identical Anthropic venture round"
+  },
+  {
+    "headline_a": "FDA approves first CRISPR gene-editing therapy for sickle cell disease",
+    "headline_b": "US health regulators clear landmark gene therapy Casgevy for commercial use",
+    "expected": "SAME",
+    "notes": "Category 1 (Health/Science): STAT News vs BBC reporting identical FDA drug approval decision"
+  },
+  {
+    "headline_a": "Avatar 3 trailer debuts at CinemaCon ahead of December theatrical release",
+    "headline_b": "James Cameron previews next Sci-Fi installment during industry showcase",
+    "expected": "SAME",
+    "notes": "Category 1 (Entertainment): Variety vs Hollywood Reporter reporting identical trailer premiere"
+  },
+  {
+    "headline_a": "Global climate summit concludes with historic pledge to transition away from fossil fuels",
+    "headline_b": "COP delegates reach agreement on renewable energy phase-in at annual conference",
+    "expected": "SAME",
+    "notes": "Category 1 (Environment): CNN vs Reuters reporting identical climate summit accord"
+  },
+  {
+    "headline_a": "Real Madrid wins Champions League final with dramatic 2-1 victory over Dortmund",
+    "headline_b": "Spanish giants secure 15th European crown after late goals at Wembley",
+    "expected": "SAME",
+    "notes": "Category 1 (Sports): ESPN vs Sky Sports reporting identical Champions League final outcome"
+  },
+  {
+    "headline_a": "Bank of England cuts benchmark interest rate by 25 basis points to 4.75%",
+    "headline_b": "UK central bank initiates monetary easing with quarter-point interest rate reduction",
+    "expected": "SAME",
+    "notes": "Category 1 (Finance): Financial Times vs Bloomberg reporting identical central bank rate decision"
+  },
+  {
+    "headline_a": "Nvidia quarterly revenue reaches record $57 billion on Blackwell demand",
+    "headline_b": "Nvidia faces DOJ antitrust probe over AI chip sales and server bundle practices",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Nvidia): Earnings report vs Department of Justice antitrust investigation"
+  },
+  {
+    "headline_a": "Tesla unveils Cybercab autonomous robotaxi prototype at Warner Bros studio event",
+    "headline_b": "Tesla recalls 2 million vehicles over Autopilot driver monitoring system software",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Tesla): Vehicle reveal event vs federal safety recall order"
+  },
+  {
+    "headline_a": "OpenAI releases Sora text-to-video generator model to public research access",
+    "headline_b": "Elon Musk files lawsuit against OpenAI and Sam Altman over breach of founding non-profit agreement",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (OpenAI): Product release vs founder breach of contract lawsuit"
+  },
+  {
+    "headline_a": "Apple reports Q4 services revenue beat driven by App Store and iCloud subscriptions",
+    "headline_b": "Apple delays visionOS 3 rollout due to spatial audio processing bug",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Apple): Quarterly financial earnings vs operating system release delay"
+  },
+  {
+    "headline_a": "SpaceX Starship completes fifth test flight with successful booster catch at launch pad",
+    "headline_b": "FCC rejects SpaceX application for $885 million rural broadband subsidy grant",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (SpaceX): Rocket test flight vs regulatory broadband subsidy denial"
+  },
+  {
+    "headline_a": "Boeing machinists vote to ratify new contract, ending 7-week factory strike",
+    "headline_b": "FAA grounds Boeing 737 MAX fleet following mid-air door plug blow-out incident",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Boeing): Labor contract ratification vs FAA aircraft grounding order"
+  },
+  {
+    "headline_a": "Microsoft launches Copilot+ PC hardware line with integrated Snapdragon X Elite chips",
+    "headline_b": "CrowdStrike software update causes global Windows IT outage affecting airlines and banks",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Microsoft): Surface PC product launch vs global Windows outage incident"
+  },
+  {
+    "headline_a": "Meta introduces Orion AR glasses prototype featuring neural wristband control",
+    "headline_b": "EU fines Meta €798 million over abusive Marketplace linking practices",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Meta): AR hardware reveal vs European Union antitrust fine"
+  },
+  {
+    "headline_a": "Amazon AWS announces $11 billion investment in new data centers in Indiana",
+    "headline_b": "FTC files landmark antitrust suit accusing Amazon of illegal monopoly maintenance",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Amazon): Cloud infrastructure investment vs FTC antitrust lawsuit"
+  },
+  {
+    "headline_a": "Real Madrid officially completes signing of Kylian Mbappé on five-year contract",
+    "headline_b": "Kylian Mbappé suffers hamstring injury during La Liga match against Alaves",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Mbappé): Player transfer signing vs match injury event"
+  },
+  {
+    "headline_a": "Pfizer acquires oncology biotech Seagen in $43 billion acquisition deal",
+    "headline_b": "Pfizer halts development of twice-daily weight loss pill due to liver enzyme elevation",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Pfizer): Corporate acquisition vs clinical drug trial cancellation"
+  },
+  {
+    "headline_a": "Intel breaks ground on $20 billion semiconductor manufacturing site in Ohio",
+    "headline_b": "Intel announces 15,000 job cuts and dividend suspension following quarterly loss",
+    "expected": "DIFFERENT",
+    "notes": "Category 2 (Intel): Fab construction start vs corporate layoff announcement"
+  },
+  {
+    "headline_a": "Federal Reserve cuts benchmark interest rate by 50 basis points at September FOMC meeting",
+    "headline_b": "Bank of Japan raises policy interest rate to 0.25% in historic monetary shift",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (Central Banks): US Fed rate cut vs Bank of Japan rate hike"
+  },
+  {
+    "headline_a": "Google unveils Gemini 1.5 Pro with 1 million token context window capability",
+    "headline_b": "Anthropic releases Claude 3 Opus outperforming GPT-4 on industry benchmarks",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (AI Models): Google model release vs Anthropic model release"
+  },
+  {
+    "headline_a": "BYD surpasses Tesla as world's top seller of pure electric vehicles in Q4",
+    "headline_b": "Rivian launches R2 compact SUV priced at $45,000 with 300-mile range",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (EV Rivals): BYD sales milestone vs Rivian SUV launch"
+  },
+  {
+    "headline_a": "NASA's Europa Clipper spacecraft launches on Falcon Heavy towards Jupiter's icy moon",
+    "headline_b": "ESA's Hera mission launches to inspect Asteroid Dimorphos following DART impact",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (Space Agencies): NASA Jupiter mission vs European Space Agency asteroid mission"
+  },
+  {
+    "headline_a": "Manchester City wins fourth consecutive Premier League title on final day of season",
+    "headline_b": "Bayer Leverkusen completes undefeated Bundesliga season with victory over Augsburg",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (Football Leagues): English Premier League title vs German Bundesliga title"
+  },
+  {
+    "headline_a": "TSMC receives $6.6 billion in US CHIPS Act grants for Phoenix semiconductor fabs",
+    "headline_b": "AMD unveils Instinct MI300X AI accelerator chips to challenge Nvidia market dominance",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (Semiconductors): TSMC foundry government grant vs AMD AI chip launch"
+  },
+  {
+    "headline_a": "Moderna receives FDA approval for mRESVIA respiratory syncytial virus vaccine",
+    "headline_b": "Novavax enters $1.2 billion co-exclusive licensing agreement with Sanofi",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (Biotech): Moderna vaccine clearance vs Novavax commercial licensing deal"
+  },
+  {
+    "headline_a": "TikTok faces nationwide US ban as President signs bipartisan enforcement bill",
+    "headline_b": "Bluesky surpasses 20 million users following influx of new account signups",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (Social Platforms): TikTok federal ban bill vs Bluesky user milestone"
+  },
+  {
+    "headline_a": "Netflix adds 9.3 million subscribers in Q1 following password-sharing crackdown",
+    "headline_b": "Disney+ and Hulu merge into single unified app experience for bundle subscribers",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (Streaming Rivals): Netflix subscriber report vs Disney/Hulu platform merge"
+  },
+  {
+    "headline_a": "Germany approves €10 billion purchase of F-35 stealth fighter jets from US",
+    "headline_b": "France orders 42 additional Rafale fighter jets from Dassault Aviation",
+    "expected": "DIFFERENT",
+    "notes": "Category 3 (Defense Procurement): German F-35 jet purchase vs French Rafale jet order"
   }
 ]

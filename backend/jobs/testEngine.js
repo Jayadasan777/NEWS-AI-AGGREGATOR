@@ -1,3 +1,4 @@
+// NOTE: Phase 1 legacy test artifact retained for historical architecture reference.
 require('dotenv').config();
 const fs = require('fs');
 const axios = require('axios');

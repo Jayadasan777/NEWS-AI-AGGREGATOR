@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import API from '../api/axios';
 import SectorBadge from '../components/SectorBadge';
 import SignalMeter from '../components/SignalMeter';
+import StanceBreakdown from '../components/StanceBreakdown';
+import EventTimeline from '../components/EventTimeline';
 import { useHUD } from '../context/HUDContext';
 
 function getTakeaways(text = '') {
@@ -239,39 +241,21 @@ export default function EventDetail() {
         </div>
       </div>
 
-      {/* ── Source Dispatches ── */}
-      <div className="space-y-5 pt-4">
-        <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest font-bold" style={{ color: 'var(--color-paper)' }}>
-          <span>SOURCE DISPATCHES FUSED IN CLUSTER ({event.source_articles?.length || 0})</span>
-          <span className="h-px flex-1" style={{ background: 'linear-gradient(to right, rgba(255,255,255,0.15), transparent)' }} />
-        </div>
+      {/* ── Publisher Stance & Divergence Analysis ── */}
+      {event.source_articles?.length >= 2 && (
+        <StanceBreakdown
+          stanceAnalysis={event.stance_analysis}
+          divergenceScore={event.divergence_score ?? 0}
+          factualityVerified={event.factuality_verified ?? false}
+          reflectionLogs={event.reflection_logs ?? []}
+        />
+      )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {event.source_articles?.map((art, i) => (
-            <Link
-              key={art._id || i}
-              to={`/article/${art._id}`}
-              onClick={() => triggerGlitch(200)}
-              className="glass-card rounded-xl p-5 group flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3 font-mono text-[10px] uppercase tracking-widest font-bold" style={{ color: 'var(--color-muted)' }}>
-                  <span>WIRE SOURCE #{i + 1}</span>
-                  <SectorBadge sector={art.sector || event.sector} size="sm" />
-                </div>
-                <h4 className="font-display font-bold text-base group-hover:text-gradient transition-colors line-clamp-2 mb-2" style={{ color: 'var(--color-paper)' }}>
-                  {art.title}
-                </h4>
-              </div>
-              <div className="mt-4 pt-3 border-t border-white/10 font-mono text-[10px] uppercase tracking-widest flex justify-between items-center font-bold transition-colors"
-                   style={{ color: 'var(--color-paper-dim)' }}>
-                <span>VIEW RAW WIRE REPORT</span>
-                <span className="group-hover:translate-x-1 transition-transform inline-block text-white">→</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+      {/* ── Chronological Event Timeline ── */}
+      <EventTimeline
+        sourceArticles={event.source_articles || []}
+        sector={event.sector}
+      />
     </motion.div>
   );
 }

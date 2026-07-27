@@ -486,9 +486,9 @@ statistical claims if time permits.
   failed article was caught, logged, and skipped without halting the 
   pipeline — confirming the fault-isolation design holds under real, 
   unplanned resource exhaustion, not just simulated errors.
-- **Resolution:** reduced `ARTICLES_PER_SECTOR` to 1 and changed the 
-  production cron schedule to twice daily (`0 8,20 * * *`), bringing 
-  estimated daily API usage within the free-tier quota.
+- **Resolution:** reduced `ARTICLES_PER_SECTOR` to 1 and updated the 
+  production cron schedule to weekly on Monday at 08:00 UTC (`0 8 * * 1`), 
+  bringing estimated API usage well within rate limits.
 - **Also rotated MongoDB Atlas database credentials** as a security 
   precaution after repeated credential exposure during interactive 
   development/debugging sessions.

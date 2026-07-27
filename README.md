@@ -5,7 +5,7 @@
 [![Image Gen](https://img.shields.io/badge/Images-Pollinations.ai-purple?style=for-the-badge)](https://pollinations.ai)
 [![Frontend](https://img.shields.io/badge/UI-Three.js%20%2B%20R3F-green?style=for-the-badge&logo=react)](https://threejs.org)
 
-**NewsAI** is an enterprise-grade autonomous intelligence platform that ingests live news feeds from 14 global sectors, synthesizes transformative 150-word editorial summaries using Meta Llama 3 (via Groq LPUs), generates contextual square thumbnails via Pollinations.ai, clusters duplicate coverage into corroborated events with confidence scoring, and distributes dispatches to social media channels (Instagram, Twitter/X, Discord, Telegram) via automated webhooks.
+**NewsAI** is an enterprise-grade autonomous intelligence platform that ingests live news feeds from 14 global sectors, synthesizes transformative 150-word editorial summaries using Meta Llama 3 (via Groq LPUs), generates contextual square thumbnails via Pollinations.ai, clusters duplicate coverage into corroborated events with confidence scoring, and dispatches standardized JSON payloads to configurable webhooks (Make.com, Zapier, n8n, Discord, Telegram) for automated multi-channel social distribution.
 
 ---
 
@@ -27,7 +27,7 @@ graph TD
     end
 
     subgraph Intelligence["3. NISE Event Intelligence & Clustering Layer"]
-        Jaccard["Stage 1: Algorithmic Pre-Filter<br/>(Jaccard Unigram Similarity >= 15%)"]
+        Jaccard["Stage 1: Algorithmic Pre-Filter<br/>(Jaccard Unigram Similarity >= 12%)"]
         LLMMatch["Stage 2: Llama 3 Verification<br/>(SAME vs DIFFERENT Token Judgment)"]
         Fusion["Evidence Fusion & Scoring<br/>(35% / 65% / 90% Corroboration Confidence)"]
         ImgGen --> Jaccard
@@ -71,7 +71,7 @@ graph TD
 
 ### 📌 Phase 3: Enterprise Scale & NLP Pipeline Upgrades
 - **Llama 3 on Groq LPUs:** Migrated from proprietary Gemini endpoints to Meta's open-weight `llama-3.1-8b-instant` on Groq, unlocking near-instant inference speeds and bypassing restrictive daily quotas.
-- **Hybrid Two-Stage Clustering:** Solves $\mathcal{O}(N)$ scaling bottlenecks by running a local algorithmic **Jaccard similarity filter** ($J(A,B) = \frac{|A \cap B|}{|A \cup B|}$) before invoking AI. Llama 3 is only called if unigram similarity is $\ge 15\%$, cutting API overhead by $>80\%$.
+- **Hybrid Two-Stage Clustering:** Solves $\mathcal{O}(N)$ scaling bottlenecks by running a local algorithmic **Jaccard similarity filter** ($J(A,B) = \frac{|A \cap B|}{|A \cup B|}$) before invoking AI. Llama 3 is only called if unigram similarity is $\ge 12\%$, cutting API overhead by $>80\%$.
 - **Client-Side Image Delegation:** Bypasses server-side Cloudflare bot protection by storing prompt-encoded URLs in MongoDB and delegating image fetching directly to the end-user's web browser.
 
 ### 📌 Phase 4: The Distribution Layer & 3D Cosmic UI

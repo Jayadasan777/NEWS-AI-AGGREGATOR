@@ -314,7 +314,7 @@ export default function SocialStudio() {
                         )}
                         {isBroadcasted && art.broadcast_time && (
                           <div className="font-mono text-[9px] text-white font-bold uppercase mt-1">
-                            ✓ FB POSTED: {new Date(art.broadcast_time).toLocaleString()}
+                            ✓ DISPATCHED: {new Date(art.broadcast_time).toLocaleString()}
                           </div>
                         )}
                       </div>
@@ -481,26 +481,26 @@ export default function SocialStudio() {
               <button
                 onClick={() => handleBroadcast(selectedArticle._id)}
                 disabled={broadcastingId === selectedArticle._id}
-                className="w-full py-4 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-extrabold transition-all flex items-center justify-center gap-3 shadow-2xl border cursor-pointer"
+                className="w-full py-4 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-extrabold transition-all flex items-center justify-center gap-3 shadow-2xl border cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
                 style={{
-                  background: selectedArticle.broadcast_status === 'broadcasted' ? 'rgba(255,255,255,0.06)' : '#ffffff',
-                  borderColor: selectedArticle.broadcast_status === 'broadcasted' ? 'rgba(255,255,255,0.15)' : 'transparent',
-                  color: selectedArticle.broadcast_status === 'broadcasted' ? '#ffffff' : '#000000',
-                  boxShadow: selectedArticle.broadcast_status === 'broadcasted' ? 'none' : '0 8px 32px rgba(255,255,255,0.2)'
+                  background: '#ffffff',
+                  borderColor: '#ffffff',
+                  color: '#000000',
+                  boxShadow: '0 8px 32px rgba(255,255,255,0.25)'
                 }}
               >
                 {broadcastingId === selectedArticle._id ? (
                   <>
-                    <span className="w-3 h-3 rounded-full border border-black border-t-transparent animate-spin" />
-                    <span>DISPATCHING WEBHOOK...</span>
+                    <span className="w-3.5 h-3.5 rounded-full border-2 border-black border-t-transparent animate-spin" />
+                    <span>DISPATCHING WEBHOOK TO MAKE.COM...</span>
                   </>
                 ) : selectedArticle.broadcast_status === 'broadcasted' ? (
                   <>
-                    <span>✓ RE-BROADCAST TO FACEBOOK</span>
+                    <span>🔄 RE-BROADCAST TO FACEBOOK</span>
                   </>
                 ) : selectedArticle.broadcast_status === 'failed' ? (
                   <>
-                    <span>🔄 RETRY FACEBOOK BROADCAST NOW</span>
+                    <span>⚡ RETRY FACEBOOK BROADCAST NOW</span>
                   </>
                 ) : (
                   <>
@@ -511,17 +511,20 @@ export default function SocialStudio() {
 
               {broadcastMessage && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className={`p-4 rounded-xl font-mono text-xs text-center border ${
+                  className={`p-4 rounded-2xl font-mono text-xs text-center border shadow-xl ${
                     broadcastMessage.type === 'error'
-                      ? 'bg-white/10 text-white border-white/30'
+                      ? 'bg-red-500/20 text-white border-red-500/40 backdrop-blur-md'
                       : broadcastMessage.type === 'simulation'
-                      ? 'bg-white/10 text-white border-white/20'
-                      : 'bg-white/15 text-white font-bold border-white/40'
+                      ? 'bg-amber-500/20 text-white border-amber-500/40 backdrop-blur-md'
+                      : 'bg-emerald-500/20 text-white font-bold border-emerald-500/40 backdrop-blur-md'
                   }`}
                 >
-                  {broadcastMessage.text}
+                  <div className="flex items-center justify-center gap-2 mb-1 font-extrabold">
+                    {broadcastMessage.type === 'error' ? '❌ DISPATCH FAILED' : broadcastMessage.type === 'simulation' ? '📱 SIMULATION MODE' : '✅ LIVE DISPATCH SUCCESS'}
+                  </div>
+                  <div>{broadcastMessage.text}</div>
                 </motion.div>
               )}
             </div>

@@ -22,7 +22,7 @@ export default function About() {
     {
       num: '03',
       title: 'Llama 3 Neural Rewrite',
-      desc: 'Each raw dispatch is autonomously processed by Llama 3.1 70B to generate concise, objective, 100% original editorial summaries.',
+      desc: 'Each raw dispatch is autonomously processed by Llama 3.1 8B (llama-3.1-8b-instant) to generate concise, objective, 100% original editorial summaries.',
       tag: 'AUTONOMOUS JOURNALISM',
     },
     {
@@ -111,8 +111,8 @@ export default function About() {
           {/* Spec table */}
           <div className="md:col-span-5 flex flex-col gap-0 border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-8 font-mono text-xs tracking-widest uppercase">
             {[
-              { label: 'LLM INFERENCING',  value: 'LLAMA 3.1 70B & 8B',  highlight: false },
-              { label: 'CLUSTERING ALGO',  value: 'JACCARD IoU (0.35)',  highlight: false },
+              { label: 'LLM INFERENCING',  value: 'LLAMA 3.1 8B (INSTANT)',  highlight: false },
+              { label: 'CLUSTERING ALGO',  value: 'JACCARD IoU (0.12)',  highlight: false },
               { label: 'DATABASE ENGINE',  value: 'MONGODB CLUSTER',     highlight: false },
               { label: 'SCHEDULE',         value: 'WEEKLY / CRON', highlight: false },
               { label: 'SOCIAL BROADCAST', value: 'MAKE.COM / ZAPIER',   highlight: true },

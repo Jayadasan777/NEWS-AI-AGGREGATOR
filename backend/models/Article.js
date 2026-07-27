@@ -8,6 +8,7 @@ const articleSchema = new mongoose.Schema({
     required: true,
   },
   image_url: { type: String, required: true },
+  url: { type: String, default: '' },
   timestamp: { type: Date, default: Date.now },
   social_caption: { type: String, default: '' },
   social_hashtags: [{ type: String }],

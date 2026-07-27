@@ -65,7 +65,7 @@ const runEvaluation = async () => {
     console.table(finalResults.metrics);
     console.table(finalResults.confusion_matrix);
 
-    const outputPath = path.join(__dirname, 'evaluation-results.json');
+    const outputPath = path.join(__dirname, 'evaluation-results-n45.json');
     fs.writeFileSync(outputPath, JSON.stringify(finalResults, null, 2));
     console.log(`\n✅ Results successfully exported to: ${outputPath}`);
 };

@@ -1,2 +1,5 @@
 node_modules
 .env
+error-log.txt
+clustering-output.txt
+test-output-image.png
