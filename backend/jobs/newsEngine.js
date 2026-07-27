@@ -244,3 +244,6 @@ const runNewsEngine = async () => {
 };
 
 module.exports = runNewsEngine;
+module.exports.synthesizeWithGroq = synthesizeWithGroq;
+module.exports.extractRssImage = extractRssImage;
+module.exports.generateAndHostImage = generateAndHostImage;

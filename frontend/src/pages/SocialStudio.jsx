@@ -289,8 +289,9 @@ export default function SocialStudio() {
                   >
                     <div className="flex items-start gap-4 flex-1 min-w-0">
                       <img
-                        src={art.image_url}
+                        src={art.image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80'}
                         alt={art.title}
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80'; }}
                         className="w-16 h-16 rounded-xl object-cover shrink-0 border border-white/10 bg-black/50"
                       />
                       <div className="space-y-1.5 flex-1 min-w-0">
@@ -400,12 +401,13 @@ export default function SocialStudio() {
                   {/* IG Media Display (Square Aspect Ratio) */}
                   <div className="relative aspect-square w-full bg-black/60 overflow-hidden border-y border-white/10">
                     <img
-                      src={selectedArticle.image_url}
+                      src={selectedArticle.image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80'}
                       alt={selectedArticle.title}
+                      onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80'; }}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md px-2 py-1 rounded font-mono text-[8px] text-white/90 uppercase tracking-wider border border-white/15">
-                      NEWSAI AI ART
+                      NEWSAI PRESS PHOTO
                     </div>
                   </div>
 

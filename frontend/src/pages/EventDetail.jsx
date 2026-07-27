@@ -179,7 +179,12 @@ export default function EventDetail() {
       {/* ── Cinematic Image ── */}
       <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-black/40 shadow-2xl" style={{ aspectRatio: '16/9' }}>
         {event.image_url && (
-          <img src={event.image_url} alt={event.event_title} className="w-full h-full object-cover opacity-80" />
+          <img
+            src={event.image_url}
+            alt={event.event_title}
+            onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80'; }}
+            className="w-full h-full object-cover opacity-80"
+          />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="absolute bottom-5 left-5 right-5 flex justify-between items-end">

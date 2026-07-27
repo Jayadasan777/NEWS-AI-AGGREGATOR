@@ -173,7 +173,12 @@ export default function ArticleDetail() {
       {/* ── Cinematic High-Resolution Image ── */}
       <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-black/40 shadow-2xl" style={{ aspectRatio: '16/9' }}>
         {article.image_url && (
-          <img src={article.image_url} alt={article.title} className="w-full h-full object-cover opacity-85" />
+          <img
+            src={article.image_url}
+            alt={article.title}
+            onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80'; }}
+            className="w-full h-full object-cover opacity-85"
+          />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent" />
         <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end font-mono text-[10px] uppercase tracking-widest font-semibold"
