@@ -68,6 +68,11 @@ router.post('/trigger-scrape', async (req, res) => {
 router.post('/broadcast/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    const mongoose = require('mongoose');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid article ID format.' });
+    }
+
     const result = await broadcastArticle(id, { force: true });
     
     if (result.success) {
@@ -77,7 +82,7 @@ router.post('/broadcast/:id', async (req, res) => {
     }
   } catch (error) {
     console.error('❌ Social Broadcast Endpoint Error:', error.message);
-    res.status(500).json({ success: false, message: 'Server error during social broadcast.' });
+    res.status(500).json({ success: false, message: error.message || 'Server error during social broadcast.' });
   }
 });
 

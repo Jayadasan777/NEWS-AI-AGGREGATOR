@@ -52,38 +52,47 @@ const broadcastArticle = async (articleOrId, options = {}) => {
     const hashtagsArray = article.social_hashtags || [`#${article.sector}`, '#NewsAI', '#BreakingNews'];
     const safeImageUrl = article.image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80';
 
-    // Prepare standardized dual-structure social media payload (flat + nested)
+    // Prepare standardized dual-structure social media payload (flat + nested for Facebook & Instagram)
+    const articleIdStr = article._id ? article._id.toString() : '';
     const payload = {
       event: 'NEW_ARTICLE_BROADCAST',
       timestamp: new Date().toISOString(),
-      id: article._id,
+      id: articleIdStr,
       title: article.title,
       summary: article.unique_summary,
       sector: article.sector,
       image_url: safeImageUrl,
       photo_url: safeImageUrl,
+      picture: safeImageUrl,
       photos: [{ url: safeImageUrl }],
       url: article.url || '',
       link: article.url || '',
       caption: captionText,
       message: formattedPost,
+      facebook_message: formattedPost,
+      facebook_caption: captionText,
       social_caption: captionText,
       social_hashtags: hashtagsArray,
+      social_hashtags_text: hashtagsArray.join(' '),
       formatted_post: formattedPost,
       article: {
-        id: article._id,
+        id: articleIdStr,
         title: article.title,
         summary: article.unique_summary,
         sector: article.sector,
         image_url: safeImageUrl,
         photo_url: safeImageUrl,
+        picture: safeImageUrl,
         photos: [{ url: safeImageUrl }],
         url: article.url || '',
         link: article.url || '',
         caption: captionText,
         message: formattedPost,
+        facebook_message: formattedPost,
+        facebook_caption: captionText,
         social_caption: captionText,
         social_hashtags: hashtagsArray,
+        social_hashtags_text: hashtagsArray.join(' '),
         formatted_post: formattedPost
       }
     };

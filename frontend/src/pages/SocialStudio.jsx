@@ -34,9 +34,12 @@ export default function SocialStudio() {
       setWebhookConfigured(Boolean(res.data.webhookConfigured));
       setCronSchedule(res.data.cronSchedule || 'Weekly (Every Monday)');
       setLastIngestionTime(res.data.lastIngestionTime || null);
-      if (data.length > 0 && !selectedArticle) {
-        setSelectedArticle(data[0]);
-      }
+      
+      setSelectedArticle((prev) => {
+        if (!prev) return data.length > 0 ? data[0] : null;
+        const exists = data.find((a) => a._id === prev._id);
+        return exists ? exists : (data.length > 0 ? data[0] : null);
+      });
     } catch (err) {
       setError('Failed to load social broadcast queue from server.');
     } finally {
@@ -77,30 +80,42 @@ export default function SocialStudio() {
     }
   };
 
-  const handleBroadcast = async (articleId) => {
-    if (!articleId) return;
+  const handleBroadcast = async (e, articleId) => {
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
+    const targetId = articleId || selectedArticle?._id;
+    if (!targetId) return;
+    
     triggerGlitch(300);
-    setBroadcastingId(articleId);
+    setBroadcastingId(targetId);
     setBroadcastMessage(null);
     try {
-      const res = await API.post(`/social/broadcast/${articleId}`);
+      const res = await API.post(`/social/broadcast/${targetId}`);
       if (res.data && res.data.success) {
         setBroadcastMessage({
           type: res.data.simulation ? 'simulation' : 'success',
           text: res.data.message
         });
         setArticles((prev) =>
-          prev.map((a) => (a._id === articleId ? { ...a, broadcast_status: 'broadcasted' } : a))
+          prev.map((a) => (a._id === targetId ? { ...a, broadcast_status: 'broadcasted', broadcast_error: '', broadcast_time: new Date() } : a))
         );
-        if (selectedArticle && selectedArticle._id === articleId) {
-          setSelectedArticle({ ...selectedArticle, broadcast_status: 'broadcasted' });
-        }
+        setSelectedArticle((prev) =>
+          prev && prev._id === targetId ? { ...prev, broadcast_status: 'broadcasted', broadcast_error: '', broadcast_time: new Date() } : prev
+        );
       }
     } catch (err) {
+      const errorMsg = err.response?.data?.message || err.message || 'Failed to dispatch broadcast.';
       setBroadcastMessage({
         type: 'error',
-        text: err.response?.data?.message || 'Failed to dispatch broadcast.'
+        text: errorMsg
       });
+      setArticles((prev) =>
+        prev.map((a) => (a._id === targetId ? { ...a, broadcast_status: 'failed', broadcast_error: errorMsg } : a))
+      );
+      setSelectedArticle((prev) =>
+        prev && prev._id === targetId ? { ...prev, broadcast_status: 'failed', broadcast_error: errorMsg } : prev
+      );
     } finally {
       setBroadcastingId(null);
     }
@@ -321,20 +336,55 @@ export default function SocialStudio() {
                     </div>
 
                     <div className="flex sm:flex-col items-end justify-between w-full sm:w-auto gap-3 shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-white/10">
-                      <span
-                        className="px-2.5 py-1 rounded font-mono text-[9px] font-bold tracking-widest uppercase"
-                        style={{
-                          background: isBroadcasted ? 'rgba(255,255,255,0.12)' : isFailed ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)',
-                          border: `1px solid ${isBroadcasted ? 'rgba(255,255,255,0.3)' : isFailed ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)'}`,
-                          color: isBroadcasted ? 'var(--color-paper)' : isFailed ? 'var(--color-paper)' : 'var(--color-paper-dim)'
-                        }}
-                      >
-                        {isBroadcasted ? '✓ BROADCASTED' : isFailed ? '✕ FAILED' : '⏳ PENDING'}
-                      </span>
-                      <span className="font-mono text-xs font-bold flex items-center gap-1 group text-gradient">
-                        <span>PREVIEW</span>
-                        <span className="group-hover:translate-x-1 transition-transform">→</span>
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="px-2.5 py-1 rounded font-mono text-[9px] font-bold tracking-widest uppercase"
+                          style={{
+                            background: isBroadcasted ? 'rgba(255,255,255,0.12)' : isFailed ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)',
+                            border: `1px solid ${isBroadcasted ? 'rgba(255,255,255,0.3)' : isFailed ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)'}`,
+                            color: isBroadcasted ? 'var(--color-paper)' : isFailed ? 'var(--color-paper)' : 'var(--color-paper-dim)'
+                          }}
+                        >
+                          {isBroadcasted ? '✓ BROADCASTED' : isFailed ? '✕ FAILED' : '⏳ PENDING'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => handleBroadcast(e, art._id)}
+                          disabled={broadcastingId === art._id}
+                          className="px-3 py-1.5 rounded-lg font-mono text-[10px] uppercase font-extrabold tracking-wider transition-all flex items-center gap-1.5 cursor-pointer border shadow-md shrink-0 hover:scale-105 active:scale-95"
+                          style={{
+                            background: isBroadcasted ? 'rgba(255,255,255,0.1)' : '#ffffff',
+                            borderColor: '#ffffff',
+                            color: isBroadcasted ? '#ffffff' : '#000000'
+                          }}
+                        >
+                          {broadcastingId === art._id ? (
+                            <>
+                              <span className="w-2.5 h-2.5 rounded-full border-2 border-current border-t-transparent animate-spin" />
+                              <span>POSTING...</span>
+                            </>
+                          ) : isBroadcasted ? (
+                            <>
+                              <span>🔄 RE-POST</span>
+                            </>
+                          ) : isFailed ? (
+                            <>
+                              <span>⚡ RETRY</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>🚀 POST TO FB</span>
+                            </>
+                          )}
+                        </button>
+
+                        <span className="font-mono text-xs font-bold flex items-center gap-1 group text-gradient hidden sm:flex">
+                          <span>PREVIEW</span>
+                          <span className="group-hover:translate-x-1 transition-transform">→</span>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -479,7 +529,7 @@ export default function SocialStudio() {
               )}
 
               <button
-                onClick={() => handleBroadcast(selectedArticle._id)}
+                onClick={(e) => handleBroadcast(e, selectedArticle._id)}
                 disabled={broadcastingId === selectedArticle._id}
                 className="w-full py-4 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-extrabold transition-all flex items-center justify-center gap-3 shadow-2xl border cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
                 style={{
