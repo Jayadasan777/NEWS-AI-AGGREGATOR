@@ -757,4 +757,55 @@ final number.
 ### PHASE 3 STATUS: Core NLP pipeline verified and tuned
 Final validated evaluation results (Llama 3.1-8b-instant, n=11, mixed 
 synthetic + real-world headline pairs): 90.91% accuracy, 83.33% 
-precision, 100.00% recall, 90.91% F1 score. Recall
+precision, 100.00% recall, 90.91% F1 score. Recall regression fully 
+resolved through iterative prompt rebalancing without sacrificing precision.
+
+
+## PHASE 4: The Autonomous Distribution Layer & Enterprise UI Expansion
+
+### Motivation for Phase 4
+While Phases 1 through 3 established an enterprise-grade AI news aggregation, deduplication, and clustering engine, the system remained fundamentally passive—requiring users to actively visit the application to consume intelligence dispatches. Furthermore, standard 2D editorial web layouts fail to convey the dynamic, real-time nature of autonomous AI synthesis. Phase 4 transforms NewsAI from a passive destination into a **proactive distribution layer** with multi-channel social broadcasting, while elevating the frontend into an immersive 3D cosmic command center.
+
+### Step 4a: Massive Ingestion Expansion — 14 Multi-Source Feed Registry — COMPLETED
+- **Architectural Scaling:** Expanded the ingestion engine (`jobs/newsEngine.js`) from 4 baseline categories to a **14 Multi-Source Feed Registry** across 21 top-tier RSS and live query streams:
+  - **Core Sectors:** Tech (TechCrunch, The Verge), Finance (BBC Business, CNBC), Geopolitics (BBC World, Al Jazeera), Sports (BBC Sport, ESPN).
+  - **Specialized Intelligence Sectors:** AI (Google News Live Search), Startups (Funding streams), Crypto (Cointelegraph), Health, Science, Entertainment, Environment, Automotive (EVs/Automotive), Defense (Global Military intel), Space (NASA/SpaceX exploration).
+- **Throttling & API Protection:** Configured `ARTICLES_PER_FEED = 3` with batched execution (groups of 5 articles) and mandatory 15-second delay guards between batches to strictly comply with Groq's 30 Requests Per Minute (RPM) LPU ceilings.
+- **Contextual Image Routing:** Refined `generateAndHostImage()` to produce 800x800 square images optimized for Instagram/social media aspect ratios, dynamically routing prompt styles based on sector (e.g., *“cinematic Bloomberg style, dark moody lighting, luxury editorial design”* for Finance/Geopolitics/Crypto/Defense vs. *“clean modern cinematic lighting”* for Tech/AI/Space).
+
+### Step 4b: Multi-Modal AI Synthesis & Social Metadata Generation — COMPLETED
+- **Groq Llama 3 Social Engine:** Upgraded `synthesizeWithGroq()` to output a structured JSON response containing three distinct editorial assets per headline:
+  1. `summary`: A 150-word neutral, informative editorial synthesis.
+  2. `social_caption`: An engaging Instagram/Twitter caption starting with a catchy emoji hook (e.g., `🚨 BREAKING:` or `🤖 AI UPDATE:`), followed by a 2–3 bullet point breakdown, and concluding with a clear call to action.
+  3. `social_hashtags`: An array of 10–14 viral, curated hashtags (e.g., `["#NewsAI", "#TechNews", "#AI", "#Geopolitics"]`).
+- **Database Schema Upgrades:** Expanded MongoDB `Article` schema (`models/Article.js`) to persist `social_caption`, `social_hashtags`, `broadcast_status` (`pending`, `broadcasted`, `failed`, `skipped`), `broadcast_time`, and `broadcast_error`.
+
+### Step 4c: Autonomous Social Webhook Broadcasting (`socialBroadcast.js`) — COMPLETED
+- **Webhook Dispatcher:** Developed `utils/socialBroadcast.js` to dispatch standardized JSON payloads (`event: 'NEW_ARTICLE_BROADCAST'`) to external automation platforms (Make.com, Zapier, n8n, Discord, Telegram) via `SOCIAL_WEBHOOK_URL`.
+- **Intelligent Social Simulation Mode:** If `SOCIAL_WEBHOOK_URL` is omitted from environment variables, the engine gracefully falls back to a **Social Simulation Mode**. It logs the formatted Instagram/Twitter caption and hashtag preview directly to the server terminal and marks the MongoDB document as `broadcasted`, ensuring local development and CI/CD pipelines run seamlessly without external webhook dependencies.
+- **Autonomous vs. Manual Control:** Integrated a global in-memory toggle (`global.AUTO_BROADCAST_ENABLED`, initialized from `.env` `AUTO_BROADCAST`) allowing the system to either autonomously broadcast dispatches immediately upon clustering (Layer 3 in `newsEngine.js`), or queue them for editorial review.
+
+### Step 4d: Interactive Social Studio Command Center (`/studio`) — COMPLETED
+- **Full-Stack Social Suite:** Built a dedicated REST API router (`routes/socialRoutes.js`) and an interactive React command center (`pages/SocialStudio.jsx` mounted at `/studio`).
+- **API Endpoints:**
+  - `GET /api/social/queue`: Retrieves articles with status filtering (`all`, `pending`, `broadcasted`), limit parameters, and system automation metadata (autoBroadcast toggle state, webhook configuration, cron schedule, last ingestion timestamp).
+  - `POST /api/social/trigger-scrape`: Manual override allowing editors to trigger an immediate 14-feed AI news scrape asynchronously without waiting for scheduled cron cycles.
+  - `POST /api/social/broadcast/:id`: Manually fires webhook dispatch for a specific queued article.
+  - `POST /api/social/toggle-auto`: Toggles autonomous social broadcasting mode on/off in real-time.
+  - `GET /api/social/test`: Instantly tests webhook integration by broadcasting the latest saved article in MongoDB.
+- **Frontend Dashboard UX:** Features real-time queue monitoring, status tab switching, and an interactive mockup previewing Instagram and Twitter card layouts with functional like toggles, expandable captions, and one-click manual broadcasting.
+
+### Step 4e: Immersive 3D Cosmic Glassmorphism & Visual Architecture — COMPLETED
+- **Three.js & React Three Fiber Integration:** Transformed the frontend visual identity using `@react-three/fiber`, `@react-three/drei`, and `@react-three/postprocessing`.
+- **Interactive 3D Scenes (`ShowcaseScene.jsx`, `SceneEngine.jsx`, `Hero3D/`):** Engineered full-viewport 3D heroes featuring floating glass monolith panels with 3D typography, iridescent double rings, TorusKnots with glitch bursts, reflective ground planes (`MeshReflectorMaterial`), rising particle systems (`Sparkles`), and mouse parallax camera tracking.
+- **Post-Processing Pipeline:** Implemented advanced visual effects including `Bloom`, `Glitch` (with controlled glitch modes and bursts), `ChromaticAberration`, and `Noise` to give the interface a live, cyberpunk-terminal aesthetic.
+- **Cosmic Design System:** Created `CosmicBackground` (animated gradient glow blobs and noise overlays), `CustomCursor.jsx` (smooth Framer Motion custom mouse tracking), `BentoCard.jsx` (modern bento-grid modular layouts), `OrbitSignal.jsx` / `SignalMeter.jsx` (animated signal strength and telemetry indicators), and `AutomationStatus.jsx` / `LatestFeed.jsx` (real-time ingestion monitoring widgets).
+- **Centralized UI State (`HUDContext.jsx`):** Implemented a global HUD context managing active sector switching, mobile navigation drawers, and system-wide glitch visual feedback (`triggerGlitch`).
+
+### Step 4f: Production Reliability & Cloud Monitoring (`server.js`) — COMPLETED
+- **Keep-Alive Health Endpoint (`GET /ping`):** Implemented a lightweight ping route designed for automated uptime monitors (e.g., `cron-job.org`, UptimeRobot) to prevent server hibernation on free-tier cloud hosting providers (Render, Railway, Heroku).
+- **Manual Ingestion Trigger Route (`GET /api/trigger`):** Added an asynchronous HTTP trigger endpoint that initiates `runNewsEngine()` in the background while returning an immediate 200 OK JSON response, eliminating HTTP browser timeouts during intensive 14-feed scrapes.
+- **Optimized Cron Scheduling:** Tuned the background automation schedule to run every 6 hours (`0 */6 * * *`, 4 times daily), striking an optimal balance between intelligence freshness, Groq LPU rate ceilings, and Pollinations image generation bandwidth.
+
+### PHASE 4 STATUS: Fully implemented and operational
+The application has successfully evolved into a full-stack, autonomous AI news distribution platform. With 14-sector multi-source RSS ingestion, Llama 3 multi-modal synthesis (summary + Instagram/Twitter captions + viral hashtags), webhook distribution to Make.com/Discord/Telegram, an interactive Social Studio dashboard, and an immersive Three.js 3D Cosmic Glassmorphism UI, NewsAI represents a comprehensive, enterprise-grade agentic content pipeline.

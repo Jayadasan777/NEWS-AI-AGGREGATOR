@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import SignalMeter from './SignalMeter';
 import SectorBadge from './SectorBadge';
-import { useHUD } from '../context/HUDContext';
 
 const FALLBACKS = {
   Tech: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
@@ -26,7 +25,6 @@ function getTakeaways(summary = '') {
 }
 
 export default function EventCard({ event }) {
-  const { triggerGlitch } = useHUD();
   const [imgError, setImgError] = useState(false);
   const [showTakeaways, setShowTakeaways] = useState(false);
 
@@ -38,47 +36,49 @@ export default function EventCard({ event }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="group relative rounded-3xl overflow-hidden flex flex-col h-full glass-panel-interactive border border-white/10"
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.4 }}
+      className="group glass-card flex flex-col h-full overflow-hidden transition-all duration-300 hover:border-white/35 hover:-translate-y-1"
     >
-      <Link to={`/event/${event._id}`} onClick={() => triggerGlitch(200)} className="flex flex-col h-full">
+      <Link to={`/event/${event._id}`} className="flex flex-col h-full">
         {/* Image Header */}
-        <div className="relative h-48 w-full overflow-hidden flex-shrink-0 border-b border-white/10 bg-[#080B11]">
+        <div className="relative h-44 w-full overflow-hidden flex-shrink-0 rounded-t-[20px]">
           <img
             src={imgSrc}
             alt={event.event_title}
             onError={() => setImgError(true)}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-75 group-hover:opacity-95"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-65 group-hover:opacity-80"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0D121C] via-[#0D121C]/30 to-transparent" />
+          <div className="absolute inset-0"
+               style={{ background: 'linear-gradient(to top, rgba(3,7,17,0.95) 0%, rgba(3,7,17,0.5) 50%, transparent 100%)' }} />
 
-          <div className="absolute top-3.5 right-3.5 bg-[#080B11]/80 backdrop-blur-md rounded-xl px-3 py-1 border border-white/10 shadow-lg">
+          <div className="absolute top-3 right-3 z-10 px-2 py-1 rounded-xl font-mono text-xs"
+               style={{ background: 'rgba(3,7,17,0.7)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)' }}>
             <SignalMeter score={event.confidence_score} size="sm" />
           </div>
 
-          <div className="absolute top-3.5 left-3.5">
+          <div className="absolute top-3 left-3 z-10">
             <SectorBadge sector={event.sector} size="sm" />
           </div>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 flex flex-col flex-grow justify-between relative z-10">
+        <div className="p-5 flex flex-col flex-grow justify-between relative z-10">
           <div>
-            <div className="flex items-center justify-between mb-2.5 font-mono text-[10px] uppercase tracking-[0.2em]">
-              <span className="text-[#A0A0A0] font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
-                <span>SYNTHESIZED CLUSTER</span>
+            <div className="flex items-center justify-between mb-2.5 font-mono text-[10px] uppercase tracking-widest">
+              <span className="text-white font-bold flex items-center gap-1.5">
+                <span className="live-dot" style={{ width: 5, height: 5 }} />
+                <span>AI Cluster</span>
               </span>
-              <span className="px-2 py-0.5 rounded border border-[#2A2A2A] text-[#A0A0A0] font-semibold text-[9px]">
+              <span className="badge badge-ai">
                 {srcCount} SRC{srcCount > 1 ? 'S' : ''}
               </span>
             </div>
 
-            {/* Editorial Serif Headline */}
-            <h3 className="font-display font-bold text-[#F5F5F5] text-base md:text-lg leading-snug group-hover:text-white transition-colors duration-300 line-clamp-2 mb-3">
+            <h3 className="font-bold text-base leading-snug group-hover:text-gradient transition-all duration-300 line-clamp-2 mb-3"
+                style={{ color: 'var(--color-paper)' }}>
               {event.event_title}
             </h3>
 
@@ -91,14 +91,16 @@ export default function EventCard({ event }) {
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
-                    className="space-y-1.5 bg-[#0A0A0A] p-3.5 rounded-xl border border-[#2A2A2A]"
+                    className="space-y-2 p-3.5 rounded-xl border-l-2 border-white bg-white/5"
+                    style={{ borderTop: '1px solid rgba(255,255,255,0.15)', borderRight: '1px solid rgba(255,255,255,0.15)', borderBottom: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)' }}
                   >
-                    <div className="font-mono text-[9px] text-[#606060] uppercase tracking-widest font-bold mb-1">
-                      KEY TAKEAWAYS:
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-white font-bold flex items-center gap-1.5 mb-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                      <span>Llama 3 Neural Takeaways</span>
                     </div>
                     {takeaways.map((point, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-[#C8C8C8] font-sans">
-                        <span className="text-[#A0A0A0] font-bold">▸</span>
+                      <div key={i} className="flex items-start gap-2 text-xs leading-relaxed text-[var(--color-paper)]">
+                        <span className="mt-0.5 shrink-0 font-bold text-white">▸</span>
                         <span className="line-clamp-2">{point}</span>
                       </div>
                     ))}
@@ -109,7 +111,8 @@ export default function EventCard({ event }) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="text-paper-dim/90 text-xs line-clamp-3 leading-relaxed font-sans font-light"
+                    className="text-xs leading-relaxed line-clamp-3"
+                    style={{ color: 'var(--color-paper-dim)' }}
                   >
                     {event.fused_summary}
                   </motion.p>
@@ -118,17 +121,18 @@ export default function EventCard({ event }) {
             </div>
           </div>
 
-          {/* Updated Timestamp */}
+          {/* Timestamp */}
           {timestampStr && (
-            <div className="font-mono text-[10px] text-[#A0A0A0] mb-3 flex items-center gap-1.5 font-medium tracking-wide">
+            <div className="font-mono text-[10px] mb-3 flex items-center gap-1.5 font-medium tracking-wide"
+                 style={{ color: 'var(--color-muted)' }}>
               <span>📅</span>
               <span>{formatFullDateTime(timestampStr)}</span>
             </div>
           )}
 
-
           {/* Footer */}
-          <div className="pt-4 border-t border-white/10 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em]">
+          <div className="pt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest"
+               style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
             <button
               type="button"
               onClick={(e) => {
@@ -136,12 +140,18 @@ export default function EventCard({ event }) {
                 e.stopPropagation();
                 setShowTakeaways(!showTakeaways);
               }}
-              className="px-2.5 py-1 rounded-lg border border-[#2A2A2A] hover:border-[#3A3A3A] text-[#A0A0A0] hover:text-[#F5F5F5] transition-colors flex items-center gap-1.5 font-bold text-[9px]"
+              className="px-2.5 py-1 rounded-lg transition-all font-bold"
+              style={{
+                background: showTakeaways ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)',
+                border: `1px solid ${showTakeaways ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.09)'}`,
+                color: showTakeaways ? 'var(--color-paper)' : 'var(--color-paper-dim)',
+                backdropFilter: 'blur(8px)',
+              }}
             >
-              <span>{showTakeaways ? '✕ SUMMARY' : '≡ TAKEAWAYS'}</span>
+              <span>{showTakeaways ? 'Summary' : 'AI Brief'}</span>
             </button>
-            <span className="text-[#A0A0A0] group-hover:text-[#F5F5F5] transition-colors font-extrabold flex items-center gap-1">
-              OPEN REPORT <span className="group-hover:translate-x-1 transition-transform inline-block">→</span>
+            <span className="text-xs font-bold font-mono flex items-center gap-1 group-hover:gap-2 transition-all text-gradient">
+              Report →
             </span>
           </div>
         </div>

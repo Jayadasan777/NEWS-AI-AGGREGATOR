@@ -1,49 +1,26 @@
-import React, { createContext, useContext, useState, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { SECTORS, getSector } from '../data/sectors';
 
 const HUDContext = createContext(null);
 
 export function HUDProvider({ children }) {
-  const [activeSector, setActiveSectorState] = useState(SECTORS[0]); // Default to AI
-  const [hoverSector, setHoverSectorState] = useState(null);
-  const [glitching, setGlitching] = useState(false);
+  const [activeSector, setActiveSectorState] = useState(SECTORS[0]);
   const [menuOpen, setMenuOpen] = useState(false);
-  const glitchTimeoutRef = useRef(null);
-
-  const triggerGlitch = useCallback((duration = 350) => {
-    if (glitchTimeoutRef.current) clearTimeout(glitchTimeoutRef.current);
-    setGlitching(true);
-    glitchTimeoutRef.current = setTimeout(() => {
-      setGlitching(false);
-    }, duration);
-  }, []);
 
   const setActiveSector = useCallback((sectorName) => {
     const next = getSector(sectorName);
     if (next.name !== activeSector.name) {
-      triggerGlitch(400);
       setActiveSectorState(next);
     }
-  }, [activeSector.name, triggerGlitch]);
+  }, [activeSector.name]);
 
-  const setHoverSector = useCallback((sectorName) => {
-    if (!sectorName) {
-      setHoverSectorState(null);
-      return;
-    }
-    const next = getSector(sectorName);
-    if (!hoverSector || next.name !== hoverSector.name) {
-      setHoverSectorState(next);
-    }
-  }, [hoverSector]);
+  // Kept as no-op for backward compat with any remaining call sites
+  const triggerGlitch = useCallback(() => {}, []);
 
   const value = {
     activeSector,
     setActiveSector,
-    hoverSector,
-    setHoverSector,
-    displaySector: hoverSector || activeSector,
-    glitching,
+    glitching: false,
     triggerGlitch,
     menuOpen,
     setMenuOpen,

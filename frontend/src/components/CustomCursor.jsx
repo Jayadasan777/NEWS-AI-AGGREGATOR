@@ -14,6 +14,7 @@ export default function CustomCursor() {
   const [visible, setVisible] = useState(false);
   const [clicking, setClicking] = useState(false);
   const [hovering, setHovering] = useState(false);
+  const hoveringRef = useRef(false);
 
   useEffect(() => {
     // Hide native cursor via CSS
@@ -31,7 +32,11 @@ export default function CustomCursor() {
     // Track interactive elements for hover state
     const onOver = (e) => {
       const el = e.target.closest('a, button, [role="button"], input, select, textarea, [data-cursor-hover]');
-      setHovering(!!el);
+      const isHovered = !!el;
+      if (isHovered !== hoveringRef.current) {
+        hoveringRef.current = isHovered;
+        setHovering(isHovered);
+      }
     };
 
     document.addEventListener('mousemove',   onMove,  { passive: true });

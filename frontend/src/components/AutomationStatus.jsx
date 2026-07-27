@@ -27,44 +27,50 @@ export default function AutomationStatus() {
     ? (Date.now() - new Date(stats.lastRun).getTime()) / 3600000
     : 999;
 
-  // Healthy = ran within last 13 hours (covers either the 8 AM or 8 PM slot)
   const healthy = hoursAgo < 13;
 
   return (
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2.5 rounded-xl border border-[#2A2A2A] bg-[#111111] font-mono text-[10px] uppercase tracking-[0.2em] mb-6">
+    <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-3.5 rounded-2xl font-mono text-xs mb-8 transition-all duration-300 group"
+         style={{
+           background: 'linear-gradient(90deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%)',
+           border: '1px solid rgba(255,255,255,0.18)',
+           backdropFilter: 'blur(20px)',
+           boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.05)'
+         }}>
       {/* Engine status */}
-      <span className="flex items-center gap-2">
-        <span
-          className={`w-2 h-2 rounded-full flex-shrink-0 ${
-            healthy
-              ? 'bg-[#22C55E] shadow-[0_0_6px_#22C55E] animate-pulse'
-              : 'bg-[#DC2626] shadow-[0_0_6px_#DC2626] animate-pulse'
-          }`}
-        />
-        <span className={healthy ? 'text-[#22C55E] font-bold' : 'text-[#DC2626] font-bold'}>
-          {healthy ? 'AUTOMATION HEALTHY' : 'INGESTION DELAYED'}
+      <div className="flex items-center gap-3">
+        <div className="relative flex items-center justify-center w-3 h-3">
+          <span className="absolute inline-flex w-full h-full rounded-full bg-white opacity-40 animate-ping" />
+          <span className="relative inline-flex w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff]" />
+        </div>
+        <span className="font-extrabold tracking-wider uppercase text-white flex items-center gap-2">
+          <span>{healthy ? 'SYSTEM ONLINE' : 'INGESTION DELAYED'}</span>
+          <span className="text-[10px] px-2 py-0.5 rounded border border-white/20 bg-white/10 text-white font-mono">v3.0 ENGINE</span>
         </span>
-      </span>
+      </div>
 
-      <span className="text-[#404040]">|</span>
+      <div className="flex items-center gap-4 flex-wrap text-[11px] text-[var(--color-paper-dim)]">
+        {/* Last run */}
+        <span className="flex items-center gap-1.5">
+          <span className="text-white opacity-30">│</span>
+          <span>LAST SYNC:</span>
+          <span className="text-white font-bold">{lastRunAgo || 'JUST NOW'}</span>
+        </span>
 
-      {/* Last run */}
-      <span className="text-[#A0A0A0]">
-        Last ingestion:{' '}
-        <span className="text-[#F5F5F5] font-bold">{lastRunAgo || '—'}</span>
-      </span>
+        {/* Total articles */}
+        <span className="flex items-center gap-1.5">
+          <span className="text-white opacity-30">│</span>
+          <span>INDEXED NODES:</span>
+          <span className="text-white font-bold px-1.5 py-0.5 rounded border border-white/20 bg-white/5">{stats.total}</span>
+        </span>
 
-      <span className="text-[#404040]">|</span>
-
-      {/* Total articles */}
-      <span className="text-[#A0A0A0]">
-        Total articles:{' '}
-        <span className="text-[#F5F5F5] font-bold">{stats.total}</span>
-      </span>
-
-      {/* Schedule note */}
-      <span className="text-[#404040] hidden sm:inline">|</span>
-      <span className="text-[#606060] hidden sm:inline">Schedule: 8 AM &amp; 8 PM IST</span>
+        {/* Schedule */}
+        <span className="hidden sm:flex items-center gap-1.5">
+          <span className="text-white opacity-30">│</span>
+          <span>TELEMETRY:</span>
+          <span className="text-white font-semibold">ACTIVE (6H CRON)</span>
+        </span>
+      </div>
     </div>
   );
 }

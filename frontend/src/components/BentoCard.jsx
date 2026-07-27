@@ -1,195 +1,145 @@
-import React, { useRef, useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import SectorBadge from './SectorBadge';
 import SignalMeter from './SignalMeter';
-import { useHUD } from '../context/HUDContext';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80';
 
-function formatFullDateTime(dateStr) {
+function timeAgo(dateStr) {
   if (!dateStr) return '';
-  const date = new Date(dateStr);
-  const dayDate = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  return `${dayDate} • ${time}`;
+  const d = Date.now() - new Date(dateStr).getTime();
+  const m = Math.floor(d / 60000);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
 }
 
-/**
- * Helper to split summary into 2-3 executive bullet takeaways for instant preview
- */
 function getTakeaways(summary = '') {
-  const sentences = summary.split(/[.!?]+/).map((s) => s.trim()).filter((s) => s.length > 15);
-  return sentences.slice(0, 3).map((s) => s + '.');
+  return summary.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 15).slice(0, 3).map(s => s + '.');
 }
 
-/* ── Anti-gravity 3D tilt card with AI Takeaway Preview ──────────────── */
+/* ── Article / Event Card ── */
 export function BentoCard({ article, className = '', delay = 0, isEvent = false }) {
-  const { triggerGlitch } = useHUD();
-  const cardRef = useRef(null);
   const [showTakeaways, setShowTakeaways] = useState(false);
 
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotX = useSpring(useTransform(y, [-0.5, 0.5], [7, -7]), { stiffness: 200, damping: 25 });
-  const rotY = useSpring(useTransform(x, [-0.5, 0.5], [-7, 7]), { stiffness: 200, damping: 25 });
-
-  const handleMouseMove = useCallback((e) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    x.set((e.clientX - rect.left) / rect.width - 0.5);
-    y.set((e.clientY - rect.top)  / rect.height - 0.5);
-  }, [x, y]);
-
-  const handleMouseLeave = useCallback(() => {
-    x.set(0);
-    y.set(0);
-  }, [x, y]);
-
   const data = isEvent ? {
-    id: article._id,
-    title: article.event_title,
-    summary: article.fused_summary,
-    image: article.image_url,
-    sector: article.sector,
-    href: `/event/${article._id}`,
+    title:      article.event_title,
+    summary:    article.fused_summary,
+    image:      article.image_url,
+    sector:     article.sector,
+    href:       `/event/${article._id}`,
     confidence: article.confidence_score,
-    tag: 'SYNTHESIZED CLUSTER',
-    sources: article.source_articles?.length || 1,
-    timestamp: article.last_updated || article.first_reported,
+    tag:        'AI Cluster',
+    sources:    article.source_articles?.length || 1,
+    timestamp:  article.last_updated || article.first_reported,
+    type:       'event',
   } : {
-    id: article._id,
-    title: article.title,
-    summary: article.unique_summary,
-    image: article.image_url,
-    sector: article.sector,
-    href: `/article/${article._id}`,
+    title:      article.title,
+    summary:    article.unique_summary,
+    image:      article.image_url,
+    sector:     article.sector,
+    href:       `/article/${article._id}`,
     confidence: null,
-    tag: 'LIVE DISPATCH',
-    sources: null,
-    timestamp: article.timestamp,
+    tag:        'Live',
+    sources:    null,
+    timestamp:  article.timestamp,
+    type:       'article',
   };
-
 
   const takeaways = getTakeaways(data.summary);
 
   return (
     <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-      style={{ rotateX: rotX, rotateY: rotY, transformStyle: 'preserve-3d', perspective: 1000 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`group relative rounded-3xl overflow-hidden flex flex-col h-full glass-panel-interactive border border-white/10 ${className}`}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={`group glass-card flex flex-col h-full overflow-hidden transition-all duration-300 hover:border-white/35 hover:-translate-y-1 ${className}`}
     >
-      <Link to={data.href} onClick={() => triggerGlitch(200)} className="flex flex-col h-full">
-        {/* Image Header */}
-        <div className="relative flex-shrink-0 overflow-hidden h-52 border-b border-white/10 bg-[#080B11]">
-          <img
-            src={data.image || FALLBACK}
-            alt={data.title}
-            onError={(e) => { e.target.src = FALLBACK; }}
-            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110 opacity-80 group-hover:opacity-100"
+      <Link to={data.href} className="flex flex-col h-full">
+        {/* Image */}
+        <div className="relative flex-shrink-0 h-44 overflow-hidden rounded-t-[20px]">
+          <img src={data.image || FALLBACK} alt={data.title} onError={e => { e.target.src = FALLBACK; }}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-65 group-hover:opacity-80"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0D121C] via-[#0D121C]/30 to-transparent" />
-          
-          <div className="absolute top-3.5 left-3.5 z-10">
+          {/* Glassmorphism gradient fade */}
+          <div className="absolute inset-0"
+               style={{ background: 'linear-gradient(to top, rgba(3,7,17,0.95) 0%, rgba(3,7,17,0.5) 50%, transparent 100%)' }} />
+
+          {/* Badges */}
+          <div className="absolute top-3 left-3 z-10 flex items-center gap-2">
             <SectorBadge sector={data.sector} size="sm" />
+            {data.type === 'event'
+              ? <span className="badge badge-ai">AI Cluster</span>
+              : <span className="badge badge-live">Live</span>}
           </div>
 
-          {data.confidence != null ? (
-            <div className="absolute top-3.5 right-3.5 bg-[#080B11]/80 backdrop-blur-md rounded-xl px-3 py-1 border border-white/10 flex items-center gap-1.5 shadow-lg">
+          {data.confidence != null && (
+            <div className="absolute top-3 right-3 z-10 px-2 py-1 rounded-xl font-mono text-xs"
+                 style={{ background: 'rgba(3,7,17,0.7)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)' }}>
               <SignalMeter score={data.confidence} size="sm" />
             </div>
-          ) : (
-            <div className="absolute top-3.5 right-3.5 bg-[#111111]/90 backdrop-blur-md rounded-xl px-2.5 py-1 border border-[#3A3A3A] font-mono text-[9px] text-[#A0A0A0] uppercase tracking-widest font-bold">
-              AI ORIGINAL
+          )}
+
+          {data.timestamp && (
+            <div className="absolute bottom-3 right-3 z-10 font-mono text-[10px] font-bold px-2 py-0.5 rounded-lg"
+                 style={{ color: 'var(--color-paper-dim)', background: 'rgba(3,7,17,0.65)', backdropFilter: 'blur(8px)' }}>
+              {timeAgo(data.timestamp)}
             </div>
           )}
         </div>
 
-        {/* Content Body */}
-        <div className="p-6 flex-1 flex flex-col justify-between z-10 relative">
+        {/* Content */}
+        <div className="p-5 flex-1 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-3 font-mono text-[10px] uppercase tracking-[0.22em]">
-              <span className="text-[#A0A0A0] font-bold flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse" />
-                <span>{data.tag}</span>
-              </span>
-              {data.sources && (
-                <span className="px-2 py-0.5 rounded border border-[#2A2A2A] text-[#A0A0A0] font-semibold text-[9px]">
-                  {data.sources} SRCS
-                </span>
-              )}
-            </div>
-
-            {/* Editorial Serif Headline */}
-            <h3 className="font-display font-bold text-[#F5F5F5] text-lg md:text-xl leading-snug line-clamp-2 group-hover:text-white transition-colors duration-300">
+            <h3 className="font-bold text-base leading-snug line-clamp-2 mb-3 transition-all group-hover:text-gradient"
+                style={{ color: 'var(--color-paper)' }}>
               {data.title}
             </h3>
 
-            {/* Takeaways / Summary Toggle */}
-            <div className="mt-3.5">
-              <AnimatePresence mode="wait">
-                {showTakeaways ? (
-                  <motion.div
-                    key="takeaways"
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    className="space-y-1.5 bg-[#0A0A0A] p-3.5 rounded-xl border border-[#2A2A2A]"
-                  >
-                    <div className="font-mono text-[9px] text-[#606060] uppercase tracking-widest font-bold mb-1">
-                      KEY TAKEAWAYS:
+            <AnimatePresence mode="wait">
+              {showTakeaways ? (
+                <motion.div key="tk" initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                  className="space-y-2 p-3.5 rounded-xl border-l-2 border-white bg-white/5"
+                  style={{ borderTop: '1px solid rgba(255,255,255,0.15)', borderRight: '1px solid rgba(255,255,255,0.15)', borderBottom: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)' }}>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-white font-bold flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    <span>Llama 3 Neural Takeaways</span>
+                  </p>
+                  {takeaways.map((pt, i) => (
+                    <div key={i} className="flex items-start gap-2 text-xs leading-relaxed text-[var(--color-paper)]">
+                      <span className="mt-0.5 shrink-0 font-bold text-white">▸</span>
+                      <span className="line-clamp-2">{pt}</span>
                     </div>
-                    {takeaways.map((point, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-[#C8C8C8] font-sans">
-                        <span className="text-[#A0A0A0] font-bold">▸</span>
-                        <span className="line-clamp-2">{point}</span>
-                      </div>
-                    ))}
-                  </motion.div>
-                ) : (
-                  <motion.p
-                    key="summary"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="text-paper-dim/90 text-xs line-clamp-3 leading-relaxed font-sans font-light"
-                  >
-                    {data.summary}
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </div>
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.p key="sum" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  className="text-xs leading-relaxed line-clamp-3"
+                  style={{ color: 'var(--color-paper-dim)' }}>
+                  {data.summary}
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
 
-          {/* Updated Timestamp */}
-          {data.timestamp && (
-            <div className="font-mono text-[10px] text-[#A0A0A0] mt-4 flex items-center gap-1.5 font-medium tracking-wide">
-              <span>📅</span>
-              <span>{formatFullDateTime(data.timestamp)}</span>
-            </div>
-          )}
-
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10 font-mono text-[10px] uppercase tracking-[0.2em]">
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setShowTakeaways(!showTakeaways);
-              }}
-              className="px-2.5 py-1 rounded-lg border border-[#2A2A2A] hover:border-[#3A3A3A] text-[#A0A0A0] hover:text-[#F5F5F5] transition-colors flex items-center gap-1.5 font-bold text-[9px]"
-            >
-              <span>{showTakeaways ? '✕ SUMMARY' : '≡ TAKEAWAYS'}</span>
+          <div className="mt-4 pt-3 flex items-center justify-between"
+               style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+            <button type="button"
+              onClick={e => { e.preventDefault(); e.stopPropagation(); setShowTakeaways(!showTakeaways); }}
+              className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold uppercase tracking-widest transition-all"
+              style={{
+                background: showTakeaways ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.05)',
+                border: `1px solid ${showTakeaways ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.09)'}`,
+                color: showTakeaways ? 'var(--color-paper)' : 'var(--color-paper-dim)',
+                backdropFilter: 'blur(8px)',
+              }}>
+              {showTakeaways ? 'Summary' : 'AI Brief'}
             </button>
-            <span className="text-[#A0A0A0] group-hover:text-[#F5F5F5] transition-colors flex items-center gap-1 font-bold">
-              READ <span className="group-hover:translate-x-1.5 transition-transform inline-block">→</span>
+            <span className="text-xs font-bold font-mono flex items-center gap-1 group-hover:gap-2 transition-all text-gradient">
+              Read →
             </span>
           </div>
         </div>
@@ -198,103 +148,111 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
   );
 }
 
-/* ── Flagship Lead Story Magazine Cover Card ──────────────── */
+/* ── Flagship Card ── */
 export function FlagshipCard({ article, isEvent = false }) {
-  const { triggerGlitch } = useHUD();
   const data = isEvent ? {
-    title: article.event_title,
-    summary: article.fused_summary,
-    image: article.image_url,
-    sector: article.sector,
-    href: `/event/${article._id}`,
+    title:      article.event_title,
+    summary:    article.fused_summary,
+    image:      article.image_url,
+    sector:     article.sector,
+    href:       `/event/${article._id}`,
     confidence: article.confidence_score,
-    tag: 'LEAD SYNTHESIZED CLUSTER',
-    sources: article.source_articles?.length || 1,
+    tag:        'Priority Cluster',
+    sources:    article.source_articles?.length || 1,
   } : {
-    title: article.title,
-    summary: article.unique_summary,
-    image: article.image_url,
-    sector: article.sector,
-    href: `/article/${article._id}`,
+    title:      article.title,
+    summary:    article.unique_summary,
+    image:      article.image_url,
+    sector:     article.sector,
+    href:       `/article/${article._id}`,
     confidence: null,
-    tag: 'LEAD EDITORIAL DISPATCH',
-    sources: null,
+    tag:        'Top Story',
+    sources:    null,
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      onClick={() => triggerGlitch(300)}
-      className="group relative rounded-2xl overflow-hidden border border-[#2A2A2A] hover:border-[#444444] bg-[#111111]/90 backdrop-blur-2xl transition-all duration-500 shadow-2xl cursor-pointer"
-      style={{ minHeight: '520px' }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-1"
+      style={{
+        minHeight: 520, borderRadius: 28,
+        background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.15)',
+        backdropFilter: 'blur(28px)',
+        WebkitBackdropFilter: 'blur(28px)',
+        boxShadow: '0 12px 64px rgba(0,0,0,0.7), 0 0 24px rgba(255,255,255,0.05)',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)';
+        e.currentTarget.style.boxShadow = '0 16px 80px rgba(0,0,0,0.9), 0 0 32px rgba(255,255,255,0.1)';
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
+        e.currentTarget.style.boxShadow = '0 12px 64px rgba(0,0,0,0.7), 0 0 24px rgba(255,255,255,0.05)';
+      }}
     >
       <Link to={data.href} className="block w-full h-full">
-        {/* Background Image with Slow Zoom */}
-        <div className="absolute inset-0 overflow-hidden bg-[#080B11]">
-          <img
-            src={data.image || FALLBACK}
-            alt={data.title}
-            onError={(e) => { e.target.src = FALLBACK; }}
-            className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-[6000ms] ease-out opacity-45 group-hover:opacity-65"
+        <div className="absolute inset-0 overflow-hidden rounded-[28px]">
+          <img src={data.image || FALLBACK} alt={data.title}
+            onError={e => { e.target.src = FALLBACK; }}
+            className="w-full h-full object-cover opacity-35 group-hover:opacity-50 group-hover:scale-105 transition-all duration-700"
           />
         </div>
 
-        {/* Velvet Obsidian Gradient Mask */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/75 to-[#0A0A0A]/25" />
+        {/* Gradient layers */}
+        <div className="absolute inset-0 rounded-[28px]"
+             style={{ background: 'linear-gradient(to top, rgba(3,7,17,0.98) 0%, rgba(3,7,17,0.7) 45%, rgba(3,7,17,0.2) 100%)' }} />
+        <div className="absolute inset-0 rounded-[28px]"
+             style={{ background: 'radial-gradient(circle at 0% 0%, rgba(255,255,255,0.18) 0%, transparent 70%)' }} />
 
-        {/* Top Telemetry & Credibility Badges */}
-        <div className="absolute top-6 left-6 right-6 flex flex-wrap items-center justify-between gap-4 z-10">
-          <div className="flex items-center gap-3">
-            <span className="px-3 py-1 rounded-full text-[10px] font-mono font-extrabold uppercase tracking-[0.25em] bg-[#DC2626] text-white flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-              <span>{data.tag}</span>
+        {/* Badges */}
+        <div className="absolute top-6 left-6 right-6 flex items-center justify-between flex-wrap gap-3 z-10">
+          <div className="flex items-center gap-2.5">
+            <span className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-mono font-black uppercase tracking-widest text-white"
+                  style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.35)', backdropFilter: 'blur(10px)' }}>
+              <span className="live-dot" style={{ width: 5, height: 5, background: '#ffffff', boxShadow: '0 0 6px rgba(255,255,255,0.8)' }} />
+              {data.tag}
             </span>
             <SectorBadge sector={data.sector} />
           </div>
-
-          <div className="bg-[#111111]/90 backdrop-blur-md rounded-xl px-4 py-1.5 border border-[#2A2A2A] flex items-center gap-3 font-mono text-xs shadow-lg">
-            {data.confidence != null ? (
+          {data.confidence != null && (
+            <div className="px-3 py-1.5 rounded-xl font-mono text-xs"
+                 style={{ background: 'rgba(3,7,17,0.7)', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)' }}>
               <SignalMeter score={data.confidence} size="sm" />
-            ) : (
-              <span className="text-[#A0A0A0] font-bold text-[10px] tracking-widest">AI ORIGINAL</span>
-            )}
-            {data.sources > 1 && (
-              <>
-                <span className="text-[#404040]">•</span>
-                <span className="text-[10px] text-[#C8C8C8] font-semibold tracking-widest">{data.sources} SOURCES</span>
-              </>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
-        {/* Bottom Magazine Cover Content Panel */}
-        <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-12 z-10">
-          <div className="max-w-3xl bg-[#111111]/90 backdrop-blur-xl rounded-2xl p-8 sm:p-10 border border-[#2A2A2A] group-hover:border-[#404040] transition-all shadow-2xl">
-            <div className="flex items-center gap-2 font-mono text-[10px] text-[#606060] uppercase tracking-[0.3em] mb-3 font-bold">
-              <span>PRIORITY BRIEFING</span>
-              <span className="text-[#404040]">•</span>
-              <span className="text-[#A0A0A0]">Llama 3.1 Synthesized</span>
+        {/* Bottom glass panel */}
+        <div className="absolute inset-x-5 bottom-5 sm:inset-x-8 sm:bottom-8 z-10">
+          <div className="p-6 sm:p-8 rounded-2xl"
+               style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.15)',
+                        backdropFilter: 'blur(32px) saturate(200%)', boxShadow: '0 8px 48px rgba(0,0,0,0.5)' }}>
+            <div className="flex items-center gap-2.5 mb-4 font-mono text-[10px] uppercase tracking-widest font-black text-white">
+              <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-white animate-pulse" /> PRIORITY INTELLIGENCE</span>
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}>·</span>
+              <span style={{ color: 'var(--color-paper-dim)' }}>Llama 3 Neural Synthesis</span>
+              {data.sources > 1 && <span className="font-mono text-[10px] px-2 py-0.5 rounded border border-white/30 bg-white/10 text-white ml-auto">{data.sources} Sources</span>}
             </div>
 
-            {/* Cover Story Serif Headline */}
-            <h2 className="font-display font-extrabold text-[#F5F5F5] text-2xl sm:text-4xl md:text-5xl leading-tight mb-4 group-hover:text-white transition-colors duration-300">
+            <h2 className="font-black text-2xl sm:text-3xl md:text-4xl leading-tight mb-3 text-white group-hover:text-gradient transition-all">
               {data.title}
             </h2>
 
-            <p className="text-[#C8C8C8] text-sm sm:text-base leading-relaxed line-clamp-3 mb-6 font-sans">
+            <p className="text-sm leading-relaxed line-clamp-2 mb-5" style={{ color: 'var(--color-paper-dim)' }}>
               {data.summary}
             </p>
 
-            <div className="flex items-center justify-between font-mono text-xs uppercase tracking-[0.2em] pt-5 border-t border-[#2A2A2A]">
-              <span className="text-[#606060] flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
-                <span>Multi-Source Verified</span>
+            <div className="flex items-center justify-between pt-4 border-t border-white/10">
+              <span className="flex items-center gap-2 font-mono text-xs font-bold text-white">
+                <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff]" />
+                Multi-Source Neural Verified
               </span>
-              <span className="text-[#A0A0A0] group-hover:text-[#F5F5F5] transition-colors font-extrabold flex items-center gap-2">
-                OPEN BRIEF <span className="group-hover:translate-x-2 transition-transform inline-block">→</span>
+              <span className="font-mono text-xs font-black text-white flex items-center gap-1.5 group-hover:gap-3 transition-all">
+                Open Executive Brief →
               </span>
             </div>
           </div>

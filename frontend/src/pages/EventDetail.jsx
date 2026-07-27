@@ -57,12 +57,12 @@ export default function EventDetail() {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-5">
         <div className="relative w-12 h-12">
-          <div className="absolute inset-0 rounded-full border border-[#DC2626]/40 animate-ping" />
-          <div className="absolute inset-0 rounded-full border border-white/10 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border border-white/20 animate-ping" />
+          <div className="absolute inset-0 rounded-full border border-white/20 border-t-white flex items-center justify-center animate-spin">
             <div className="w-2.5 h-2.5 rounded-full bg-white animate-pulse" />
           </div>
         </div>
-        <div className="font-mono text-xs text-[#A0A0A0] tracking-[0.28em] uppercase animate-pulse font-bold">
+        <div className="font-mono text-xs tracking-widest uppercase animate-pulse font-bold" style={{ color: 'var(--color-paper)' }}>
           FUSING NEURAL CLUSTER REPORT…
         </div>
       </div>
@@ -72,10 +72,10 @@ export default function EventDetail() {
   if (error || !event) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center p-6">
-        <div className="glass-panel rounded-2xl p-10 max-w-md text-center border border-[#DC2626]/30 shadow-2xl">
-          <div className="font-mono text-xs text-[#DC2626] tracking-[0.25em] uppercase mb-2 font-bold">CLUSTER ERROR</div>
-          <p className="text-[#F5F5F5] font-semibold mb-6">{error || 'Event not found in database.'}</p>
-          <Link to="/" className="px-6 py-3 rounded-full border border-[#F5F5F5] bg-[#F5F5F5] text-[#0A0A0A] font-mono font-bold text-xs uppercase tracking-widest transition-all hover:bg-transparent hover:text-[#F5F5F5] inline-block">
+        <div className="glass-card rounded-2xl p-10 max-w-md text-center border-white/20 shadow-2xl">
+          <div className="font-mono text-xs text-white tracking-widest uppercase mb-2 font-bold">CLUSTER ERROR</div>
+          <p className="font-semibold mb-6" style={{ color: 'var(--color-paper)' }}>{error || 'Event not found in database.'}</p>
+          <Link to="/" className="btn-primary">
             ← RETURN TO CORE WIRE
           </Link>
         </div>
@@ -94,79 +94,81 @@ export default function EventDetail() {
       className="max-w-4xl mx-auto space-y-10"
     >
       {/* ── Top Bar & Cluster ID ── */}
-      <div className="pt-6 flex items-center justify-between border-b border-[#2A2A2A] pb-6">
+      <div className="pt-6 flex items-center justify-between border-b border-white/10 pb-6">
         <Link
           to={event.sector ? `/sector/${event.sector}` : '/'}
           onClick={() => triggerGlitch(200)}
-          className="inline-flex items-center gap-2 text-[#606060] hover:text-[#F5F5F5] font-mono text-[11px] uppercase tracking-[0.25em] group font-bold transition-colors"
+          className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest group font-bold transition-colors"
+          style={{ color: 'var(--color-muted)' }}
         >
-          <span className="group-hover:-translate-x-1 transition-transform">←</span>
-          <span>RETURN TO {event.sector || 'WIRE'} DOMAIN</span>
+          <span className="group-hover:-translate-x-1 transition-transform inline-block text-white">←</span>
+          <span className="group-hover:text-white transition-colors">RETURN TO {event.sector || 'WIRE'} DOMAIN</span>
         </Link>
-        <div className="font-mono text-[10px] text-[#606060] tracking-[0.25em] uppercase">
-          CLUSTER ID //<span className="text-[#F5F5F5] font-bold ml-1">{event._id.slice(-8).toUpperCase()}</span>
+        <div className="font-mono text-[10px] tracking-widest uppercase" style={{ color: 'var(--color-muted)' }}>
+          CLUSTER ID // <span className="font-bold ml-1" style={{ color: 'var(--color-paper)' }}>{event._id.slice(-8).toUpperCase()}</span>
         </div>
       </div>
 
       {/* ── Title & Credibility Telemetry ── */}
       <div>
-        {/* Double rule — newspaper style */}
-        <div className="border-t-[3px] border-[#F5F5F5] mb-1" />
-        <div className="border-t border-[#3A3A3A] mb-6" />
-
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
             <SectorBadge sector={event.sector} />
-            <span className="font-mono text-[10px] text-[#A0A0A0] uppercase tracking-widest px-3 py-1 rounded border border-[#2A2A2A] font-bold">
+            <span className="font-mono text-[10px] uppercase tracking-widest px-3 py-1 rounded-xl border font-bold"
+                  style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-paper-dim)', backdropFilter: 'blur(10px)' }}>
               SYNTHESIZED CLUSTER REPORT
             </span>
           </div>
-          <div className="bg-[#111111] backdrop-blur-md rounded-xl px-4 py-2 border border-[#2A2A2A] flex items-center gap-3 font-mono text-xs shadow-xl">
+          <div className="rounded-xl px-4 py-2 border flex items-center gap-3 font-mono text-xs shadow-xl"
+               style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(16px)' }}>
             <SignalMeter score={event.confidence_score} />
-            <span className="text-[#404040]">•</span>
-            <span className="text-[#C8C8C8] font-bold tracking-wider">{srcCount} SOURCE{srcCount > 1 ? 'S' : ''} FUSED</span>
+            <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+            <span className="font-bold tracking-wider" style={{ color: 'var(--color-paper)' }}>{srcCount} SOURCE{srcCount > 1 ? 'S' : ''} FUSED</span>
           </div>
         </div>
 
-        <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl text-[#F5F5F5] tracking-tight leading-[1.08] mb-4">
+        <h1 className="font-display font-extrabold text-3xl sm:text-5xl md:text-6xl tracking-tight leading-[1.08] mb-4"
+            style={{ color: 'var(--color-paper)' }}>
           {event.event_title}
         </h1>
 
         {event.last_updated && (
-          <p className="text-[#606060] text-xs font-mono mb-8 tracking-wider">
+          <p className="text-xs font-mono mb-8 tracking-wider" style={{ color: 'var(--color-muted)' }}>
             Last updated: {new Date(event.last_updated).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
           </p>
         )}
 
         {/* Audio Player */}
-        <div className="glass-panel p-4 sm:p-5 rounded-xl border border-[#2A2A2A] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="glass-card p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsPlayingAudio(!isPlayingAudio)}
-              className={`p-3.5 rounded-full transition-all flex items-center justify-center shrink-0 shadow-lg ${
-                isPlayingAudio
-                  ? 'bg-[#DC2626] text-white scale-105'
-                  : 'bg-[#F5F5F5] hover:bg-white text-[#0A0A0A]'
-              }`}
+              className="p-3.5 rounded-full transition-all flex items-center justify-center shrink-0 shadow-lg border"
+              style={{
+                background: isPlayingAudio ? '#ffffff' : 'rgba(255,255,255,0.1)',
+                borderColor: isPlayingAudio ? '#ffffff' : 'rgba(255,255,255,0.2)',
+                color: isPlayingAudio ? '#000000' : '#ffffff',
+                backdropFilter: 'blur(10px)'
+              }}
             >
               {isPlayingAudio
                 ? <span className="font-mono font-black text-xs px-1">❚❚</span>
                 : <span className="font-mono font-black text-xs pl-0.5">▶</span>}
             </button>
             <div>
-              <div className="font-mono text-xs text-[#F5F5F5] font-bold uppercase tracking-wider flex items-center gap-2">
+              <div className="font-mono text-xs font-bold uppercase tracking-wider flex items-center gap-2" style={{ color: 'var(--color-paper)' }}>
                 <span>{isPlayingAudio ? 'PLAYING AI CLUSTER BRIEFING...' : 'LISTEN TO EXECUTIVE BRIEFING'}</span>
-                {isPlayingAudio && <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-ping" />}
+                {isPlayingAudio && <span className="live-dot" style={{ width: 6, height: 6 }} />}
               </div>
-              <div className="text-[11px] text-[#606060] font-sans">
+              <div className="text-[11px] font-sans" style={{ color: 'var(--color-paper-dim)' }}>
                 Simulated neural voice synthesis • Est. time: 02:10
               </div>
             </div>
           </div>
           {isPlayingAudio && (
-            <div className="w-full sm:w-48 bg-[#1A1A1A] rounded-full h-2 overflow-hidden border border-[#2A2A2A]">
+            <div className="w-full sm:w-48 bg-white/10 rounded-full h-2 overflow-hidden border border-white/10">
               <div
-                className="bg-[#F5F5F5] h-full transition-all duration-500 rounded-full"
+                className="bg-white h-full transition-all duration-500 rounded-full"
                 style={{ width: `${audioProgress}%` }}
               />
             </div>
@@ -175,69 +177,68 @@ export default function EventDetail() {
       </div>
 
       {/* ── Cinematic Image ── */}
-      <div className="relative rounded-2xl overflow-hidden border border-[#2A2A2A] bg-[#0A0A0A] shadow-2xl" style={{ aspectRatio: '16/9' }}>
+      <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-black/40 shadow-2xl" style={{ aspectRatio: '16/9' }}>
         {event.image_url && (
           <img src={event.image_url} alt={event.event_title} className="w-full h-full object-cover opacity-80" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A]/80 via-[#0A0A0A]/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         <div className="absolute bottom-5 left-5 right-5 flex justify-between items-end">
-          <div className="font-mono text-[10px] text-[#A0A0A0] uppercase tracking-[0.2em] font-bold bg-[#0A0A0A]/80 px-3 py-1.5 rounded-lg border border-[#2A2A2A]">
+          <div className="font-mono text-[10px] uppercase tracking-widest font-bold bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10"
+               style={{ color: 'var(--color-paper-dim)' }}>
             MULTI-SOURCE NEURAL SYNTHESIS
           </div>
-          <div className="font-mono text-[10px] text-[#606060] uppercase tracking-widest font-semibold bg-[#0A0A0A]/80 px-3 py-1.5 rounded-lg border border-[#2A2A2A]">
+          <div className="font-mono text-[10px] uppercase tracking-widest font-semibold bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10"
+               style={{ color: 'var(--color-paper-dim)' }}>
             JACCARD CLUSTERING v2.5
           </div>
         </div>
       </div>
 
       {/* ── Strategic Takeaways ── */}
-      <div className="glass-panel p-8 sm:p-10 rounded-2xl border border-[#2A2A2A] shadow-2xl">
-        <div className="font-mono text-[11px] text-[#606060] uppercase tracking-[0.28em] font-extrabold mb-5 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse" />
+      <div className="glass-card p-8 sm:p-10 rounded-2xl">
+        <div className="font-mono text-xs uppercase tracking-widest font-extrabold mb-5 flex items-center gap-2 text-white">
+          <span className="live-dot" style={{ width: 6, height: 6, background: '#ffffff', boxShadow: '0 0 8px #ffffff' }} />
           <span>EXECUTIVE 3-POINT STRATEGIC BRIEFING</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {takeaways.map((point, idx) => (
-            <div key={idx} className="bg-[#0A0A0A] p-5 rounded-xl border border-[#2A2A2A] flex flex-col">
-              <span className="font-mono text-[9px] text-[#606060] font-bold mb-2 uppercase tracking-widest">STRATEGY 0{idx + 1}</span>
-              <p className="text-sm text-[#C8C8C8] font-sans leading-relaxed">{point}</p>
+            <div key={idx} className="p-5 rounded-xl border flex flex-col"
+                 style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(12px)' }}>
+              <span className="font-mono text-[10px] font-bold mb-2 uppercase tracking-widest text-white">STRATEGY 0{idx + 1}</span>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--color-paper)' }}>{point}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* ── Fused Executive Brief Body ── */}
-      <div className="glass-panel rounded-2xl p-8 sm:p-14 border border-[#2A2A2A] shadow-2xl space-y-8">
-        <div className="border-t-[3px] border-[#F5F5F5] mb-1" />
-        <div className="border-t border-[#3A3A3A] mb-2" />
-        <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] pb-4 border-b border-[#2A2A2A]">
-          <span className="text-[#606060] font-bold">SYNTHESIZED EXECUTIVE BRIEFING</span>
-          <span className="text-[#A0A0A0] font-bold">FUSION VERIFIED</span>
+      <div className="glass-card rounded-2xl p-8 sm:p-14 space-y-8">
+        <div className="flex items-center justify-between font-mono text-xs uppercase tracking-widest pb-4 border-b border-white/10">
+          <span className="font-bold" style={{ color: 'var(--color-paper)' }}>SYNTHESIZED EXECUTIVE BRIEFING</span>
+          <span className="font-bold text-white">FUSION VERIFIED</span>
         </div>
 
-        <div className="editorial-body text-[#C8C8C8] text-lg sm:text-2xl leading-relaxed whitespace-pre-line">
-          <span className="drop-cap">{event.fused_summary.charAt(0)}</span>
+        <div className="text-lg sm:text-2xl leading-relaxed whitespace-pre-line font-light"
+             style={{ color: 'var(--color-paper)' }}>
+          <span className="float-left text-5xl sm:text-6xl font-extrabold mr-3 leading-none text-gradient">{event.fused_summary.charAt(0)}</span>
           {event.fused_summary.slice(1)}
         </div>
 
-        <div className="pt-6 border-t border-[#2A2A2A] flex flex-wrap items-center justify-between gap-4 font-mono text-xs text-[#606060] uppercase tracking-[0.2em]">
+        <div className="pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 font-mono text-xs uppercase tracking-widest"
+             style={{ color: 'var(--color-muted)' }}>
           <span className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#22C55E]" />
-            <span>AI VERIFICATION CONFIDENCE: {event.confidence_score || 85}%</span>
+            <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff]" />
+            <span style={{ color: 'var(--color-paper-dim)' }}>AI VERIFICATION CONFIDENCE: {event.confidence_score || 85}%</span>
           </span>
-          <span className="text-[#A0A0A0] font-extrabold">STATUS: STRATEGICALLY CONFIRMED</span>
+          <span className="font-extrabold" style={{ color: 'var(--color-paper)' }}>STATUS: STRATEGICALLY CONFIRMED</span>
         </div>
       </div>
 
       {/* ── Source Dispatches ── */}
       <div className="space-y-5 pt-4">
-        <div>
-          <div className="border-t-[3px] border-[#F5F5F5] mb-1" />
-          <div className="border-t border-[#3A3A3A] mb-4" />
-          <div className="flex items-center gap-3 font-mono text-[11px] text-[#F5F5F5] uppercase tracking-[0.25em] font-bold">
-            <span>SOURCE DISPATCHES FUSED IN CLUSTER ({event.source_articles?.length || 0})</span>
-            <span className="h-px flex-1 bg-[#2A2A2A]" />
-          </div>
+        <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest font-bold" style={{ color: 'var(--color-paper)' }}>
+          <span>SOURCE DISPATCHES FUSED IN CLUSTER ({event.source_articles?.length || 0})</span>
+          <span className="h-px flex-1" style={{ background: 'linear-gradient(to right, rgba(255,255,255,0.15), transparent)' }} />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -246,20 +247,21 @@ export default function EventDetail() {
               key={art._id || i}
               to={`/article/${art._id}`}
               onClick={() => triggerGlitch(200)}
-              className="glass-panel rounded-xl p-5 border border-[#2A2A2A] hover:border-[#3A3A3A] transition-all group flex flex-col justify-between"
+              className="glass-card rounded-xl p-5 group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-3 font-mono text-[10px] text-[#606060] uppercase tracking-widest font-bold">
+                <div className="flex items-center justify-between mb-3 font-mono text-[10px] uppercase tracking-widest font-bold" style={{ color: 'var(--color-muted)' }}>
                   <span>WIRE SOURCE #{i + 1}</span>
                   <SectorBadge sector={art.sector || event.sector} size="sm" />
                 </div>
-                <h4 className="font-display font-bold text-[#F5F5F5] text-base group-hover:text-white transition-colors line-clamp-2 mb-2">
+                <h4 className="font-display font-bold text-base group-hover:text-gradient transition-colors line-clamp-2 mb-2" style={{ color: 'var(--color-paper)' }}>
                   {art.title}
                 </h4>
               </div>
-              <div className="mt-4 pt-3 border-t border-[#1A1A1A] font-mono text-[10px] uppercase tracking-widest text-[#606060] group-hover:text-[#F5F5F5] flex justify-between items-center font-bold transition-colors">
+              <div className="mt-4 pt-3 border-t border-white/10 font-mono text-[10px] uppercase tracking-widest flex justify-between items-center font-bold transition-colors"
+                   style={{ color: 'var(--color-paper-dim)' }}>
                 <span>VIEW RAW WIRE REPORT</span>
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
+                <span className="group-hover:translate-x-1 transition-transform inline-block text-white">→</span>
               </div>
             </Link>
           ))}

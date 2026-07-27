@@ -89,7 +89,6 @@ export default function SocialStudio() {
           type: res.data.simulation ? 'simulation' : 'success',
           text: res.data.message
         });
-        // Update local article state
         setArticles((prev) =>
           prev.map((a) => (a._id === articleId ? { ...a, broadcast_status: 'broadcasted' } : a))
         );
@@ -114,65 +113,68 @@ export default function SocialStudio() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="pt-6 border-b border-[#2A2A2A] pb-12 flex flex-col md:flex-row md:items-end justify-between gap-8"
+        className="pt-6 border-b border-white/10 pb-12 flex flex-col md:flex-row md:items-end justify-between gap-8"
       >
         <div>
-          <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.28em] mb-3 font-bold">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#DC2626] animate-pulse" />
-            <span className="text-[#F5F5F5]">AUTONOMOUS MEDIA HOUSE</span>
-            <span className="text-[#404040]">•</span>
-            <span className="text-[#A0A0A0]">INSTAGRAM & SOCIAL BROADCAST STUDIO</span>
+          <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest mb-3 font-bold">
+            <span className="live-dot" style={{ width: 6, height: 6 }} />
+            <span style={{ color: 'var(--color-paper)' }}>AUTONOMOUS MEDIA HOUSE</span>
+            <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+            <span style={{ color: 'var(--color-paper-dim)' }}>INSTAGRAM & SOCIAL BROADCAST STUDIO</span>
           </div>
 
-          <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl text-[#F5F5F5] tracking-tight leading-none">
-            SOCIAL <span className="text-[#404040] font-light">// STUDIO</span>
+          <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl tracking-tight leading-none"
+              style={{ color: 'var(--color-paper)' }}>
+            SOCIAL <span className="text-gradient">// STUDIO</span>
           </h1>
         </div>
 
         {/* Autonomous Toggle & Status Bar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-[#111111] p-4 rounded-2xl border border-[#2A2A2A] shadow-xl">
+        <div className="glass-card p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex items-center gap-3">
-            <div className={`w-3 h-3 rounded-full ${webhookConfigured ? 'bg-[#F5F5F5]' : 'bg-[#A0A0A0]'}`} />
+            <div className={`w-3 h-3 rounded-full ${webhookConfigured ? 'bg-white shadow-[0_0_8px_#ffffff]' : 'bg-neutral-500 shadow-[0_0_8px_#737373]'}`} />
             <div>
-              <div className="font-mono text-[11px] font-bold uppercase tracking-wider text-[#F5F5F5]">
+              <div className="font-mono text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--color-paper)' }}>
                 WEBHOOK: {webhookConfigured ? 'CONFIGURED (LIVE)' : 'SIMULATION MODE'}
               </div>
-              <div className="text-[10px] text-[#606060] font-sans">
+              <div className="text-[10px] font-sans" style={{ color: 'var(--color-paper-dim)' }}>
                 {webhookConfigured ? 'Connected to Make.com/Zapier/n8n' : 'Add SOCIAL_WEBHOOK_URL to .env for real posting'}
               </div>
             </div>
           </div>
 
-          <div className="h-8 w-px bg-[#2A2A2A] hidden sm:block" />
+          <div className="h-8 w-px bg-white/10 hidden sm:block" />
 
           <button
             onClick={handleToggleAuto}
-            className={`px-5 py-2.5 rounded-xl font-mono text-xs uppercase tracking-widest font-extrabold transition-all border flex items-center gap-2 shadow-lg ${
-              isAutoEnabled
-                ? 'bg-[#F5F5F5] text-[#0A0A0A] border-[#F5F5F5]'
-                : 'bg-[#181818] text-[#A0A0A0] border-[#3A3A3A] hover:text-[#F5F5F5]'
-            }`}
+            className="px-5 py-2.5 rounded-xl font-mono text-xs uppercase tracking-widest font-extrabold transition-all border flex items-center gap-2 shadow-lg cursor-pointer"
+            style={{
+              background: isAutoEnabled ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)',
+              borderColor: isAutoEnabled ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
+              color: '#fff',
+              backdropFilter: 'blur(10px)'
+            }}
           >
-            <span className={`w-2 h-2 rounded-full ${isAutoEnabled ? 'bg-[#DC2626] animate-ping' : 'bg-[#606060]'}`} />
+            <span className={`w-2 h-2 rounded-full ${isAutoEnabled ? 'bg-white animate-ping' : 'bg-gray-400'}`} />
             <span>ROBOT MODE: {isAutoEnabled ? 'AUTO-ON' : 'MANUAL'}</span>
           </button>
         </div>
       </motion.div>
 
       {/* ── System Health & Automation Monitor Bar ── */}
-      <div className="bg-[#111111] p-6 rounded-2xl border border-[#2A2A2A] shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="glass-card p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex flex-wrap items-center gap-6">
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-wider text-[#606060] font-bold">AUTOMATION CRON SCHEDULE</div>
-            <div className="font-mono text-sm font-extrabold text-[#F5F5F5] flex items-center gap-2 mt-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#10B981] animate-pulse" />
+            <div className="font-mono text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--color-muted)' }}>AUTOMATION CRON SCHEDULE</div>
+            <div className="font-mono text-sm font-extrabold flex items-center gap-2 mt-1" style={{ color: 'var(--color-paper)' }}>
+              <span className="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_8px_#ffffff] animate-pulse" />
               <span>{cronSchedule}</span>
             </div>
           </div>
-          <div className="h-8 w-px bg-[#2A2A2A] hidden md:block" />
+          <div className="h-8 w-px bg-white/10 hidden md:block" />
           <div>
-            <div className="font-mono text-[10px] uppercase tracking-wider text-[#606060] font-bold">LAST NEWS SCRAPE & INGESTION</div>
-            <div className="font-mono text-sm font-extrabold text-[#A0A0A0] mt-1">
+            <div className="font-mono text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--color-muted)' }}>LAST NEWS SCRAPE & INGESTION</div>
+            <div className="font-mono text-sm font-extrabold mt-1" style={{ color: 'var(--color-paper-dim)' }}>
               {lastIngestionTime ? new Date(lastIngestionTime).toLocaleString() : 'Waiting for initial scrape...'}
             </div>
           </div>
@@ -182,7 +184,7 @@ export default function SocialStudio() {
           <button
             onClick={handleTriggerScrape}
             disabled={scraping}
-            className="w-full sm:w-auto px-5 py-3 rounded-xl font-mono text-xs uppercase tracking-widest font-extrabold transition-all bg-[#202020] hover:bg-[#303030] text-[#F5F5F5] border border-[#3A3A3A] flex items-center justify-center gap-2 shadow-lg"
+            className="w-full sm:w-auto btn-glass justify-center"
           >
             {scraping ? (
               <>
@@ -204,8 +206,8 @@ export default function SocialStudio() {
           animate={{ opacity: 1, y: 0 }}
           className={`p-4 rounded-xl font-mono text-xs text-center border ${
             scrapeMessage.type === 'error'
-              ? 'bg-[#DC2626]/15 text-[#DC2626] border-[#DC2626]/40'
-              : 'bg-[#10B981]/15 text-[#10B981] font-bold border-[#10B981]/40'
+              ? 'bg-white/10 text-white border-white/30'
+              : 'bg-white/15 text-white font-bold border-white/40'
           }`}
         >
           {scrapeMessage.text}
@@ -217,8 +219,8 @@ export default function SocialStudio() {
         {/* LEFT COLUMN: Queue & Instructions (7 cols) */}
         <div className="lg:col-span-7 space-y-8">
           {/* Filter Tabs */}
-          <div className="flex items-center justify-between border-b border-[#2A2A2A] pb-4">
-            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest">
+          <div className="flex flex-wrap items-center justify-between border-b border-white/10 pb-4 gap-4">
+            <div className="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-widest">
               {[
                 { id: 'all', label: 'ALL DISPATCHES' },
                 { id: 'pending', label: 'PENDING QUEUE' },
@@ -228,11 +230,12 @@ export default function SocialStudio() {
                 <button
                   key={t.id}
                   onClick={() => { setActiveTab(t.id); triggerGlitch(100); }}
-                  className={`px-4 py-2 rounded-lg transition-all font-bold ${
-                    activeTab === t.id
-                      ? 'bg-[#F5F5F5] text-[#0A0A0A] shadow-md'
-                      : 'text-[#606060] hover:text-[#F5F5F5] hover:bg-[#111111]'
-                  }`}
+                  className="px-4 py-2 rounded-xl transition-all font-bold cursor-pointer"
+                  style={{
+                    background: activeTab === t.id ? 'rgba(255,255,255,0.15)' : 'transparent',
+                    border: activeTab === t.id ? '1px solid rgba(255,255,255,0.35)' : '1px solid transparent',
+                    color: activeTab === t.id ? '#ffffff' : 'var(--color-muted)'
+                  }}
                 >
                   {t.label}
                 </button>
@@ -240,7 +243,8 @@ export default function SocialStudio() {
             </div>
             <button
               onClick={fetchQueue}
-              className="text-[#A0A0A0] hover:text-[#F5F5F5] font-mono text-xs uppercase transition-colors"
+              className="font-mono text-xs uppercase transition-colors hover:text-white cursor-pointer"
+              style={{ color: 'var(--color-paper-dim)' }}
             >
               [ REFRESH QUEUE ]
             </button>
@@ -248,21 +252,21 @@ export default function SocialStudio() {
 
           {/* Queue List */}
           {loading ? (
-            <div className="py-20 flex flex-col items-center justify-center gap-4 bg-[#111111] rounded-2xl border border-[#2A2A2A]">
-              <div className="w-8 h-8 rounded-full border border-[#A0A0A0]/40 border-t-[#F5F5F5] animate-spin" />
-              <div className="font-mono text-xs text-[#A0A0A0] tracking-[0.25em] uppercase font-bold">
+            <div className="py-20 flex flex-col items-center justify-center gap-4 glass-card rounded-2xl">
+              <div className="w-8 h-8 rounded-full border border-white/20 border-t-white animate-spin" />
+              <div className="font-mono text-xs tracking-widest uppercase font-bold" style={{ color: 'var(--color-paper)' }}>
                 LOADING SOCIAL DISPATCH QUEUE…
               </div>
             </div>
           ) : error ? (
-            <div className="p-8 bg-[#111111] rounded-2xl border border-[#DC2626]/40 text-center">
-              <p className="text-[#F5F5F5] font-semibold">{error}</p>
+            <div className="p-8 glass-card rounded-2xl border-white/20 text-center">
+              <p className="font-semibold" style={{ color: 'var(--color-paper)' }}>{error}</p>
             </div>
           ) : articles.length === 0 ? (
-            <div className="p-16 bg-[#111111] rounded-2xl border border-[#2A2A2A] text-center space-y-3">
-              <div className="font-mono text-xs text-[#606060] uppercase tracking-[0.3em] font-bold">QUEUE EMPTY</div>
-              <p className="text-[#F5F5F5] text-xl font-display font-bold">No dispatches found in this tab.</p>
-              <p className="text-[#A0A0A0] text-sm">When the 4-hour cron runs or you manually trigger ingestion, new AI articles will appear here.</p>
+            <div className="p-16 glass-card rounded-2xl text-center space-y-3">
+              <div className="font-mono text-xs uppercase tracking-widest font-bold" style={{ color: 'var(--color-muted)' }}>QUEUE EMPTY</div>
+              <p className="text-xl font-display font-bold" style={{ color: 'var(--color-paper)' }}>No dispatches found in this tab.</p>
+              <p className="text-sm" style={{ color: 'var(--color-paper-dim)' }}>When the cron runs or you manually trigger ingestion, new AI articles will appear here.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -274,58 +278,60 @@ export default function SocialStudio() {
                   <div
                     key={art._id}
                     onClick={() => { setSelectedArticle(art); setShowFullCaption(false); setLiked(false); triggerGlitch(150); }}
-                    className={`p-6 rounded-2xl transition-all cursor-pointer border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 ${
-                      isSelected
-                        ? 'bg-[#181818] border-[#F5F5F5] shadow-2xl scale-[1.01]'
-                        : 'bg-[#111111] border-[#2A2A2A] hover:border-[#404040] hover:bg-[#151515]'
-                    }`}
+                    className="p-6 rounded-2xl transition-all cursor-pointer border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+                    style={{
+                      background: isSelected ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)',
+                      borderColor: isSelected ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.08)',
+                      backdropFilter: 'blur(20px)',
+                      boxShadow: isSelected ? '0 8px 32px rgba(255,255,255,0.15)' : 'none',
+                      transform: isSelected ? 'scale(1.01)' : 'none'
+                    }}
                   >
                     <div className="flex items-start gap-4 flex-1 min-w-0">
                       <img
                         src={art.image_url}
                         alt={art.title}
-                        className="w-16 h-16 rounded-xl object-cover shrink-0 border border-[#2A2A2A] bg-[#0A0A0A]"
+                        className="w-16 h-16 rounded-xl object-cover shrink-0 border border-white/10 bg-black/50"
                       />
                       <div className="space-y-1.5 flex-1 min-w-0">
                         <div className="flex items-center gap-2.5">
                           <SectorBadge sector={art.sector} size="sm" />
-                          <span className="font-mono text-[10px] text-[#606060] uppercase">
+                          <span className="font-mono text-[10px]" style={{ color: 'var(--color-muted)' }}>
                             {new Date(art.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <h4 className="font-display font-bold text-base text-[#F5F5F5] truncate">
+                        <h4 className="font-display font-bold text-base truncate" style={{ color: 'var(--color-paper)' }}>
                           {art.title}
                         </h4>
-                        <p className="text-xs text-[#A0A0A0] font-light truncate">
+                        <p className="text-xs font-light truncate" style={{ color: 'var(--color-paper-dim)' }}>
                           {art.social_caption ? art.social_caption.split('\n')[0] : art.unique_summary}
                         </p>
                         {isFailed && art.broadcast_error && (
-                          <div className="p-2 mt-1 rounded bg-[#DC2626]/15 border border-[#DC2626]/40 text-[#DC2626] font-mono text-[10px]">
+                          <div className="p-2 mt-1 rounded bg-white/10 border border-white/20 text-white font-mono text-[10px]">
                             ⚠️ FAILURE LOG: {art.broadcast_error}
                           </div>
                         )}
                         {isBroadcasted && art.broadcast_time && (
-                          <div className="font-mono text-[9px] text-[#10B981] uppercase mt-1">
+                          <div className="font-mono text-[9px] text-white font-bold uppercase mt-1">
                             ✓ FB POSTED: {new Date(art.broadcast_time).toLocaleString()}
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex sm:flex-col items-end justify-between w-full sm:w-auto gap-3 shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-[#2A2A2A]">
+                    <div className="flex sm:flex-col items-end justify-between w-full sm:w-auto gap-3 shrink-0 border-t sm:border-t-0 pt-3 sm:pt-0 border-white/10">
                       <span
-                        className={`px-2.5 py-1 rounded font-mono text-[9px] font-bold tracking-widest uppercase ${
-                          isBroadcasted
-                            ? 'bg-[#F5F5F5] text-[#0A0A0A]'
-                            : isFailed
-                            ? 'bg-[#DC2626] text-white animate-pulse'
-                            : 'bg-[#202020] text-[#A0A0A0] border border-[#3A3A3A]'
-                        }`}
+                        className="px-2.5 py-1 rounded font-mono text-[9px] font-bold tracking-widest uppercase"
+                        style={{
+                          background: isBroadcasted ? 'rgba(255,255,255,0.12)' : isFailed ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)',
+                          border: `1px solid ${isBroadcasted ? 'rgba(255,255,255,0.3)' : isFailed ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)'}`,
+                          color: isBroadcasted ? 'var(--color-paper)' : isFailed ? 'var(--color-paper)' : 'var(--color-paper-dim)'
+                        }}
                       >
                         {isBroadcasted ? '✓ BROADCASTED' : isFailed ? '✕ FAILED' : '⏳ PENDING'}
                       </span>
-                      <span className="font-mono text-xs text-[#F5F5F5] font-bold flex items-center gap-1 group">
-                        <span>PREVIEW ON IPHONE</span>
+                      <span className="font-mono text-xs font-bold flex items-center gap-1 group text-gradient">
+                        <span>PREVIEW</span>
                         <span className="group-hover:translate-x-1 transition-transform">→</span>
                       </span>
                     </div>
@@ -336,18 +342,18 @@ export default function SocialStudio() {
           )}
 
           {/* Info & Setup Matrix Card */}
-          <div className="bg-[#111111] p-8 rounded-2xl border border-[#2A2A2A] space-y-4">
-            <div className="font-mono text-xs text-[#F5F5F5] uppercase tracking-[0.25em] font-extrabold flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#DC2626]" />
+          <div className="glass-card p-8 rounded-2xl space-y-4">
+            <div className="font-mono text-xs uppercase tracking-widest font-extrabold flex items-center gap-2" style={{ color: 'var(--color-paper)' }}>
+              <span className="live-dot" style={{ width: 6, height: 6 }} />
               <span>HOW TO CONNECT INSTAGRAM / WEBHOOKS</span>
             </div>
-            <p className="text-sm text-[#C8C8C8] leading-relaxed font-light">
+            <p className="text-sm leading-relaxed font-light" style={{ color: 'var(--color-paper)' }}>
               This studio generates production-ready Instagram content for every article. To automatically publish to real accounts:
             </p>
-            <ol className="list-decimal list-inside text-xs text-[#A0A0A0] space-y-2 font-mono">
-              <li>Create a free account on <a href="https://www.make.com/" target="_blank" rel="noreferrer" className="text-[#F5F5F5] underline">Make.com</a> or Zapier.</li>
+            <ol className="list-decimal list-inside text-xs space-y-2 font-mono" style={{ color: 'var(--color-paper-dim)' }}>
+              <li>Create a free account on <a href="https://www.make.com/" target="_blank" rel="noreferrer" className="text-white underline">Make.com</a> or Zapier.</li>
               <li>Create a new Scenario/Zap with a <strong>Custom Webhook</strong> trigger and copy the URL.</li>
-              <li>Add the URL to your <code className="bg-[#181818] px-2 py-0.5 rounded text-[#F5F5F5]">.env</code> file as <code className="bg-[#181818] px-2 py-0.5 rounded text-[#F5F5F5]">SOCIAL_WEBHOOK_URL="https://..."</code>.</li>
+              <li>Add the URL to your <code className="bg-white/10 px-2 py-0.5 rounded text-white">.env</code> file as <code className="bg-white/10 px-2 py-0.5 rounded text-white">SOCIAL_WEBHOOK_URL="https://..."</code>.</li>
               <li>Connect your Instagram Business account in Make/Zapier to map the Image URL and Caption.</li>
               <li>Click <strong>"ROBOT MODE: AUTO-ON"</strong> above to let NewsAI broadcast 24/7 without intervention!</li>
             </ol>
@@ -356,49 +362,49 @@ export default function SocialStudio() {
 
         {/* RIGHT COLUMN: Interactive iPhone 15 Pro Studio (5 cols) */}
         <div className="lg:col-span-5 sticky top-24 space-y-6">
-          <div className="font-mono text-xs text-[#A0A0A0] uppercase tracking-[0.25em] text-center font-bold">
+          <div className="font-mono text-xs uppercase tracking-widest text-center font-bold" style={{ color: 'var(--color-paper-dim)' }}>
             LIVE IPHONE 15 PRO // FACEBOOK & SOCIAL PREVIEW
           </div>
 
           {/* The Phone Container */}
-          <div className="w-[340px] sm:w-[360px] mx-auto bg-[#0A0A0A] rounded-[54px] p-4 border-[12px] border-[#222222] shadow-[0_25px_60px_rgba(0,0,0,0.9)] relative select-none">
+          <div className="w-[340px] sm:w-[360px] mx-auto bg-[#050914] rounded-[54px] p-4 border-[12px] border-[#181c2a] shadow-[0_25px_60px_rgba(0,0,0,0.9)] relative select-none">
             {/* Dynamic Island */}
-            <div className="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-6 bg-black rounded-full z-40 border border-[#2A2A2A]/50 flex items-center justify-between px-2.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#111111] border border-[#222]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#1A1A1A]" />
+            <div className="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-6 bg-black rounded-full z-40 border border-white/10 flex items-center justify-between px-2.5">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#111] border border-white/10" />
+              <div className="w-2.5 h-2.5 rounded-full bg-[#1a1a1a]" />
             </div>
 
             {/* iPhone Screen Inner */}
-            <div className="bg-black rounded-[40px] overflow-hidden pt-10 pb-6 text-white font-sans text-xs min-h-[580px] flex flex-col justify-between border border-[#1A1A1A]">
+            <div className="bg-[#02050c] rounded-[40px] overflow-hidden pt-10 pb-6 text-white font-sans text-xs min-h-[580px] flex flex-col justify-between border border-white/10">
               {selectedArticle ? (
                 <div className="space-y-3 flex-1 flex flex-col">
                   {/* IG Post Header */}
                   <div className="flex items-center justify-between px-3 pt-1">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-[#1A1A1A] border border-[#3A3A3A] flex items-center justify-center font-display font-black text-xs text-[#F5F5F5]">
+                      <div className="w-8 h-8 rounded-full bg-white border border-white/20 flex items-center justify-center font-display font-black text-xs text-black">
                         N
                       </div>
                       <div>
                         <div className="font-bold text-[11px] flex items-center gap-1 leading-none text-white">
                           <span>newsai.daily</span>
-                          <span className="w-3 h-3 rounded-full bg-[#F5F5F5] text-black font-black text-[8px] flex items-center justify-center">✓</span>
+                          <span className="w-3 h-3 rounded-full bg-white text-black font-black text-[8px] flex items-center justify-center">✓</span>
                         </div>
-                        <div className="text-[9px] text-[#A0A0A0] leading-none mt-1 uppercase font-mono tracking-wider">
+                        <div className="text-[9px] text-gray-400 leading-none mt-1 uppercase font-mono tracking-wider">
                           {selectedArticle.sector} • SPONSORED DISPATCH
                         </div>
                       </div>
                     </div>
-                    <span className="text-sm font-bold text-[#A0A0A0] tracking-widest">•••</span>
+                    <span className="text-sm font-bold text-gray-400 tracking-widest">•••</span>
                   </div>
 
                   {/* IG Media Display (Square Aspect Ratio) */}
-                  <div className="relative aspect-square w-full bg-[#111111] overflow-hidden border-y border-[#1A1A1A]">
+                  <div className="relative aspect-square w-full bg-black/60 overflow-hidden border-y border-white/10">
                     <img
                       src={selectedArticle.image_url}
                       alt={selectedArticle.title}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md px-2 py-1 rounded font-mono text-[8px] text-white/90 uppercase tracking-wider border border-white/10">
+                    <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md px-2 py-1 rounded font-mono text-[8px] text-white/90 uppercase tracking-wider border border-white/15">
                       NEWSAI AI ART
                     </div>
                   </div>
@@ -406,13 +412,13 @@ export default function SocialStudio() {
                   {/* IG Action Bar */}
                   <div className="px-3 flex items-center justify-between pt-1">
                     <div className="flex items-center gap-4">
-                      <button onClick={() => setLiked(!liked)} className="text-xl transition-transform active:scale-125">
-                        {liked ? <span className="text-[#DC2626]">♥</span> : <span>♡</span>}
+                      <button onClick={() => setLiked(!liked)} className="text-xl transition-transform active:scale-125 cursor-pointer">
+                        {liked ? <span className="text-white">♥</span> : <span>♡</span>}
                       </button>
-                      <span className="text-lg">💬</span>
-                      <span className="text-lg">✈</span>
+                      <span className="text-lg cursor-pointer">💬</span>
+                      <span className="text-lg cursor-pointer">✈</span>
                     </div>
-                    <span className="text-lg">🔖</span>
+                    <span className="text-lg cursor-pointer">🔖</span>
                   </div>
 
                   {/* IG Likes Counter */}
@@ -421,7 +427,7 @@ export default function SocialStudio() {
                   </div>
 
                   {/* IG Caption Area */}
-                  <div className="px-3 text-[11px] leading-relaxed text-[#D4D4D4] flex-1 overflow-y-auto max-h-[140px] scrollbar-none">
+                  <div className="px-3 text-[11px] leading-relaxed text-gray-300 flex-1 overflow-y-auto max-h-[140px] scrollbar-none">
                     <span className="font-bold text-white mr-2">newsai.daily</span>
                     <span className="whitespace-pre-line">
                       {showFullCaption || !selectedArticle.social_caption
@@ -431,14 +437,14 @@ export default function SocialStudio() {
                     {selectedArticle.social_caption && selectedArticle.social_caption.length > 110 && !showFullCaption && (
                       <button
                         onClick={() => setShowFullCaption(true)}
-                        className="text-[#A0A0A0] hover:text-white ml-1 font-semibold"
+                        className="text-gray-400 hover:text-white ml-1 font-semibold cursor-pointer"
                       >
                         more
                       </button>
                     )}
 
                     {/* Hashtags Strip */}
-                    <div className="mt-2 flex flex-wrap gap-1 font-mono text-[10px] text-[#A0A0A0]">
+                    <div className="mt-2 flex flex-wrap gap-1 font-mono text-[10px] text-gray-400">
                       {(selectedArticle.social_hashtags || [`#${selectedArticle.sector}`, '#NewsAI', '#BreakingNews']).map((tag, idx) => (
                         <span key={idx} className="hover:text-white cursor-pointer">{tag}</span>
                       ))}
@@ -446,18 +452,18 @@ export default function SocialStudio() {
                   </div>
 
                   {/* IG Timestamp */}
-                  <div className="px-3 font-mono text-[8px] text-[#606060] uppercase tracking-widest pb-1 border-t border-[#1A1A1A] pt-2">
+                  <div className="px-3 font-mono text-[8px] text-gray-500 uppercase tracking-widest pb-1 border-t border-white/10 pt-2">
                     PUBLISHED ON {new Date(selectedArticle.timestamp).toLocaleDateString()}
                   </div>
                 </div>
               ) : (
-                <div className="flex-1 flex items-center justify-center text-center p-6 font-mono text-xs text-[#606060] uppercase tracking-widest">
+                <div className="flex-1 flex items-center justify-center text-center p-6 font-mono text-xs uppercase tracking-widest text-gray-500">
                   SELECT A DISPATCH FROM THE LEFT QUEUE TO PREVIEW
                 </div>
               )}
 
               {/* iPhone Home Bar */}
-              <div className="w-32 h-1 bg-[#333333] rounded-full mx-auto mt-2" />
+              <div className="w-32 h-1 bg-white/20 rounded-full mx-auto mt-2" />
             </div>
           </div>
 
@@ -465,7 +471,7 @@ export default function SocialStudio() {
           {selectedArticle && (
             <div className="space-y-3 max-w-[360px] mx-auto">
               {selectedArticle.broadcast_status === 'failed' && (
-                <div className="p-3 bg-[#DC2626]/15 border border-[#DC2626]/40 rounded-xl text-[#DC2626] font-mono text-xs text-center">
+                <div className="p-3 bg-white/10 border border-white/30 rounded-xl text-white font-mono text-xs text-center">
                   <strong>❌ FB BROADCAST FAILED:</strong> {selectedArticle.broadcast_error || 'Network or Make.com execution error'}
                 </div>
               )}
@@ -473,13 +479,13 @@ export default function SocialStudio() {
               <button
                 onClick={() => handleBroadcast(selectedArticle._id)}
                 disabled={broadcastingId === selectedArticle._id}
-                className={`w-full py-4 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-extrabold transition-all flex items-center justify-center gap-3 shadow-2xl border ${
-                  selectedArticle.broadcast_status === 'broadcasted'
-                    ? 'bg-[#181818] text-[#A0A0A0] border-[#3A3A3A] hover:bg-[#F5F5F5] hover:text-[#0A0A0A]'
-                    : selectedArticle.broadcast_status === 'failed'
-                    ? 'bg-[#DC2626] text-white border-[#DC2626] hover:bg-red-700 animate-pulse'
-                    : 'bg-[#F5F5F5] text-[#0A0A0A] border-[#F5F5F5] hover:scale-[1.02]'
-                }`}
+                className="w-full py-4 rounded-2xl font-mono text-xs uppercase tracking-[0.2em] font-extrabold transition-all flex items-center justify-center gap-3 shadow-2xl border cursor-pointer"
+                style={{
+                  background: selectedArticle.broadcast_status === 'broadcasted' ? 'rgba(255,255,255,0.06)' : '#ffffff',
+                  borderColor: selectedArticle.broadcast_status === 'broadcasted' ? 'rgba(255,255,255,0.15)' : 'transparent',
+                  color: selectedArticle.broadcast_status === 'broadcasted' ? '#ffffff' : '#000000',
+                  boxShadow: selectedArticle.broadcast_status === 'broadcasted' ? 'none' : '0 8px 32px rgba(255,255,255,0.2)'
+                }}
               >
                 {broadcastingId === selectedArticle._id ? (
                   <>
@@ -507,10 +513,10 @@ export default function SocialStudio() {
                   animate={{ opacity: 1, y: 0 }}
                   className={`p-4 rounded-xl font-mono text-xs text-center border ${
                     broadcastMessage.type === 'error'
-                      ? 'bg-[#DC2626]/15 text-[#DC2626] border-[#DC2626]/40'
+                      ? 'bg-white/10 text-white border-white/30'
                       : broadcastMessage.type === 'simulation'
-                      ? 'bg-[#181818] text-[#F5F5F5] border-[#404040]'
-                      : 'bg-[#F5F5F5] text-[#0A0A0A] font-bold border-[#F5F5F5]'
+                      ? 'bg-white/10 text-white border-white/20'
+                      : 'bg-white/15 text-white font-bold border-white/40'
                   }`}
                 >
                   {broadcastMessage.text}

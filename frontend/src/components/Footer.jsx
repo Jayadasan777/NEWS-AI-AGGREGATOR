@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useHUD } from '../context/HUDContext';
 
 export default function Footer() {
-  const { sectors, triggerGlitch } = useHUD();
+  const { sectors } = useHUD();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -17,102 +17,111 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative mt-28 border-t border-[#2A2A2A] pt-16 pb-14 text-[#606060] font-sans">
-      {/* ── 1. Daily Intelligence Briefing Subscription Card ── */}
-      <div className="mb-16 glass-panel rounded-2xl p-8 sm:p-12 border border-[#2A2A2A] relative overflow-hidden shadow-2xl bg-[#111111]">
+    <footer className="relative mt-28" style={{ borderTop: '1px solid var(--color-border)', paddingTop: 60 }}>
+
+      {/* ── Subscribe Card ── */}
+      <div className="glass-card rounded-2xl p-8 sm:p-10 mb-16 relative overflow-hidden">
+        {/* Gradient top accent */}
+        <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
+             style={{ background: 'var(--grad-primary)' }} />
+        {/* Background glow */}
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none"
+             style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%)', transform: 'translate(30%,-40%)' }} />
+
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-          <div className="max-w-2xl">
-            <div className="font-mono text-[10px] text-[#F5F5F5] uppercase tracking-[0.28em] mb-2 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse" />
-              <span>AUTONOMOUS MORNING DISPATCH</span>
+          <div className="max-w-xl">
+            <div className="flex items-center gap-2 mb-3 font-mono text-xs font-bold uppercase tracking-widest">
+              <span className="live-dot" style={{ width: 6, height: 6 }} />
+              <span style={{ color: 'var(--color-paper)' }}>Autonomous Morning Dispatch</span>
             </div>
-            <h3 className="font-display font-bold text-2xl sm:text-3xl text-[#F5F5F5] tracking-tight mb-3">
-              Receive the Llama-3 <span className="text-white underline decoration-1 underline-offset-4">Executive Summary</span> Daily.
+            <h3 className="font-black text-2xl sm:text-3xl tracking-tight mb-2" style={{ color: 'var(--color-paper)' }}>
+              Receive the <span className="text-gradient">Executive Brief</span> daily.
             </h3>
-            <p className="text-sm sm:text-base text-[#C8C8C8] leading-relaxed font-light">
-              Zero-noise intelligence curation. We synthesize top geopolitical, financial, and tech dispatches into a 3-minute read delivered to your inbox every morning at 06:00 UTC.
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--color-paper-dim)' }}>
+              Llama 3 synthesized top dispatches across 14 domains — zero-noise, 3-minute read, delivered 06:00 UTC.
             </p>
           </div>
 
-          <form onSubmit={handleSubscribe} className="w-full lg:w-auto flex flex-col sm:flex-row gap-3 shrink-0">
+          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0">
             {subscribed ? (
-              <div className="px-6 py-4 rounded-xl bg-[#F5F5F5] text-[#0A0A0A] font-mono text-xs uppercase tracking-widest flex items-center gap-2 font-bold shadow-lg">
-                <span>✓ BRIEFING ACCESS GRANTED</span>
+              <div className="flex items-center gap-2.5 px-5 py-3 rounded-xl font-mono text-xs font-bold uppercase tracking-widest"
+                   style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.3)', color: 'var(--color-paper)' }}>
+                ✓ Access Granted
               </div>
             ) : (
               <>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="ENTER EXECUTIVE EMAIL..."
-                  required
-                  className="bg-[#0A0A0A] text-[#F5F5F5] font-mono text-xs tracking-wider uppercase px-5 py-4 rounded-xl border border-[#2A2A2A] focus:outline-none focus:border-[#F5F5F5] transition-all min-w-[260px] shadow-inner"
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="your@email.com" required
+                  className="px-5 py-3 rounded-xl text-sm font-mono font-medium focus:outline-none transition-all min-w-[240px]"
+                  style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)',
+                           color: 'var(--color-paper)' }}
+                  onFocus={e => e.target.style.borderColor = 'var(--color-paper)'}
+                  onBlur={e => e.target.style.borderColor = 'var(--color-border)'}
                 />
-                <button
-                  type="submit"
-                  className="px-6 py-4 rounded-xl bg-[#F5F5F5] hover:bg-transparent hover:text-[#F5F5F5] text-[#0A0A0A] border border-[#F5F5F5] font-mono text-xs uppercase tracking-[0.18em] font-extrabold transition-all shadow-lg flex items-center justify-center gap-2"
-                >
-                  <span>SUBSCRIBE →</span>
-                </button>
+                <button type="submit" className="btn-primary whitespace-nowrap">Subscribe →</button>
               </>
             )}
           </form>
         </div>
       </div>
 
-      {/* ── 2. Domain Explorer Matrix & Brand Description ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-14 border-b border-[#2A2A2A]">
-        <div className="lg:col-span-5 space-y-4">
-          <div className="font-display font-extrabold text-2xl text-[#F5F5F5] tracking-tight">
-            NEWSAI <span className="text-[#A0A0A0] text-xs font-mono tracking-[0.22em] font-normal">// INTEL ENGINE v2.5</span>
+      {/* ── Main Footer Grid ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-14" style={{ borderBottom: '1px solid var(--color-border)' }}>
+        {/* Brand */}
+        <div className="lg:col-span-4 space-y-4">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/20 bg-white/10">
+              <span className="text-white font-black text-sm">N</span>
+            </div>
+            <span className="font-black text-xl tracking-tight text-gradient">NEWSAI</span>
+            <span className="font-mono text-xs opacity-40" style={{ color: 'var(--color-muted)' }}>// v2.5</span>
           </div>
-          <p className="text-sm text-[#C8C8C8] max-w-sm leading-relaxed font-light">
-            Autonomous situational awareness platform. Multi-source AI clustering, deduplication, and real-time news synthesis powered by Llama 3 neural fusion and Jaccard similarity indexing.
+          <p className="text-sm leading-relaxed max-w-sm" style={{ color: 'var(--color-paper-dim)' }}>
+            Autonomous intelligence platform — multi-source AI clustering, deduplication, and real-time synthesis powered by Llama 3 neural fusion.
           </p>
-          <div className="pt-2 flex items-center gap-3 font-mono text-[10px] uppercase tracking-widest text-[#606060]">
-            <span className="flex items-center gap-1.5 text-[#F5F5F5]">
-              <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse" />
-              <span>NEURAL FUSION ONLINE</span>
-            </span>
-            <span>•</span>
-            <span>4-HOUR CRON INGESTION</span>
+          <div className="flex items-center gap-3 font-mono text-xs font-bold">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                 style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.2)', color: 'var(--color-paper)' }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-white" />
+              Neural Fusion Online
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
+                 style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', color: 'var(--color-paper-dim)' }}>
+              6h Cron Cycle
+            </div>
           </div>
         </div>
 
-        <div className="lg:col-span-7">
-          <div className="font-mono text-[10px] text-[#606060] uppercase tracking-[0.25em] mb-4">
-            EXPLORE ALL 14 DOMAINS
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
-            {sectors.map((s) => (
-              <Link
-                key={s.name}
-                to={`/sector/${s.name}`}
-                onClick={() => triggerGlitch(250)}
-                className="group flex items-center gap-2 px-3 py-2 rounded-lg bg-[#111111] hover:bg-[#181818] border border-[#2A2A2A] hover:border-[#3A3A3A] transition-all text-xs font-mono uppercase tracking-wider text-[#A0A0A0] hover:text-[#F5F5F5]"
+        {/* Domain Explorer */}
+        <div className="lg:col-span-8">
+          <p className="section-label mb-4">Explore All 14 Domains</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {sectors.map(s => (
+              <Link key={s.name} to={`/sector/${s.name}`}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-all group"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--color-border)', color: 'var(--color-paper-dim)' }}
               >
-                <span className="w-1.5 h-1.5 rounded-full shrink-0 transition-transform group-hover:scale-125" style={{ backgroundColor: s.color }} />
-                <span className="truncate">{s.name}</span>
+                <span className="w-1.5 h-1.5 rounded-full shrink-0 transition-all group-hover:scale-125" style={{ background: s.color, boxShadow: `0 0 6px ${s.color}` }} />
+                <span className="truncate group-hover:text-white transition-colors">{s.name}</span>
               </Link>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ── 3. System Telemetry Bar & Copyright ── */}
-      <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-[10px] uppercase tracking-[0.2em] text-[#606060]">
-        <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
-          <span className="text-[#F5F5F5]">LLAMA 3.1 70B</span>
-          <span>•</span>
-          <span>JACCARD SIMILARITY</span>
-          <span>•</span>
-          <span>LATENCY: 12ms</span>
-          <span>•</span>
-          <span className="text-[#F5F5F5]">MONGODB CLUSTER ONLINE</span>
+      {/* ── Bottom Bar ── */}
+      <div className="pt-7 pb-6 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs uppercase tracking-widest"
+           style={{ color: 'var(--color-subtle)' }}>
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          {['Llama 3.1 70B', 'Jaccard Similarity', 'Pollinations AI', 'MongoDB Atlas', 'Node.js + Vite'].map((t, i, arr) => (
+            <React.Fragment key={t}>
+              <span style={{ color: i % 2 === 0 ? 'var(--color-muted)' : 'var(--color-subtle)' }}>{t}</span>
+              {i < arr.length - 1 && <span>·</span>}
+            </React.Fragment>
+          ))}
         </div>
-        <div className="text-center md:text-right">
-          © {new Date().getFullYear()} NEWSAI // AUTONOMOUS SITUATIONAL AWARENESS
+        <div className="text-center" style={{ color: 'var(--color-subtle)' }}>
+          © {new Date().getFullYear()} NEWSAI — Autonomous Intelligence
         </div>
       </div>
     </footer>

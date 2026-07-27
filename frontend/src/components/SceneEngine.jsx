@@ -66,7 +66,7 @@ function Blob({ color, position = [0, 0, 0], speed = 1, distort = 0.5, scale = 1
   return (
     <Float speed={speed * 0.7} rotationIntensity={0.3} floatIntensity={0.4} position={position}>
       <mesh ref={ref} scale={scale}>
-        <sphereGeometry args={[1, 64, 64]} />
+        <sphereGeometry args={[1, 32, 32]} />
         <MeshDistortMaterial
           color={color}
           emissive={color}
@@ -134,15 +134,13 @@ function GlassPanel({ color, position, rotation = [0, 0, 0] }) {
         <boxGeometry args={[3.5, 2.5, 0.06]} />
         <meshPhysicalMaterial
           color="#060810"
-          transmission={0.9}
-          roughness={0.04}
-          ior={1.5}
-          thickness={2}
+          roughness={0.1}
+          metalness={0.6}
           clearcoat={1}
           emissive={color}
-          emissiveIntensity={0.04}
+          emissiveIntensity={0.08}
           transparent
-          opacity={0.85}
+          opacity={0.3}
         />
       </mesh>
     </Float>
@@ -184,7 +182,7 @@ function SectorScene({ sector, color, glow }) {
         <Blob color={c} position={[3.5, -1, -5]} speed={0.6} distort={0.4} scale={1.3} />
         <WireRing color={c} position={[0, 0, 0]} scale={1.6} speed={0.7} />
         <OrbitDots color={c} count={8} radius={2.8} speed={0.8} />
-        <Sparkles count={400} scale={14} size={2} speed={0.4} opacity={0.7} color={c} />
+        <Sparkles count={160} scale={14} size={2} speed={0.4} opacity={0.7} color={c} />
       </>
     ),
     tech: (
@@ -196,7 +194,7 @@ function SectorScene({ sector, color, glow }) {
         <WireRing color={glow} position={[0, -0.5, 0]} scale={1.4} speed={-0.8} />
         <GlassPanel color={c} position={[-4, 0, -3]} rotation={[0, 0.4, 0]} />
         <GlassPanel color={c} position={[4, 0, -2]} rotation={[0, -0.4, 0]} />
-        <Sparkles count={250} scale={12} size={1.5} speed={0.3} opacity={0.6} color={c} />
+        <Sparkles count={120} scale={12} size={1.5} speed={0.3} opacity={0.6} color={c} />
       </>
     ),
     geo: (
@@ -205,7 +203,7 @@ function SectorScene({ sector, color, glow }) {
         <WireRing color={c} position={[0, 0, 0]} scale={2.2} speed={0.4} />
         <WireRing color={glow} position={[0, 0, -1]} scale={1.4} speed={0.9} />
         <OrbitDots color={c} count={10} radius={3.2} speed={0.5} />
-        <Sparkles count={300} scale={16} size={1.8} speed={0.25} opacity={0.5} color={c} />
+        <Sparkles count={140} scale={16} size={1.8} speed={0.25} opacity={0.5} color={c} />
       </>
     ),
     finance: (
@@ -215,7 +213,7 @@ function SectorScene({ sector, color, glow }) {
         <GlassPanel color={c} position={[-4.5, 0.5, -3]} rotation={[0, 0.5, 0]} />
         <GlassPanel color={c} position={[4.5, -0.5, -3]} rotation={[0, -0.5, 0]} />
         <OrbitDots color={c} count={6} radius={2.5} speed={1} />
-        <Sparkles count={200} scale={10} size={1.5} speed={0.3} opacity={0.6} color={c} />
+        <Sparkles count={100} scale={10} size={1.5} speed={0.3} opacity={0.6} color={c} />
       </>
     ),
     science: (
@@ -225,7 +223,7 @@ function SectorScene({ sector, color, glow }) {
         <WireRing color={glow} position={[0, 0, -1]} scale={1.2} speed={-1.4} />
         <Crystal color={c} position={[-3.5, 1, -4]} scale={0.8} speed={1.6} />
         <Crystal color={c} position={[3.5, -1, -4]} scale={1.1} speed={1} />
-        <Sparkles count={350} scale={12} size={1.6} speed={0.5} opacity={0.7} color={c} />
+        <Sparkles count={140} scale={12} size={1.6} speed={0.5} opacity={0.7} color={c} />
       </>
     ),
     space: (
@@ -234,7 +232,7 @@ function SectorScene({ sector, color, glow }) {
         <OrbitDots color={c} count={12} radius={3.5} speed={0.3} />
         <OrbitDots color={glow} count={8} radius={2.2} speed={-0.5} />
         <WireRing color={c} position={[0, 0, 0]} scale={2.5} speed={0.3} />
-        <Sparkles count={500} scale={20} size={2.5} speed={0.15} opacity={0.55} color={c} />
+        <Sparkles count={180} scale={20} size={2.5} speed={0.15} opacity={0.55} color={c} />
       </>
     ),
     defense: (
@@ -244,7 +242,7 @@ function SectorScene({ sector, color, glow }) {
         <GlassPanel color={c} position={[-5, 0.5, -4]} rotation={[0, 0.6, 0]} />
         <GlassPanel color={c} position={[5, -0.5, -4]} rotation={[0, -0.6, 0]} />
         <OrbitDots color={c} count={6} radius={2.8} speed={0.6} />
-        <Sparkles count={200} scale={12} size={1.2} speed={0.2} opacity={0.5} color={c} />
+        <Sparkles count={100} scale={12} size={1.2} speed={0.2} opacity={0.5} color={c} />
       </>
     ),
     health: (
@@ -252,7 +250,7 @@ function SectorScene({ sector, color, glow }) {
         <Blob color={c} position={[0, 0, -2]} speed={1.0} distort={0.5} scale={1.7} />
         <WireRing color={c} position={[0, 0, 0]} scale={1.6} speed={0.9} />
         <Blob color={glow} position={[-3, 1, -4]} speed={0.7} distort={0.6} scale={1} />
-        <Sparkles count={280} scale={11} size={1.6} speed={0.4} opacity={0.65} color={c} />
+        <Sparkles count={120} scale={11} size={1.6} speed={0.4} opacity={0.65} color={c} />
       </>
     ),
     startups: (
@@ -262,7 +260,7 @@ function SectorScene({ sector, color, glow }) {
         <Crystal color={c} position={[2.5, 1.5, -4]} scale={1.0} speed={0.9} />
         <WireRing color={c} position={[0, 0, 0]} scale={1.8} speed={1.2} />
         <OrbitDots color={c} count={7} radius={2.4} speed={1.2} />
-        <Sparkles count={300} scale={12} size={1.8} speed={0.5} opacity={0.7} color={c} />
+        <Sparkles count={130} scale={12} size={1.8} speed={0.5} opacity={0.7} color={c} />
       </>
     ),
     crypto: (
@@ -271,7 +269,7 @@ function SectorScene({ sector, color, glow }) {
         <WireRing color={c} position={[0, 0, 0]} scale={2} speed={0.6} />
         <WireRing color={glow} position={[0, 0, -1]} scale={1.3} speed={-1} />
         <OrbitDots color={c} count={8} radius={2.8} speed={0.9} />
-        <Sparkles count={320} scale={13} size={2} speed={0.4} opacity={0.65} color={c} />
+        <Sparkles count={140} scale={13} size={2} speed={0.4} opacity={0.65} color={c} />
       </>
     ),
     sports: (
@@ -279,7 +277,7 @@ function SectorScene({ sector, color, glow }) {
         <Blob color={c} position={[0, 0, -2]} speed={1.5} distort={0.65} scale={1.5} />
         <WireRing color={c} position={[0, 0, 0]} scale={1.7} speed={1.4} />
         <OrbitDots color={c} count={9} radius={2.6} speed={1.3} />
-        <Sparkles count={350} scale={12} size={2} speed={0.6} opacity={0.7} color={c} />
+        <Sparkles count={150} scale={12} size={2} speed={0.6} opacity={0.7} color={c} />
       </>
     ),
     entertain: (
@@ -288,7 +286,7 @@ function SectorScene({ sector, color, glow }) {
         <Blob color={glow} position={[-3, 1.5, -4]} speed={0.8} distort={0.5} scale={0.9} />
         <Blob color={c} position={[3, -1.5, -5]} speed={0.7} distort={0.4} scale={1.2} />
         <WireRing color={c} position={[0, 0, 0]} scale={1.9} speed={0.8} />
-        <Sparkles count={400} scale={14} size={2.2} speed={0.5} opacity={0.7} color={c} />
+        <Sparkles count={160} scale={14} size={2.2} speed={0.5} opacity={0.7} color={c} />
       </>
     ),
     environment: (
@@ -296,7 +294,7 @@ function SectorScene({ sector, color, glow }) {
         <Blob color={c} position={[0, 0, -3]} speed={0.6} distort={0.45} scale={2.2} />
         <WireRing color={c} position={[0, 0, 0]} scale={2.1} speed={0.5} />
         <OrbitDots color={c} count={8} radius={3} speed={0.55} />
-        <Sparkles count={350} scale={16} size={1.8} speed={0.3} opacity={0.6} color={c} />
+        <Sparkles count={140} scale={16} size={1.8} speed={0.3} opacity={0.6} color={c} />
       </>
     ),
     automotive: (
@@ -305,7 +303,7 @@ function SectorScene({ sector, color, glow }) {
         <GlassPanel color={c} position={[0, 0, -3]} rotation={[0.03, 0, 0]} />
         <GlassPanel color={c} position={[-5, 0, -4]} rotation={[0, 0.55, 0]} />
         <WireRing color={c} position={[0, 0, 0]} scale={1.9} speed={0.7} />
-        <Sparkles count={260} scale={11} size={1.5} speed={0.35} opacity={0.6} color={c} />
+        <Sparkles count={110} scale={11} size={1.5} speed={0.35} opacity={0.6} color={c} />
       </>
     ),
   };
@@ -362,7 +360,7 @@ export default function SceneEngine({ activeSector, glitching, mouseRef }) {
   return (
     <Canvas
       camera={{ position: [0, 0.3, 6.5], fov: 55 }}
-      dpr={[1, isMobile ? 1 : 1.6]}
+      dpr={[1, 1.25]}
       performance={{ min: 0.5 }}
       gl={{ antialias: !isMobile, powerPreference: 'high-performance' }}
       style={{ position: 'absolute', inset: 0 }}
