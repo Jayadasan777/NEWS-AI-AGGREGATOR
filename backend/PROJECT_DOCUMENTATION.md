@@ -805,7 +805,7 @@ While Phases 1 through 3 established an enterprise-grade AI news aggregation, de
 ### Step 4f: Production Reliability & Cloud Monitoring (`server.js`) — COMPLETED
 - **Keep-Alive Health Endpoint (`GET /ping`):** Implemented a lightweight ping route designed for automated uptime monitors (e.g., `cron-job.org`, UptimeRobot) to prevent server hibernation on free-tier cloud hosting providers (Render, Railway, Heroku).
 - **Manual Ingestion Trigger Route (`GET /api/trigger`):** Added an asynchronous HTTP trigger endpoint that initiates `runNewsEngine()` in the background while returning an immediate 200 OK JSON response, eliminating HTTP browser timeouts during intensive 14-feed scrapes.
-- **Optimized Cron Scheduling:** Tuned the background automation schedule to run every 6 hours (`0 */6 * * *`, 4 times daily), striking an optimal balance between intelligence freshness, Groq LPU rate ceilings, and Pollinations image generation bandwidth.
+- **Optimized Cron Scheduling:** Tuned the background automation schedule to run weekly on Monday at 08:00 UTC (`0 8 * * 1`), providing curated weekly intelligence dispatches while conserving Groq LPU rate ceilings and Pollinations image generation bandwidth.
 
 ### PHASE 4 STATUS: Fully implemented and operational
 The application has successfully evolved into a full-stack, autonomous AI news distribution platform. With 14-sector multi-source RSS ingestion, Llama 3 multi-modal synthesis (summary + Instagram/Twitter captions + viral hashtags), webhook distribution to Make.com/Discord/Telegram, an interactive Social Studio dashboard, and an immersive Three.js 3D Cosmic Glassmorphism UI, NewsAI represents a comprehensive, enterprise-grade agentic content pipeline.

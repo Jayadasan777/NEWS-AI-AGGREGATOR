@@ -41,9 +41,9 @@ app.get('/api/trigger', (req, res) => {
   });
 });
 
-// --- Scheduled job: runs every 4 hours (optimal balance for fresh intel & API limits) ---
-cron.schedule('0 */6 * * *', async () => {
-  console.log('\n⏰ Scheduled job triggered (4-hour schedule):', new Date().toLocaleString());
+// --- Scheduled job: runs weekly on Monday at 08:00 AM UTC (optimal balance for weekly intelligence dispatches) ---
+cron.schedule('0 8 * * 1', async () => {
+  console.log('\n⏰ Scheduled job triggered (Weekly schedule):', new Date().toLocaleString());
   try {
     await runNewsEngine();
   } catch (error) {
@@ -51,7 +51,7 @@ cron.schedule('0 */6 * * *', async () => {
   }
 });
 
-console.log('⏰ Cron job scheduled: news engine will run every 4 hours.');
+console.log('⏰ Cron job scheduled: news engine will run weekly on Monday at 08:00 AM UTC.');
 
 
 

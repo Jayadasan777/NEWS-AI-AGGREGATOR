@@ -33,7 +33,7 @@ router.get('/queue', async (req, res) => {
       count: articles.length,
       autoBroadcastEnabled: global.AUTO_BROADCAST_ENABLED,
       webhookConfigured: Boolean(process.env.SOCIAL_WEBHOOK_URL),
-      cronSchedule: 'Every 4 Hours (0 */6 * * *)',
+      cronSchedule: 'Weekly (Every Monday at 08:00 UTC - 0 8 * * 1)',
       lastIngestionTime: latestArt ? latestArt.timestamp : null,
       data: articles
     });

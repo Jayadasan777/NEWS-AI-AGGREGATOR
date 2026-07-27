@@ -117,7 +117,7 @@ npm run dev
 # Or standard Node execution:
 npm start
 ```
-The server will start on `http://localhost:5000` and schedule automated 14-feed AI scrapes every 6 hours (`0 */6 * * *`).
+The server will start on `http://localhost:5000` and schedule automated 14-feed AI scrapes weekly on Monday at 08:00 UTC (`0 8 * * 1`).
 
 ---
 

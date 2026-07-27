@@ -18,7 +18,7 @@ export default function SocialStudio() {
   const [broadcastMessage, setBroadcastMessage] = useState(null);
   const [liked, setLiked] = useState(false);
   const [showFullCaption, setShowFullCaption] = useState(false);
-  const [cronSchedule, setCronSchedule] = useState('Every 4 Hours');
+  const [cronSchedule, setCronSchedule] = useState('Weekly (Every Monday)');
   const [lastIngestionTime, setLastIngestionTime] = useState(null);
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
@@ -32,7 +32,7 @@ export default function SocialStudio() {
       setArticles(data);
       setIsAutoEnabled(Boolean(res.data.autoBroadcastEnabled));
       setWebhookConfigured(Boolean(res.data.webhookConfigured));
-      setCronSchedule(res.data.cronSchedule || 'Every 4 Hours');
+      setCronSchedule(res.data.cronSchedule || 'Weekly (Every Monday)');
       setLastIngestionTime(res.data.lastIngestionTime || null);
       if (data.length > 0 && !selectedArticle) {
         setSelectedArticle(data[0]);

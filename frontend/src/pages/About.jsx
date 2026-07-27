@@ -10,7 +10,7 @@ export default function About() {
     {
       num: '01',
       title: 'Multi-Source RSS Ingestion',
-      desc: '2× daily cron engine ingests live XML/RSS feeds across 14 dedicated geopolitical, financial, and scientific domains.',
+      desc: 'Weekly cron engine ingests live XML/RSS feeds across 14 dedicated geopolitical, financial, and scientific domains.',
       tag: '42 GLOBAL WIRE SERVICES',
     },
     {
@@ -114,7 +114,7 @@ export default function About() {
               { label: 'LLM INFERENCING',  value: 'LLAMA 3.1 70B & 8B',  highlight: false },
               { label: 'CLUSTERING ALGO',  value: 'JACCARD IoU (0.35)',  highlight: false },
               { label: 'DATABASE ENGINE',  value: 'MONGODB CLUSTER',     highlight: false },
-              { label: 'SCHEDULE',         value: 'EVERY 4 HOURS / CRON', highlight: false },
+              { label: 'SCHEDULE',         value: 'WEEKLY / CRON', highlight: false },
               { label: 'SOCIAL BROADCAST', value: 'MAKE.COM / ZAPIER',   highlight: true },
             ].map(({ label, value, highlight }) => (
               <div key={label} className="flex justify-between py-3 border-b border-white/10 last:border-b-0">
