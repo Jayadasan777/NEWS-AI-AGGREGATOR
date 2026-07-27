@@ -19,10 +19,27 @@ const broadcastArticle = async (articleOrId) => {
 
     const webhookUrl = process.env.SOCIAL_WEBHOOK_URL;
     
-    // Prepare standardized social media payload
+    const formattedPost = `${article.social_caption || article.title}\n\n${(article.social_hashtags || []).join(' ')}`;
+    const captionText = article.social_caption || `${article.title}\n\n${article.unique_summary.slice(0, 200)}...`;
+    const hashtagsArray = article.social_hashtags || [`#${article.sector}`, '#NewsAI', '#BreakingNews'];
+
+    // Prepare standardized dual-structure social media payload (flat + nested)
     const payload = {
       event: 'NEW_ARTICLE_BROADCAST',
       timestamp: new Date().toISOString(),
+      // Top-level flat properties for direct field mapping in Make.com / Zapier / Discord / n8n
+      id: article._id,
+      title: article.title,
+      summary: article.unique_summary,
+      sector: article.sector,
+      image_url: article.image_url,
+      url: article.url || '',
+      caption: captionText,
+      message: formattedPost,
+      social_caption: captionText,
+      social_hashtags: hashtagsArray,
+      formatted_post: formattedPost,
+      // Nested object structure
       article: {
         id: article._id,
         title: article.title,
@@ -30,9 +47,11 @@ const broadcastArticle = async (articleOrId) => {
         sector: article.sector,
         image_url: article.image_url,
         url: article.url || '',
-        social_caption: article.social_caption || `${article.title}\n\n${article.unique_summary.slice(0, 200)}...`,
-        social_hashtags: article.social_hashtags || [`#${article.sector}`, '#NewsAI', '#BreakingNews'],
-        formatted_post: `${article.social_caption || article.title}\n\n${(article.social_hashtags || []).join(' ')}`
+        caption: captionText,
+        message: formattedPost,
+        social_caption: captionText,
+        social_hashtags: hashtagsArray,
+        formatted_post: formattedPost
       }
     };
 
