@@ -291,3 +291,30 @@ All historical documentation discrepancies have been fully audited and reconcile
 6. **Dependency Optimization:** Removed unused `cloudinary` from `backend/package.json` (and deleted `config/cloudinary.js`), removed unused `gsap` from `frontend/package.json`, and moved `@google/generative-ai` to `devDependencies` in `backend/package.json` with an explanatory legacy comment in `testEngine.js`.
 7. **Repository Cleanup:** Deleted `backend/error-log.txt`, `backend/clustering-output.txt`, `backend/test-output-image.png`, and added them to `backend/.gitignore`.
 8. **Evaluation Benchmark Expansion ($N=11 \to N=45$):** Expanded `testCases.json` to 45 headline pairs across 12 sectors, generating `evaluation-results-n45.json` demonstrating **$97.78\%$ Accuracy** and **$97.14\%$ F1-Score** while retaining `evaluation-results.json` for paper comparison.
+9. **Publication-Grade Distribution Architecture:** Implemented a multi-layer anti-duplication lock, 1-hour staggered drip-feed queueing, dynamic source stance detection, evergreen content recirculation (`recirculateEngine.js`), and self-healing webhook retries.
+
+---
+
+## 8. Publication-Grade Ingestion & Distribution Upgrades
+
+To ensure production-grade robustness and publication-level rigor, five architectural enhancements were integrated into the core backend distribution pipeline:
+
+### 8.1 Multi-Layer Anti-Duplication Lock (`newsEngine.js` & `socialBroadcast.js`)
+- **Pre-LLM Deduplication Query:** Queries MongoDB for matching `url` OR `title_hash` (MD5 digest of normalized headline) OR exact `title` BEFORE invoking LLM synthesis or Pollinations image generation.
+- **Broadcast Idempotency Guard:** Checks `broadcast_status === 'pending'` in `socialBroadcast.js` before dispatch, preventing duplicate webhook payloads.
+
+### 8.2 Autonomous Smart-Queue & Staggered Drip-Feeding (`socialBroadcast.js`)
+- Assigns a `scheduled_broadcast_time` with 1-hour staggered offsets (`Date.now() + i * 3600000`) for batch dispatches during ingestion, preventing social platform rate limits and spam flags.
+
+### 8.3 Dynamic Source Stance Detection in Fusion (`eventEngine.js`)
+- Updates `fuseSummaries()` prompt to instruct Meta Llama 3 to analyze source stances and explicitly highlight conflicting publisher details when reports diverge on key event facts.
+
+### 8.4 Evergreen Content Recirculation (`recirculateEngine.js`)
+- Identifies high-confidence articles (`confidence_score >= 90`) older than 48 hours that have not been recirculated (`is_recirculated !== true`).
+- Re-queues a single instance with an `"ICYMI: "` caption prefix and sets `is_recirculated = true` to guarantee zero duplicate re-queuing.
+
+### 8.5 Webhook Self-Healing & Retry Engine (`socialBroadcast.js`)
+- Wraps HTTP webhook dispatches in a try/catch self-healing loop.
+- Tracks `retry_count` (up to 3 retries) and records `broadcast_error`.
+- Schedules automated re-attempts at 15-minute intervals for transient network failures before marking status as `failed`.
+

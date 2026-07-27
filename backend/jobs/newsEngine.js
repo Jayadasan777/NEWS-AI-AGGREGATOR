@@ -154,14 +154,25 @@ const generateAndHostImage = (customPrompt, sector, articleTitle) => {
   }
 };
 
-// --- Process Batches to Respect API Limits ---
+// --- Process Batches to Respect API Limits & Stagger Drip-Feeding ---
 const processBatch = async (articlesBatch, sectorName) => {
   for (const item of articlesBatch) {
     try {
-      // Layer 1: Pre-LLM Deduplication
-      const alreadyExists = await Article.findOne({ title: item.title });
+      const articleUrl = item.link || item.guid || item.url || '';
+      const titleHash = crypto.createHash('md5').update((item.title || '').toLowerCase().trim()).digest('hex');
+
+      // Layer 1: Strict Multi-Layer Anti-Duplication Lock (URL + Title Hash + Exact Title)
+      const deduplicationConditions = [
+        { title: item.title },
+        { title_hash: titleHash }
+      ];
+      if (articleUrl) {
+        deduplicationConditions.push({ url: articleUrl });
+      }
+
+      const alreadyExists = await Article.findOne({ $or: deduplicationConditions });
       if (alreadyExists) {
-        console.log(`⏭️ Skipped (Pre-LLM Dedup): ${item.title}`);
+        console.log(`⏭️ Skipped (Multi-Layer Anti-Duplication Lock): ${item.title}`);
         continue;
       }
 
@@ -182,18 +193,25 @@ const processBatch = async (articlesBatch, sectorName) => {
         console.log(`🤖 Generated FLUX Realism AI photojournalism image`);
       }
 
+      // Feature 2: Autonomous Smart-Queue Staggered Drip-Feeding (1-hour offsets between batch dispatches)
+      const scheduledTime = new Date(Date.now() + (dripOffsetCounter * 3600000));
+      dripOffsetCounter++;
+
       const newArticle = new Article({
         title: item.title,
+        title_hash: titleHash,
+        url: articleUrl,
         unique_summary: summary,
         sector: sectorName,
         image_url: frontendImageUrl,
         social_caption: social_caption,
         social_hashtags: social_hashtags,
-        broadcast_status: 'pending'
+        broadcast_status: 'pending',
+        scheduled_broadcast_time: scheduledTime
       });
 
       await newArticle.save();
-      console.log(`✅ Saved successfully (Summary + IG Caption + Hashtags generated)`);
+      console.log(`✅ Saved successfully (Summary + IG Caption + Hashtags + TitleHash generated, Drip Schedule: ${scheduledTime.toLocaleTimeString()})`);
 
       // Layer 2: Hybrid Jaccard + Llama 3 Event Clustering
       await processArticleIntoEvent(newArticle);

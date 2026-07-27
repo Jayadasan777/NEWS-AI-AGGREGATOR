@@ -68,7 +68,7 @@ router.post('/trigger-scrape', async (req, res) => {
 router.post('/broadcast/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await broadcastArticle(id);
+    const result = await broadcastArticle(id, { force: true });
     
     if (result.success) {
       res.json(result);
@@ -116,7 +116,7 @@ router.get('/test', async (req, res) => {
       return res.status(404).json({ success: false, message: 'No articles found in DB to test.' });
     }
     console.log(`🧪 Test webhook triggered for latest article: "${latestArticle.title}"`);
-    const result = await broadcastArticle(latestArticle);
+    const result = await broadcastArticle(latestArticle, { force: true });
     res.json({
       success: true,
       message: '🧪 Test broadcast dispatched successfully to Make.com!',
