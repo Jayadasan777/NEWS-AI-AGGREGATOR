@@ -22,6 +22,7 @@ const broadcastArticle = async (articleOrId) => {
     const formattedPost = `${article.social_caption || article.title}\n\n${(article.social_hashtags || []).join(' ')}`;
     const captionText = article.social_caption || `${article.title}\n\n${article.unique_summary.slice(0, 200)}...`;
     const hashtagsArray = article.social_hashtags || [`#${article.sector}`, '#NewsAI', '#BreakingNews'];
+    const safeImageUrl = article.image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1400&q=80';
 
     // Prepare standardized dual-structure social media payload (flat + nested)
     const payload = {
@@ -32,8 +33,10 @@ const broadcastArticle = async (articleOrId) => {
       title: article.title,
       summary: article.unique_summary,
       sector: article.sector,
-      image_url: article.image_url,
+      image_url: safeImageUrl,
+      photo_url: safeImageUrl,
       url: article.url || '',
+      link: article.url || '',
       caption: captionText,
       message: formattedPost,
       social_caption: captionText,
@@ -45,8 +48,10 @@ const broadcastArticle = async (articleOrId) => {
         title: article.title,
         summary: article.unique_summary,
         sector: article.sector,
-        image_url: article.image_url,
+        image_url: safeImageUrl,
+        photo_url: safeImageUrl,
         url: article.url || '',
+        link: article.url || '',
         caption: captionText,
         message: formattedPost,
         social_caption: captionText,
