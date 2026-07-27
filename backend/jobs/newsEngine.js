@@ -66,17 +66,18 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 // --- Synthesize Article & Generate Instagram/Social Metadata using Llama 3 (Groq) ---
 const synthesizeWithGroq = async (title, description, sector) => {
   const prompt = `You are a professional news editor and social media manager for an autonomous news agency called NewsAI.
-Based on the following news headline and description, return a valid JSON object with three exact fields:
+Based on the following news headline and description, return a valid JSON object with four exact fields:
 1. "summary": A professional editorial summary of about 150 words in a neutral, informative tone. Do not copy phrases directly.
 2. "social_caption": An engaging Instagram caption starting with a catchy emoji hook headline (e.g. 🚨 BREAKING: or 🤖 AI UPDATE:), followed by a brief 2-3 bullet point breakdown, ending with a call to action.
 3. "social_hashtags": An array of 10-14 viral, relevant hashtags (e.g. ["#NewsAI", "#TechNews", "#AI", "#Geopolitics"]).
+4. "image_prompt": A detailed description for an AI image generator to create an authentic, Pulitzer-prize winning press photograph and broadcast journalism photo representing this event. Must use professional camera optics terms: 'Shot on 35mm lens, f/2.8, natural lighting, ultra-realistic press photograph, Reuters/AP News photojournalism style, 8k resolution, authentic candid shot, no text, no watermarks, no cartoons, no illustrations, no digital art.' Describe specific subjects, settings, and lighting relevant to the news story.
 
 Original Title: ${title}
 Original Description: ${description}
 Sector: ${sector}
 
 Return ONLY valid JSON without any markdown code blocks or commentary. Example format:
-{"summary": "...", "social_caption": "...", "social_hashtags": ["#NewsAI", "#Breaking"]}`;
+{"summary": "...", "social_caption": "...", "social_hashtags": ["#NewsAI", "#Breaking"], "image_prompt": "..."}`;
 
   try {
     const completion = await groq.chat.completions.create({
@@ -92,7 +93,8 @@ Return ONLY valid JSON without any markdown code blocks or commentary. Example f
       return {
         summary: parsed.summary || description,
         social_caption: parsed.social_caption || `🚨 ${title}\n\n${description.slice(0, 180)}...\n\nRead full intelligence dispatch on NewsAI.`,
-        social_hashtags: Array.isArray(parsed.social_hashtags) ? parsed.social_hashtags : [`#${sector}`, '#NewsAI', '#BreakingNews']
+        social_hashtags: Array.isArray(parsed.social_hashtags) ? parsed.social_hashtags : [`#${sector}`, '#NewsAI', '#BreakingNews'],
+        image_prompt: parsed.image_prompt || `${title}, Reuters press photograph, shot on 35mm lens, natural lighting, ultra-realistic photojournalism style, 8k resolution`
       };
     }
   } catch (error) {
@@ -103,25 +105,49 @@ Return ONLY valid JSON without any markdown code blocks or commentary. Example f
   return {
     summary: description,
     social_caption: `🚨 ${title}\n\n${description.slice(0, 180)}...\n\nRead full intelligence dispatch on NewsAI.`,
-    social_hashtags: [`#${sector}`, '#NewsAI', '#BreakingNews', '#TechNews', '#Geopolitics']
+    social_hashtags: [`#${sector}`, '#NewsAI', '#BreakingNews', '#TechNews', '#Geopolitics'],
+    image_prompt: `${title}, Reuters press photograph, shot on 35mm lens, natural lighting, ultra-realistic photojournalism style, 8k resolution`
   };
 };
 
-// --- Enterprise Image Pipeline (Dynamic Contextual Generation) ---
-const generateAndHostImage = (summaryText, sector, articleTitle) => {
+// --- Extract Real Broadcast Image from RSS Feed (if available) ---
+const extractRssImage = (item) => {
   try {
-    const contextSnippet = articleTitle ? articleTitle.slice(0, 60) : sector;
-    
-    let imagePrompt;
-    if (sector === 'Geopolitics' || sector === 'Finance' || sector === 'Crypto' || sector === 'Defense') {
-      imagePrompt = `Professional financial news visual representing: ${contextSnippet}, cinematic Bloomberg style, dark moody lighting, luxury editorial design, no text, no watermark`;
-    } else {
-      imagePrompt = `Professional editorial tech news illustration representing: ${contextSnippet}, clean modern cinematic lighting, sharp details, no text, no watermark`;
+    if (item.enclosure && item.enclosure.url && (!item.enclosure.type || item.enclosure.type.startsWith('image/'))) {
+      return item.enclosure.url;
     }
+    if (item['media:content'] && item['media:content'].$ && item['media:content'].$.url) {
+      return item['media:content'].$.url;
+    }
+    if (Array.isArray(item['media:content']) && item['media:content'][0] && item['media:content'][0].$ && item['media:content'][0].$.url) {
+      return item['media:content'][0].$.url;
+    }
+    if (item['media:thumbnail'] && item['media:thumbnail'].$ && item['media:thumbnail'].$.url) {
+      return item['media:thumbnail'].$.url;
+    }
+    if (Array.isArray(item['media:thumbnail']) && item['media:thumbnail'][0] && item['media:thumbnail'][0].$ && item['media:thumbnail'][0].$.url) {
+      return item['media:thumbnail'][0].$.url;
+    }
+    const imgMatch = (item.content || item['content:encoded'] || '').match(/<img[^>]+src=["'](https?:\/\/[^"']+)["']/i);
+    if (imgMatch && imgMatch[1]) {
+      return imgMatch[1];
+    }
+  } catch (err) {
+    // Ignore extraction error
+  }
+  return null;
+};
+
+// --- Enterprise Image Pipeline (FLUX Realism Photojournalism Generation) ---
+const generateAndHostImage = (customPrompt, sector, articleTitle) => {
+  try {
+    const basePrompt = customPrompt || `${articleTitle}, Reuters press photograph, shot on 35mm lens, natural lighting, ultra-realistic photojournalism style, 8k resolution`;
+    const fullPrompt = `${basePrompt}, Pulitzer prize news photography, authentic broadcast journalism photo, no text, no watermark, no cartoon, no illustration`;
     
-    const encodedPrompt = encodeURIComponent(imagePrompt);
+    const encodedPrompt = encodeURIComponent(fullPrompt);
     const randomSeed = Math.floor(Math.random() * 1000000);
-    return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=800&nologo=true&seed=${randomSeed}`;
+    // Using model=flux-realism for photorealistic news photography
+    return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=800&height=800&model=flux-realism&nologo=true&seed=${randomSeed}`;
   } catch (error) {
     console.error('❌ Image Pipeline Error:', error.message);
     return ''; 
@@ -141,14 +167,20 @@ const processBatch = async (articlesBatch, sectorName) => {
 
       console.log(`\n⏳ Processing: ${item.title}`);
       
-      const { summary, social_caption, social_hashtags } = await synthesizeWithGroq(
+      const { summary, social_caption, social_hashtags, image_prompt } = await synthesizeWithGroq(
         item.title, 
         item.contentSnippet || item.title, 
         sectorName
       );
       
-      // Synchronous dynamic unique image generation URL (800x800 square for IG / social compatibility)
-      const frontendImageUrl = generateAndHostImage(summary, sectorName, item.title);
+      // Try extracting real broadcast image from RSS feed first, fallback to FLUX Realism AI Photojournalism
+      const realRssImage = extractRssImage(item);
+      const frontendImageUrl = realRssImage || generateAndHostImage(image_prompt, sectorName, item.title);
+      if (realRssImage) {
+        console.log(`📸 Extracted real news channel image from RSS feed`);
+      } else {
+        console.log(`🤖 Generated FLUX Realism AI photojournalism image`);
+      }
 
       const newArticle = new Article({
         title: item.title,
