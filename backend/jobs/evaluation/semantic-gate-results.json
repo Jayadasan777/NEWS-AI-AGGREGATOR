@@ -1,0 +1,424 @@
+{
+  "model_used": "Xenova/all-MiniLM-L6-v2 (local CPU ONNX pipeline)",
+  "total_pairs": 45,
+  "threshold_evaluations": [
+    {
+      "threshold": 0.4,
+      "caught_failing_pairs": "7/11",
+      "false_positives_passed": "6/28",
+      "precision": "68.42%",
+      "recall": "76.47%",
+      "f1_score": "72.22%"
+    },
+    {
+      "threshold": 0.45,
+      "caught_failing_pairs": "5/11",
+      "false_positives_passed": "3/28",
+      "precision": "78.57%",
+      "recall": "64.71%",
+      "f1_score": "70.97%"
+    },
+    {
+      "threshold": 0.5,
+      "caught_failing_pairs": "3/11",
+      "false_positives_passed": "0/28",
+      "precision": "100.00%",
+      "recall": "52.94%",
+      "f1_score": "69.23%"
+    },
+    {
+      "threshold": 0.55,
+      "caught_failing_pairs": "2/11",
+      "false_positives_passed": "0/28",
+      "precision": "100.00%",
+      "recall": "41.18%",
+      "f1_score": "58.33%"
+    },
+    {
+      "threshold": 0.6,
+      "caught_failing_pairs": "1/11",
+      "false_positives_passed": "0/28",
+      "precision": "100.00%",
+      "recall": "29.41%",
+      "f1_score": "45.45%"
+    },
+    {
+      "threshold": 0.65,
+      "caught_failing_pairs": "0/11",
+      "false_positives_passed": "0/28",
+      "precision": "100.00%",
+      "recall": "17.65%",
+      "f1_score": "30.00%"
+    },
+    {
+      "threshold": 0.7,
+      "caught_failing_pairs": "0/11",
+      "false_positives_passed": "0/28",
+      "precision": "100.00%",
+      "recall": "11.76%",
+      "f1_score": "21.05%"
+    }
+  ],
+  "pair_results": [
+    {
+      "index": 1,
+      "headline_a": "Apple unveils new AI chip for iPhone 18",
+      "headline_b": "Apple introduces AI silicon at keynote event",
+      "expected": "SAME",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.5322
+    },
+    {
+      "index": 2,
+      "headline_a": "Apple stock rises 4% after chip announcement",
+      "headline_b": "Apple unveils new AI chip for iPhone 18",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.3781
+    },
+    {
+      "index": 3,
+      "headline_a": "Manchester United signs new striker in £60m deal",
+      "headline_b": "Arsenal set to make £70m bid for Newcastle's Guimaraes",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.4547
+    },
+    {
+      "index": 4,
+      "headline_a": "Saudis must recognise Israel for nuclear deal, says Trump",
+      "headline_b": "Trump ties US-Saudi nuclear cooperation to Israel recognition",
+      "expected": "SAME",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.828
+    },
+    {
+      "index": 5,
+      "headline_a": "Oil prices hit $100 for the first time since May",
+      "headline_b": "Google fined €890m by EU for favouring its own apps",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.1882
+    },
+    {
+      "index": 6,
+      "headline_a": "Stock Market Today, July 23: Tesla Drops 15%, Leading Tech Stock Slide",
+      "headline_b": "Stock Market Today (July 23, 2026): Nasdaq falls over 2% as tech capex weighs on market, Iran tensions lift oil prices",
+      "expected": "SAME",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.6001
+    },
+    {
+      "index": 7,
+      "headline_a": "Wall Street Suffers Steep Setback as Tech Slumps and Oil Spikes",
+      "headline_b": "Oil Surge From Iran War Sends US Stocks and Bonds Lower Amid AI Spending Fears",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.3959
+    },
+    {
+      "index": 8,
+      "headline_a": "Dow drops 507 points as tech selloff deepens on Alphabet, Tesla earnings and Iran tensions",
+      "headline_b": "US stocks fall as oil prices surge amid Middle East conflict, Alphabet AI spending worries weigh on market",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.4666
+    },
+    {
+      "index": 9,
+      "headline_a": "Stock Market Today, July 23: Tesla Drops 15%, Leading Tech Stock Slide",
+      "headline_b": "Stock Market Today, July 23: Cleveland-Cliffs Stock Soars on Robust Steel Demand and Pricing",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.4596
+    },
+    {
+      "index": 10,
+      "headline_a": "Alphabet fined €890 million by EU for favouring its own apps",
+      "headline_b": "Alphabet reports Q2 2026 earnings beat, raises 2026 capex forecast to $205 billion",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.303
+    },
+    {
+      "index": 11,
+      "headline_a": "European Central Bank leaves interest rate unchanged at 2.25%",
+      "headline_b": "Fed funds futures price in 82% chance of interest rate hike at September meeting",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.3191
+    },
+    {
+      "index": 12,
+      "headline_a": "Nvidia quarterly revenue reaches record $57 billion on Blackwell demand",
+      "headline_b": "Chipmaker Nvidia posts 62% sales surge as AI infrastructure boom continues",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.6209
+    },
+    {
+      "index": 13,
+      "headline_a": "NASA's Artemis II crew completes final launch pad dress rehearsal",
+      "headline_b": "Astronauts clear major milestone ahead of upcoming lunar flyby mission",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.3856
+    },
+    {
+      "index": 14,
+      "headline_a": "Bitcoin crosses $100,000 mark for the first time in history",
+      "headline_b": "World's largest cryptocurrency surges past landmark six-figure threshold",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.5249
+    },
+    {
+      "index": 15,
+      "headline_a": "Tesla delivers record 1.8 million electric vehicles in full-year report",
+      "headline_b": "Musk's EV giant hits annual delivery target despite global market slowdown",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.4495
+    },
+    {
+      "index": 16,
+      "headline_a": "Pentagon awards $2.5 billion defense contract to Lockheed Martin for missile defense",
+      "headline_b": "US Defense Department selects Lockheed Martin for multi-billion dollar interceptor project",
+      "expected": "SAME",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.6805
+    },
+    {
+      "index": 17,
+      "headline_a": "UN Security Council passes resolution demanding immediate ceasefire in Middle East conflict",
+      "headline_b": "United Nations votes unanimously for emergency cessation of hostilities",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.5579
+    },
+    {
+      "index": 18,
+      "headline_a": "AI startup Anthropic raises $4 billion in new funding round led by Amazon",
+      "headline_b": "Amazon doubles down on AI with multi-billion dollar investment in Claude creator Anthropic",
+      "expected": "SAME",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.7041
+    },
+    {
+      "index": 19,
+      "headline_a": "FDA approves first CRISPR gene-editing therapy for sickle cell disease",
+      "headline_b": "US health regulators clear landmark gene therapy Casgevy for commercial use",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.4663
+    },
+    {
+      "index": 20,
+      "headline_a": "Avatar 3 trailer debuts at CinemaCon ahead of December theatrical release",
+      "headline_b": "James Cameron previews next Sci-Fi installment during industry showcase",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.3596
+    },
+    {
+      "index": 21,
+      "headline_a": "Global climate summit concludes with historic pledge to transition away from fossil fuels",
+      "headline_b": "COP delegates reach agreement on renewable energy phase-in at annual conference",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.4093
+    },
+    {
+      "index": 22,
+      "headline_a": "Real Madrid wins Champions League final with dramatic 2-1 victory over Dortmund",
+      "headline_b": "Spanish giants secure 15th European crown after late goals at Wembley",
+      "expected": "SAME",
+      "is_stage1_failure": true,
+      "semantic_cosine": 0.3451
+    },
+    {
+      "index": 23,
+      "headline_a": "Bank of England cuts benchmark interest rate by 25 basis points to 4.75%",
+      "headline_b": "UK central bank initiates monetary easing with quarter-point interest rate reduction",
+      "expected": "SAME",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.584
+    },
+    {
+      "index": 24,
+      "headline_a": "Nvidia quarterly revenue reaches record $57 billion on Blackwell demand",
+      "headline_b": "Nvidia faces DOJ antitrust probe over AI chip sales and server bundle practices",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.4059
+    },
+    {
+      "index": 25,
+      "headline_a": "Tesla unveils Cybercab autonomous robotaxi prototype at Warner Bros studio event",
+      "headline_b": "Tesla recalls 2 million vehicles over Autopilot driver monitoring system software",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.3801
+    },
+    {
+      "index": 26,
+      "headline_a": "OpenAI releases Sora text-to-video generator model to public research access",
+      "headline_b": "Elon Musk files lawsuit against OpenAI and Sam Altman over breach of founding non-profit agreement",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.2215
+    },
+    {
+      "index": 27,
+      "headline_a": "Apple reports Q4 services revenue beat driven by App Store and iCloud subscriptions",
+      "headline_b": "Apple delays visionOS 3 rollout due to spatial audio processing bug",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.2047
+    },
+    {
+      "index": 28,
+      "headline_a": "SpaceX Starship completes fifth test flight with successful booster catch at launch pad",
+      "headline_b": "FCC rejects SpaceX application for $885 million rural broadband subsidy grant",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.2427
+    },
+    {
+      "index": 29,
+      "headline_a": "Boeing machinists vote to ratify new contract, ending 7-week factory strike",
+      "headline_b": "FAA grounds Boeing 737 MAX fleet following mid-air door plug blow-out incident",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.2726
+    },
+    {
+      "index": 30,
+      "headline_a": "Microsoft launches Copilot+ PC hardware line with integrated Snapdragon X Elite chips",
+      "headline_b": "CrowdStrike software update causes global Windows IT outage affecting airlines and banks",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.2398
+    },
+    {
+      "index": 31,
+      "headline_a": "Meta introduces Orion AR glasses prototype featuring neural wristband control",
+      "headline_b": "EU fines Meta €798 million over abusive Marketplace linking practices",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.0648
+    },
+    {
+      "index": 32,
+      "headline_a": "Amazon AWS announces $11 billion investment in new data centers in Indiana",
+      "headline_b": "FTC files landmark antitrust suit accusing Amazon of illegal monopoly maintenance",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.3706
+    },
+    {
+      "index": 33,
+      "headline_a": "Real Madrid officially completes signing of Kylian Mbappé on five-year contract",
+      "headline_b": "Kylian Mbappé suffers hamstring injury during La Liga match against Alaves",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.4496
+    },
+    {
+      "index": 34,
+      "headline_a": "Pfizer acquires oncology biotech Seagen in $43 billion acquisition deal",
+      "headline_b": "Pfizer halts development of twice-daily weight loss pill due to liver enzyme elevation",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.2865
+    },
+    {
+      "index": 35,
+      "headline_a": "Intel breaks ground on $20 billion semiconductor manufacturing site in Ohio",
+      "headline_b": "Intel announces 15,000 job cuts and dividend suspension following quarterly loss",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.4953
+    },
+    {
+      "index": 36,
+      "headline_a": "Federal Reserve cuts benchmark interest rate by 50 basis points at September FOMC meeting",
+      "headline_b": "Bank of Japan raises policy interest rate to 0.25% in historic monetary shift",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.3797
+    },
+    {
+      "index": 37,
+      "headline_a": "Google unveils Gemini 1.5 Pro with 1 million token context window capability",
+      "headline_b": "Anthropic releases Claude 3 Opus outperforming GPT-4 on industry benchmarks",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.1347
+    },
+    {
+      "index": 38,
+      "headline_a": "BYD surpasses Tesla as world's top seller of pure electric vehicles in Q4",
+      "headline_b": "Rivian launches R2 compact SUV priced at $45,000 with 300-mile range",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.2219
+    },
+    {
+      "index": 39,
+      "headline_a": "NASA's Europa Clipper spacecraft launches on Falcon Heavy towards Jupiter's icy moon",
+      "headline_b": "ESA's Hera mission launches to inspect Asteroid Dimorphos following DART impact",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.3016
+    },
+    {
+      "index": 40,
+      "headline_a": "Manchester City wins fourth consecutive Premier League title on final day of season",
+      "headline_b": "Bayer Leverkusen completes undefeated Bundesliga season with victory over Augsburg",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.2294
+    },
+    {
+      "index": 41,
+      "headline_a": "TSMC receives $6.6 billion in US CHIPS Act grants for Phoenix semiconductor fabs",
+      "headline_b": "AMD unveils Instinct MI300X AI accelerator chips to challenge Nvidia market dominance",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.1414
+    },
+    {
+      "index": 42,
+      "headline_a": "Moderna receives FDA approval for mRESVIA respiratory syncytial virus vaccine",
+      "headline_b": "Novavax enters $1.2 billion co-exclusive licensing agreement with Sanofi",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.226
+    },
+    {
+      "index": 43,
+      "headline_a": "TikTok faces nationwide US ban as President signs bipartisan enforcement bill",
+      "headline_b": "Bluesky surpasses 20 million users following influx of new account signups",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.1879
+    },
+    {
+      "index": 44,
+      "headline_a": "Netflix adds 9.3 million subscribers in Q1 following password-sharing crackdown",
+      "headline_b": "Disney+ and Hulu merge into single unified app experience for bundle subscribers",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.188
+    },
+    {
+      "index": 45,
+      "headline_a": "Germany approves €10 billion purchase of F-35 stealth fighter jets from US",
+      "headline_b": "France orders 42 additional Rafale fighter jets from Dassault Aviation",
+      "expected": "DIFFERENT",
+      "is_stage1_failure": false,
+      "semantic_cosine": 0.4072
+    }
+  ]
+}
