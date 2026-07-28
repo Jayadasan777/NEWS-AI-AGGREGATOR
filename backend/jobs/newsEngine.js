@@ -1,4 +1,5 @@
 require('dotenv').config();
+const crypto = require('crypto');
 const Parser = require('rss-parser');
 const Groq = require('groq-sdk');
 const Article = require('../models/Article');
@@ -7,6 +8,7 @@ const { broadcastArticle } = require('../utils/socialBroadcast');
 
 const parser = new Parser();
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+let dripOffsetCounter = 0;
 
 // --- Massive Scale: 14 Multi-Source Feed Registry ---
 const RSS_FEEDS = {
@@ -235,6 +237,7 @@ const processBatch = async (articlesBatch, sectorName) => {
 // --- Run the full engine across all 14 feeds ---
 const runNewsEngine = async () => {
   console.log('🚀 Starting Enterprise NISE run across all sectors...');
+  dripOffsetCounter = 0;
 
   for (const [sectorName, feeds] of Object.entries(RSS_FEEDS)) {
     console.log(`\n=== 🌍 Processing Sector: ${sectorName} ===`);
