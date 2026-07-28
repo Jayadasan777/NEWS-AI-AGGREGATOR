@@ -1,0 +1,233 @@
+{
+  "total_calls": 20,
+  "summary_stats": {
+    "min_latency_ms": 1017.17,
+    "max_latency_ms": 7565.77,
+    "mean_latency_ms": 2994.45,
+    "median_latency_ms": 2418.88,
+    "p95_latency_ms": 5194.1,
+    "measured_tokens_per_sec": 96.83
+  },
+  "raw_calls": [
+    {
+      "call_index": 1,
+      "title": "Apple unveils new AI chip for iPhone 18",
+      "duration_ms": 1069.89,
+      "token_stats": {
+        "prompt_tokens": 78,
+        "completion_tokens": 212,
+        "total_tokens": 290,
+        "tokens_per_sec": 198.1513229311366
+      }
+    },
+    {
+      "call_index": 2,
+      "title": "Apple stock rises 4% after chip announcement",
+      "duration_ms": 1854.92,
+      "token_stats": {
+        "prompt_tokens": 77,
+        "completion_tokens": 209,
+        "total_tokens": 286,
+        "tokens_per_sec": 112.67314668442553
+      }
+    },
+    {
+      "call_index": 3,
+      "title": "Manchester United signs new striker in £60m deal",
+      "duration_ms": 1132.61,
+      "token_stats": {
+        "prompt_tokens": 80,
+        "completion_tokens": 212,
+        "total_tokens": 292,
+        "tokens_per_sec": 187.17780805781038
+      }
+    },
+    {
+      "call_index": 4,
+      "title": "Saudis must recognise Israel for nuclear deal, says Trump",
+      "duration_ms": 1892.9,
+      "token_stats": {
+        "prompt_tokens": 80,
+        "completion_tokens": 200,
+        "total_tokens": 280,
+        "tokens_per_sec": 105.65786788445108
+      }
+    },
+    {
+      "call_index": 5,
+      "title": "Oil prices hit $100 for the first time since May",
+      "duration_ms": 1114.6,
+      "token_stats": {
+        "prompt_tokens": 79,
+        "completion_tokens": 185,
+        "total_tokens": 264,
+        "tokens_per_sec": 165.97840952848856
+      }
+    },
+    {
+      "call_index": 6,
+      "title": "Stock Market Today, July 23: Tesla Drops 15%, Leading Tech Stock Slide",
+      "duration_ms": 1017.17,
+      "token_stats": {
+        "prompt_tokens": 85,
+        "completion_tokens": 201,
+        "total_tokens": 286,
+        "tokens_per_sec": 197.60774685287544
+      }
+    },
+    {
+      "call_index": 7,
+      "title": "Wall Street Suffers Steep Setback as Tech Slumps and Oil Spikes",
+      "duration_ms": 4721.18,
+      "token_stats": {
+        "prompt_tokens": 84,
+        "completion_tokens": 253,
+        "total_tokens": 337,
+        "tokens_per_sec": 53.58831259659796
+      }
+    },
+    {
+      "call_index": 8,
+      "title": "Dow drops 507 points as tech selloff deepens on Alphabet, Tesla earnings and Iran tensions",
+      "duration_ms": 4599.95,
+      "token_stats": {
+        "prompt_tokens": 91,
+        "completion_tokens": 243,
+        "total_tokens": 334,
+        "tokens_per_sec": 52.82665656568819
+      }
+    },
+    {
+      "call_index": 9,
+      "title": "Stock Market Today, July 23: Tesla Drops 15%, Leading Tech Stock Slide",
+      "duration_ms": 2545.76,
+      "token_stats": {
+        "prompt_tokens": 85,
+        "completion_tokens": 243,
+        "total_tokens": 328,
+        "tokens_per_sec": 95.45300385103769
+      }
+    },
+    {
+      "call_index": 10,
+      "title": "Alphabet fined €890 million by EU for favouring its own apps",
+      "duration_ms": 3509.94,
+      "token_stats": {
+        "prompt_tokens": 82,
+        "completion_tokens": 194,
+        "total_tokens": 276,
+        "tokens_per_sec": 55.271578038311404
+      }
+    },
+    {
+      "call_index": 11,
+      "title": "European Central Bank leaves interest rate unchanged at 2.25%",
+      "duration_ms": 2406.45,
+      "token_stats": {
+        "prompt_tokens": 80,
+        "completion_tokens": 196,
+        "total_tokens": 276,
+        "tokens_per_sec": 81.44772161634167
+      }
+    },
+    {
+      "call_index": 12,
+      "title": "Nvidia quarterly revenue reaches record $57 billion on Blackwell demand",
+      "duration_ms": 2431.31,
+      "token_stats": {
+        "prompt_tokens": 81,
+        "completion_tokens": 225,
+        "total_tokens": 306,
+        "tokens_per_sec": 92.54278324847299
+      }
+    },
+    {
+      "call_index": 13,
+      "title": "NASA's Artemis II crew completes final launch pad dress rehearsal",
+      "duration_ms": 2342.33,
+      "token_stats": {
+        "prompt_tokens": 82,
+        "completion_tokens": 198,
+        "total_tokens": 280,
+        "tokens_per_sec": 84.53116051250646
+      }
+    },
+    {
+      "call_index": 14,
+      "title": "Bitcoin crosses $100,000 mark for the first time in history",
+      "duration_ms": 2289.35,
+      "token_stats": {
+        "prompt_tokens": 81,
+        "completion_tokens": 198,
+        "total_tokens": 279,
+        "tokens_per_sec": 86.4876084878939
+      }
+    },
+    {
+      "call_index": 15,
+      "title": "Tesla delivers record 1.8 million electric vehicles in full-year report",
+      "duration_ms": 5069.27,
+      "token_stats": {
+        "prompt_tokens": 82,
+        "completion_tokens": 172,
+        "total_tokens": 254,
+        "tokens_per_sec": 33.92995409533658
+      }
+    },
+    {
+      "call_index": 16,
+      "title": "Pentagon awards $2.5 billion defense contract to Lockheed Martin for missile defense",
+      "duration_ms": 3579.51,
+      "token_stats": {
+        "prompt_tokens": 85,
+        "completion_tokens": 215,
+        "total_tokens": 300,
+        "tokens_per_sec": 60.06415074794395
+      }
+    },
+    {
+      "call_index": 17,
+      "title": "UN Security Council passes resolution demanding immediate ceasefire in Middle East conflict",
+      "duration_ms": 4591.2,
+      "token_stats": {
+        "prompt_tokens": 80,
+        "completion_tokens": 217,
+        "total_tokens": 297,
+        "tokens_per_sec": 47.26430499930454
+      }
+    },
+    {
+      "call_index": 18,
+      "title": "AI startup Anthropic raises $4 billion in new funding round led by Amazon",
+      "duration_ms": 1292.32,
+      "token_stats": {
+        "prompt_tokens": 85,
+        "completion_tokens": 208,
+        "total_tokens": 293,
+        "tokens_per_sec": 160.95076090632924
+      }
+    },
+    {
+      "call_index": 19,
+      "title": "FDA approves first CRISPR gene-editing therapy for sickle cell disease",
+      "duration_ms": 7565.77,
+      "token_stats": {
+        "prompt_tokens": 83,
+        "completion_tokens": 252,
+        "total_tokens": 335,
+        "tokens_per_sec": 33.30792502597556
+      }
+    },
+    {
+      "call_index": 20,
+      "title": "Avatar 3 trailer debuts at CinemaCon ahead of December theatrical release",
+      "duration_ms": 4862.49,
+      "token_stats": {
+        "prompt_tokens": 82,
+        "completion_tokens": 154,
+        "total_tokens": 236,
+        "tokens_per_sec": 31.670989585365255
+      }
+    }
+  ]
+}

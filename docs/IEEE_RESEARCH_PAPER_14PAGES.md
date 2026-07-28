@@ -14,15 +14,15 @@ Email: jayadasan777@github.com
 
 ## ABSTRACT
 
-The exponential growth of digital journalism has created a fundamental information processing challenge: while global news volume expands continuously, information density per reader declines due to widespread multi-outlet redundancy. International news agencies—including Reuters, Associated Press (AP), Bloomberg, BBC News, and CNBC—frequently publish between three and eight separate dispatches regarding identical real-world events within narrow temporal windows. This yields fragmented user experiences and forces readers to digest repetitive content across disparate platforms. Simultaneously, raw content scraping introduces copyright infringement risks, necessitating automated, copyright-safe editorial transformation prior to multi-channel distribution.
+The exponential growth of digital journalism has created a fundamental information processing challenge: while global news volume expands continuously, information density per reader declines due to widespread multi-outlet redundancy. International news agencies—including Reuters, Associated Press (AP), Bloomberg, BBC News, and CNBC—frequently publish between three and eight separate dispatches regarding identical real-world events within narrow temporal windows. This yields fragmented user experiences and forces readers to digest repetitive content across disparate platforms. Simultaneously, raw content scraping introduces copyright infringement risks, necessitating automated editorial transformation designed to reduce copyright exposure (a legally unsettled area, not a guaranteed exemption) prior to multi-channel distribution.
 
 Existing news aggregation solutions present severe operational trade-offs. Keyword-matching pipelines using TF-IDF or isolated unigram metrics fail on synonym-rich headlines sharing zero word overlaps. Dense vector embedding techniques paired with GPU-dependent clustering algorithms (e.g., UMAP, HDBSCAN) require heavy hardware infrastructure, making low-resource deployment infeasible. Proprietary LLM pipelines impose high per-inference API costs, lack open algorithmic transparency, and fail to provide automated hallucination verification guardrails.
 
-This paper presents **NISE** (News Intelligence and Synthesis Engine), an enterprise-grade, full-stack autonomous news intelligence platform. NISE continuously ingests live RSS wire feeds from 21 streams across 14 multi-domain sectors, executes pre-LLM multi-layer deduplication locks (exact URL, title string, and MD5 headline digest hashing), synthesizes 150-word copyright-safe editorial summaries via Meta Llama 3.1-8B on Groq Language Processing Units (LPUs), and clusters multi-source coverage into corroborated event nodes. 
+This paper presents the design, implementation, and empirical evaluation of **NISE** (News Intelligence and Synthesis Engine), a deployed hybrid clustering and distribution pipeline combining established lexical pre-filtering and LLM verification techniques. NISE continuously ingests live RSS wire feeds from 21 streams across 14 multi-domain sectors, executes pre-LLM multi-layer deduplication locks (exact URL, title string, and MD5 headline digest hashing), synthesizes 150-word editorial summaries via Meta Llama 3.1-8B on Groq Language Processing Units (LPUs), and clusters multi-source coverage into corroborated event nodes.
 
-Event clustering is driven by a novel **Hybrid Two-Stage Clustering Algorithm**: Stage 1a evaluates local unigram Jaccard similarity ($\tau_J = 0.12$), while Stage 1b computes character 3-gram TF-IDF vector cosine similarity ($\tau_C = 0.25$) to capture synonym-rich headline pairs that share zero unigrams. Pairs passing Stage 1 advance to Stage 2 zero-shot neural verification via Llama 3 (`isSameEvent`), eliminating over $75.9\%$ of LLM inference calls while preserving complete event recall. NISE incorporates a Dynamic Source Stance Detection Agent, an Iterative Hallucination Reflection Guardrail, an Evergreen Content Recirculation Engine, and a Webhook Self-Healing Retry Engine (3 retries at 15-minute intervals) with 1-hour staggered drip-feeding scheduling. 
+Event clustering is driven by a two-stage hybrid pipeline: Stage 1a evaluates local unigram Jaccard similarity ($\tau_J = 0.12$), while Stage 1b computes character 3-gram TF-IDF vector cosine similarity ($\tau_C = 0.25$) to capture synonym-rich headline pairs that share zero unigrams. Pairs passing Stage 1 advance to Stage 2 zero-shot neural verification via Llama 3 (`isSameEvent`), eliminating over $75.9\%$ of LLM inference calls while preserving complete event recall. NISE incorporates a Dynamic Source Stance Detection Agent, an Iterative Hallucination Reflection Guardrail, an Evergreen Content Recirculation Engine, and a Webhook Self-Healing Retry Engine (3 retries at 15-minute intervals) with 1-hour staggered drip-feeding scheduling.
 
-Empirical evaluation on a curated $N=45$ ground-truth benchmark dataset across 12 domains yielded **97.78% Accuracy**, **94.44% Precision**, **100.00% Recall**, and **97.14% F1-Score** ($\text{TP}=17, \text{TN}=27, \text{FP}=1, \text{FN}=0$). The system is deployed with a 3D Cosmic Glassmorphism WebGL interface (Three.js / React Three Fiber) and an interactive Social Studio dashboard (`/studio`).
+Empirical evaluation on a curated $N=45$ ground-truth benchmark dataset across 12 domains yielded **97.78% Accuracy**, **94.44% Precision**, **100.00% Recall**, and **97.14% F1-Score** ($\text{TP}=17, \text{TN}=27, \text{FP}=1, \text{FN}=0$). We highlight a prompt-migration case study from Gemini to Llama 3 (where recall evolved from 100% to 72.73% to 90.91% across three documented prompt iterations) as an empirical analysis of prompt sensitivity in event clustering. The system is deployed with a 3D Cosmic Glassmorphism WebGL interface (Three.js / React Three Fiber) and an interactive Social Studio dashboard (`/studio`).
 
 **Index Terms** — Autonomous News Aggregation, Event Clustering, Large Language Models, Jaccard Similarity, Character N-Gram Cosine Similarity, Factuality Reflection Loop, Webhook Self-Healing, React Three Fiber, Groq LPUs, MERN Stack.
 
@@ -43,8 +43,8 @@ Modern digital news consumption suffers from **Informational Hyper-Fragmentation
 
 For digital news platforms and consumers, this creates three critical vulnerabilities:
 1. **Redundancy & Cognitive Fatigue:** Readers are forced to scan multiple articles describing the exact same event without knowing whether new information is present.
-2. **Copyright Infringement Risk:** Scraping raw text from original publishers and presenting verbatim excerpts violates intellectual property laws. News engines require an autonomous, copyright-safe transformative synthesis layer.
-3. **Distribution Overhead & Rate Limits:** Publishing updates across multi-channel social networks (Facebook, Instagram, Twitter, Telegram, Discord) manually requires immense labor. Naive automated scripts frequently trigger API rate-limits or spam flags when batch dispatches occur simultaneously.
+2. **Copyright Infringement Exposure:** Scraping raw text from original publishers and presenting verbatim excerpts violates intellectual property laws. News engines require an autonomous, transformative synthesis layer designed to reduce copyright exposure (a legally unsettled area, not a guaranteed exemption).
+3. **Distribution Overhead & Rate Limits:** Publishing updates across multi-channel social networks manually requires immense labor. Naive automated scripts frequently trigger API rate-limits or spam flags when batch dispatches occur simultaneously.
 
 ### 1.2 Limitations of Existing Approaches
 Prior news processing systems attempt to solve parts of this pipeline, but fall short in operational feasibility:
@@ -54,26 +54,34 @@ Prior news processing systems attempt to solve parts of this pipeline, but fall 
 * **Proprietary LLM Direct Verification:** Submitting every candidate headline pair directly to proprietary LLM endpoints (such as GPT-4) scales at $\mathcal{O}(N \times M)$ cost and latency, causing rate-limit bottlenecks during major breaking news cycles.
 * **Lack of Factuality Guardrails:** Standard LLM text summarization frequently suffers from hallucinations—generating unsupported numbers, false named entities, or inaccurate causal claims.
 
-### 1.3 Primary Technical Contributions
-To overcome these limitations, **NISE** introduces a comprehensive, publication-grade architecture featuring five primary contributions:
+### 1.3 System Contributions
+Rather than claiming novel core algorithms, this paper presents the design, implementation, and empirical evaluation of a deployed news intelligence system featuring five integrated engineering contributions:
 
-1. **Lightweight Hybrid Two-Stage Clustering Engine (`eventEngine.js`):** Combines lexical Jaccard IoU ($\tau_J = 0.12$) and sub-word 3-gram cosine vector similarity ($\tau_C = 0.25$) in Stage 1 to filter candidate headline pairs. Gated candidate pairs advance to Stage 2 zero-shot Llama 3 verification. This eliminates $75.9\%$ of LLM inference calls while achieving **100% Recall** ($\text{FN} = 0$).
+1. **Lightweight Hybrid Two-Stage Clustering Engine (`eventEngine.js`):** Combines established lexical Jaccard IoU ($\tau_J = 0.12$) and sub-word 3-gram cosine vector similarity ($\tau_C = 0.25$) in Stage 1 to filter candidate headline pairs before Stage 2 zero-shot Llama 3 verification. This eliminates $75.9\%$ of LLM inference calls while achieving **100% Recall** ($\text{FN} = 0$).
 2. **Dynamic Source Stance Detection & Divergence Quantification:** Evaluates multi-source article clusters, classifying each publisher's stance as `Supporting`, `Contradicting`, or `Neutral`, and computes a quantitative **Publisher Divergence Score** ($0\text{--}100\%$).
 3. **Iterative Hallucination Guardrail Reflection Loop (`verifyFactualityAndReflect`):** Cross-checks LLM fused summaries against raw wire snippets for fabricated statistics, unsupported entities, or ungrounded claims, executing automatic self-correcting passes prior to database storage.
-4. **Autonomous Smart-Queue & Self-Healing Webhook Syndication (`socialBroadcast.js`):** Formats universal dual-structure JSON payloads, enforces 1-hour staggered drip-feeding, and implements self-healing retry logic (up to 3 retries at 15-minute intervals) for zero-duplicate automated social broadcasting.
-5. **Formal Empirical Evaluation ($N=45$ Dataset):** Rigorous evaluation against 45 ground-truth headline pairs across 12 domains, yielding **97.78% Accuracy**, **94.44% Precision**, **100.00% Recall**, and **97.14% F1-Score**.
+4. **Autonomous Smart-Queue & Self-Healing Webhook Syndication (`socialBroadcast.js`):** Formats universal dual-structure JSON payloads, enforces 1-hour staggered drip-feeding, and implements self-healing retry logic (up to 3 retries at 15-minute intervals) for zero-duplicate automated social broadcasting to configurable webhooks (e.g., Make.com), which can relay posts to social platforms such as Facebook or Instagram.
+5. **Formal Empirical Evaluation & Prompt Migration Study:** Evaluation on a curated $N=45$ dataset (**97.78% Accuracy**) and a documented prompt-migration case study (Gemini to Llama 3 across 3 prompt revisions: 100% to 72.73% to 90.91% recall).
 
 ---
 
 ## II. RELATED WORK & SYSTEM COMPARISON
 
 ### 2.1 Lexical & Vector-Based Text Clustering
-Early news deduplication relied on TF-IDF vector space representations (Salton & Buckley) and unigram Jaccard Indexing. While computationally lightweight ($\mathcal{O}(N)$ token set intersection), these approaches fail when headline phrasing diverges.
+Early news deduplication relied on TF-IDF vector space representations (Salton & Buckley [1]) and unigram Jaccard Indexing [2]. While computationally lightweight ($\mathcal{O}(N)$ token set intersection), these approaches fail when headline phrasing diverges.
 
-Modern semantic frameworks (Reimers & Gurevych's Sentence-BERT) map text to 768-dimensional dense vectors. Recent studies (Tarekegn, 2024; Shi et al., 2024) use UMAP dimensionality reduction and HDBSCAN density clustering. However, HDBSCAN requires substantial memory and GPU compute, creating deployment barriers for standard production environments.
+Modern semantic frameworks (Reimers & Gurevych's Sentence-BERT [3]) map text to 768-dimensional dense vectors. Recent studies employ UMAP dimensionality reduction [4] and HDBSCAN density clustering [5]. However, HDBSCAN requires substantial memory and GPU compute, creating deployment barriers for standard production environments.
 
-### 2.2 LLM Summarization & Hallucination Mitigation
-LLMs excel at transformative text synthesis. However, Ji et al. (2023) and Zhang et al. (2023) documented that LLMs generate ungrounded hallucinations in $15\text{--}30\%$ of summarization tasks. Shinn et al. (2023) demonstrated verbal reinforcement reflection loops for self-correction. NISE adapts this concept specifically for multi-source news evidence fusion, providing automated factuality verification.
+### 2.2 LLM-Enhanced Event Detection and Clustering
+LLM-assisted news event discovery and clustering represents an active research domain:
+
+- **Tarekegn, Rabbi, and Tessem (2024) [6]** presented LLM-enhanced event detection over the GDELT news corpus. While effective, GDELT operates on a pre-built offline database rather than live RSS wire feed ingestion.
+- **Nakshatri et al. (EMNLP 2023) [7]** proposed temporal-guided news stream clustering with LLM summaries, demonstrating a near-identical temporal clustering and LLM summarization framework for key event discovery. Our system extends this methodology by evaluating how a lightweight two-stage lexical pre-filter reduces LLM call overhead by 75.9% prior to LLM verification.
+- **ACL 2025 Event-Centric Summarization [8]** explored multilingual event-cluster summarization. Our work explores deployment feasibility using a lightweight 8B-parameter open-weight model (`llama-3.1-8b-instant`) rather than larger proprietary LLMs.
+- **Fan et al. (2019) [9]** introduced BASIL (Bias Annotation Spans on the Informational Level) for media bias and stance analysis. Our stance-detection component utilizes zero-shot LLM classification rather than a trained or validated classifier benchmarked on BASIL, which we explicitly note as a system limitation.
+
+**System Differentiation:**
+While prior works explore individual components of neural clustering or summarization, NISE adds three distinct operational contributions: (a) a lightweight two-stage lexical pre-filter cutting LLM calls by 75.9% before verification; (b) complete deployment feasibility on an 8B open-weight model running on low-power LPU hardware; and (c) a fully deployed end-to-end pipeline including autonomous multi-channel distribution via configurable webhooks, which none of the cited works implement or evaluate.
 
 ### 2.3 Comprehensive System Capability Comparison
 Table I summarizes NISE against existing academic and commercial news processing paradigms.
@@ -143,11 +151,11 @@ $$\text{MatchCondition} = (\text{url} = U) \lor (\text{title\_hash} = \text{MD5}
 where $\text{title\_hash}$ is the 32-character hexadecimal MD5 digest of the lowercased, whitespace-trimmed headline string. If any condition evaluates to true, processing is halted immediately.
 
 ### 3.2 Transformative Multi-Modal AI Synthesis (Groq LPUs)
-Unique articles are passed to Meta's open-weight `llama-3.1-8b-instant` model hosted on Groq LPUs. Groq's custom LPU architecture delivers inference speeds exceeding 750 tokens/second, completing multi-property JSON synthesis in under 500 milliseconds.
+Unique articles are passed to Meta's open-weight `llama-3.1-8b-instant` model hosted on Groq LPUs. Groq's custom LPU architecture delivers high-throughput inference, completing multi-property JSON synthesis efficiently.
 
 The model is prompted to output a single JSON object containing:
 1. `summary`: 150-word objective, original editorial summary.
-2. `social_caption`: Instagram/Facebook caption starting with an emoji hook headline (`🚨 BREAKING:`), followed by 2–3 bullet points and a call-to-action.
+2. `social_caption`: Social caption starting with an emoji hook headline (`🚨 BREAKING:`), followed by 2–3 bullet points and a call-to-action.
 3. `social_hashtags`: Array of 10–14 viral hashtags (`#NewsAI #TechNews #Sector`).
 4. `image_prompt`: Camera optics prompt specifying 35mm lens, f/2.8 aperture, natural lighting, and Reuters/AP news photojournalism style.
 
@@ -249,27 +257,8 @@ Audit results are logged in the event's `reflection_logs` array, setting `factua
 
 **Payload Structure:** Contains both top-level flat fields (`photo_url`, `formatted_post`, `message`, `title`, `summary`, `caption`) and nested `article` objects to guarantee compatibility across all webhook modules.
 
-```json
-{
-  "event": "NEW_ARTICLE_BROADCAST",
-  "timestamp": "2026-07-28T08:18:35.000Z",
-  "id": "66a4f9b8c2d1e001",
-  "title": "OpenAI Releases Flagship GPT-5 Model",
-  "summary": "OpenAI has officially launched GPT-5...",
-  "sector": "AI",
-  "photo_url": "https://image.pollinations.ai/prompt/...",
-  "message": "🚨 BREAKING: OpenAI Launches GPT-5\n\n- Advanced reasoning\n- 100k context\n\n#NewsAI #AI #GPT5",
-  "formatted_post": "🚨 BREAKING: OpenAI Launches GPT-5\n\n- Advanced reasoning\n- 100k context\n\n#NewsAI #AI #GPT5",
-  "article": {
-    "id": "66a4f9b8c2d1e001",
-    "title": "OpenAI Releases Flagship GPT-5 Model",
-    "photo_url": "https://image.pollinations.ai/prompt/..."
-  }
-}
-```
-
 #### Smart-Queue Staggered Drip-Feeding
-Batch dispatches are assigned staggered `scheduled_broadcast_time` timestamps offset by 1-hour gaps ($T_i = T_0 + i \times 3600000\text{ ms}$), preventing social platform spam blocks.
+Batch dispatches are assigned staggered `scheduled_broadcast_time` timestamps offset by 1-hour gaps ($T_i = T_0 + i \times 3600000\text{ ms}$), preventing social platform rate limits.
 
 #### Webhook Self-Healing Retry Logic
 If a dispatch fails, the engine catches the exception, increments `retry_count`, and reschedules execution 15 minutes into the future:
@@ -291,22 +280,6 @@ It prepends `"ICYMI: "` *(In Case You Missed It)* to the caption, sets `is_recir
 ---
 
 ## IV. FRONTEND INTERFACE & 3D GRAPHICS ARCHITECTURE
-
-```
-                               ┌──► Three.js / R3F Canvas (ShowcaseScene.jsx)
-                               │    ├── Iridescent Glass Monoliths (MeshReflectorMaterial)
-                               │    ├── Dynamic Post-Processing (Bloom, Glitch, Noise)
-                               │    └── Lagging Dual-Ring Custom Mouse Cursor
-                               │
-[React 19 / Vite 8 Frontend] ──┼──► Bento Grid Telemetry Cards (BentoCard.jsx)
-                               │    ├── Takeaway Bullet Parsers
-                               │    └── Corroboration Confidence Indicators (SignalMeter.jsx)
-                               │
-                               └──► Social Studio Command Center (/studio)
-                                    ├── Interactive 3D iPhone 15 Pro Post Previewer
-                                    ├── Real-Time Queue Monitor (Pending / Broadcasted)
-                                    └── Manual Broadcast Hooks (force: true)
-```
 
 ### 4.1 3D Cosmic Glassmorphism Hero Scene
 The frontend is built on React 19, Vite 8, and TailwindCSS v4. The main entry screen features a WebGL 3D hero scene powered by `@react-three/fiber` (R3F) and `@react-three/drei`.
@@ -386,42 +359,36 @@ By bypassing $75.9\%$ of unnecessary LLM invocations, NISE prevents API quota ex
 
 ---
 
-## VI. DISCUSSION, LIMITATIONS, CONCLUSION & REFERENCES
+## VI. THREATS TO VALIDITY
 
-### 6.1 Significance of Zero False Negatives ($\text{FN} = 0$)
-In news intelligence platforms, **Recall is the single most critical metric**. A False Positive ($\text{FP} = 1$) merges two related stories into one event cluster—a minor UI inconvenience. However, a False Negative ($\text{FN} > 0$) causes the system to miss a major multi-source event entirely, failing to alert users to corroborated breaking news. 
+Before concluding, we explicitly document four methodological and operational threats to validity:
 
-Achieving **100% Recall ($\text{FN}=0$)** across all 45 ground-truth test cases proves that the Stage 1 Jaccard OR Cosine gating logic successfully catches all potential headline matches without letting genuine event pairs slip through.
-
-### 6.2 Analysis of the Single False Positive ($\text{FP} = 1$)
-The single false positive occurred on two corporate finance headlines reporting separate earnings announcements for the same corporation published in different fiscal periods:
-- Headline A: *"Alphabet Reports Q1 Earnings Beating Wall Street Estimates"*
-- Headline B: *"Alphabet Reports Q2 Financial Results Amid Cloud Growth"*
-
-Because both headlines shared high sub-word 3-gram similarity and entity names, they passed Stage 1, and Llama 3 judged them as similar corporate events. This identifies an opportunity for future enhancement: injecting explicit temporal date delta checks into the Stage 1 pre-filter.
-
-### 6.3 Operational Limitations
-1. **Third-Party Webhook Dependency:** Social broadcasting relies on external automation endpoints (Make.com, Zapier). If external webhooks experience extended downtimes ($>45$ minutes), dispatches move to `'failed'` after 3 retries.
-2. **Language Scope:** Ingestion is currently optimized for English RSS feeds. Multi-language processing requires localized stop-word dictionaries and translated prompts.
-
-### 6.4 Conclusion
-This paper presented **NISE**, an enterprise-grade autonomous news intelligence and social syndication platform. By combining a Hybrid Two-Stage Event Clustering Algorithm ($J \ge 0.12 \lor \cos \ge 0.25 \rightarrow \text{Llama 3}$), Groq LPU inference, Pollinations FLUX Realism image generation, dynamic stance analysis, hallucination reflection loops, and self-healing webhooks, NISE achieves publication-grade performance. 
-
-Empirical benchmarking on an $N=45$ dataset demonstrated **97.78% Accuracy, 94.44% Precision, 100% Recall, and 97.14% F1-Score** while reducing LLM API overhead by **75.9%**. The complete system is open-sourced and deployed with an interactive 3D WebGL interface.
+1. **Benchmark Scale & Single-Annotator Labeling:** The $N=45$ evaluation dataset represents a modest, single-annotator-labeled benchmark collected over a 6-week wire window. Inter-annotator agreement metrics were not formally measured on a multi-annotator panel.
+2. **Evaluation Scale vs. Enterprise Corpora:** While NISE is evaluated against live RSS wire streams, we do not present direct empirical comparisons against large-scale static databases such as GDELT or Event Registry at their full operating volume ($10^6+$ daily documents).
+3. **Unvalidated Sub-Components:** The stance-detection agent and factuality reflection loop are fully implemented and operational in code, but their isolated classification accuracy has not been benchmarked against dedicated domain datasets (e.g., BASIL for stance annotation or FACTS Grounding for hallucination evaluation).
+4. **Legal Status of Transformative Rewriting:** The copyright reduction strategy is a software design goal intended to minimize exposure through transformative rewriting. It does not constitute a legally guaranteed exemption under copyright law, acknowledging active 2025 litigation surrounding AI news summarization (e.g., *Advance Local Media LLC v. Cohere Inc.*).
 
 ---
 
-### 6.5 References
+## VII. CONCLUSION
+
+This paper presented **NISE**, a deployed news intelligence platform combining a two-stage hybrid event clustering pipeline ($J \ge 0.12 \lor \cos \ge 0.25 \rightarrow \text{Llama 3}$), Groq LPU inference, Pollinations FLUX Realism image generation, dynamic stance analysis, hallucination reflection loops, and self-healing webhooks.
+
+Empirical benchmarking on an $N=45$ dataset demonstrated **97.78% Accuracy, 94.44% Precision, 100% Recall, and 97.14% F1-Score** while reducing LLM API overhead by **75.9%**. The system is open-sourced and deployed with an interactive 3D WebGL interface.
+
+---
+
+## VIII. REFERENCES
 
 1. P. Salton and C. Buckley, "Term-weighting approaches in automatic text retrieval," *Information Processing & Management*, vol. 24, no. 5, pp. 513–523, 1988.
 2. P. Jaccard, "Étude comparative de la distribution florale dans une portion des Alpes et du Jura," *Bulletin de la Société Vaudoise des Sciences Naturelles*, vol. 37, pp. 547–579, 1901.
 3. N. Reimers and I. Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks," in *Proc. EMNLP-IJCNLP*, 2019, pp. 3982–3992.
 4. L. McInnes, J. Healy, and J. Melville, "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction," *arXiv preprint arXiv:1802.03426*, 2018.
 5. R. J. G. B. Campello, D. Moulavi, and J. Sander, "Density-Based Clustering Based on Hierarchical Density Estimates," in *Proc. PAKDD*, 2013, pp. 160–172.
-6. A. N. Tarekegn, "LLM-Enhanced Event Detection and Analysis in News Corpora," *MediaFutures Research Report*, 2024.
-7. J. Shi, Y. Wang, and L. Zhang, "Automated News Aggregation using LLM-based Summarization and Semantic Clustering," *ResearchGate*, 2024.
-8. P. Laban et al., "NewsEdits: A News Article Revision Dataset and a Document-Level Reasoning Challenge," in *Proc. NAACL*, 2022, pp. 1972–1988.
-9. S. Miranda et al., "Multilingual Cross-Document Coreference Resolution," in *Proc. ACL*, 2018, pp. 2160–2170.
+6. A. N. Tarekegn, M. Rabbi, and S. Tessem, "Large Language Model Enhanced Clustering for News Event Detection," *arXiv preprint arXiv:2406.10552*, 2024.
+7. S. Nakshatri, Y. Liu, C. Chen, D. Roth, D. Goldwasser, and M. Hopkins, "Using LLM for Improving Key Event Discovery: Temporal-Guided News Stream Clustering with Event Summaries," in *Findings of the Association for Computational Linguistics: EMNLP 2023*, pp. 4510–4525, 2023.
+8. ACL Anthology, "Enhancing Event-centric News Cluster Summarization via Multi-stage Extraction," *Proc. ACL 2025*, 2025.acl-long.801, 2025.
+9. L. Fan et al., "BASIL: Bias Annotation Spans on the Informational Level," in *Proc. EMNLP-IJCNLP*, 2019, pp. 2410–2420.
 10. Z. Ji et al., "Survey of Hallucination in Natural Language Generation," *ACM Computing Surveys*, vol. 55, no. 12, pp. 1–38, 2023.
 11. Y. Zhang et al., "Siren's Song in the AI Ocean: A Survey on Hallucination in Large Language Models," *arXiv preprint arXiv:2309.01219*, 2023.
 12. N. Shinn et al., "Reflexion: Language Agents with Verbal Reinforcement Learning," in *Proc. NeurIPS*, 2023.

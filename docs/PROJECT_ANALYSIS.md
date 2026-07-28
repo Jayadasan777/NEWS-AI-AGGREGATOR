@@ -18,8 +18,8 @@ The NewsAI platform addresses four fundamental research challenges in automated 
 ### 1.1 Informational Fragmentation & Redundancy Reduction
 Online news agencies (e.g., Reuters, AP, Bloomberg, BBC, CNBC) simultaneously report on the identical real-world event. This results in extreme redundancy, where consumers encounter dozens of isolated, overlapping articles. NewsAI constructs **Event Intelligence Nodes** by linking semantically equivalent dispatches across distinct publishers, synthesizing a unified multi-source perspective.
 
-### 1.2 Copyright-Safe Transformative AI Synthesis
-Direct scraping and republishing of proprietary text content induces copyright infringement risk. NewsAI enforces a **transformative neural rewrite pipeline**. Using Meta's `llama-3.1-8b-instant` on Groq LPUs, raw scraped text snippets are converted into original, objective, 150-word editorial dispatches, eliminating verbatim phrase copying while preserving factual integrity.
+### 1.2 Transformative AI Synthesis for Copyright Risk Mitigation
+Direct scraping and republishing of proprietary text content induces copyright infringement risk. NewsAI enforces a **transformative neural rewrite pipeline** designed to reduce copyright exposure through transformative rewriting (a legally unsettled area, not a guaranteed exemption). Using Meta's `llama-3.1-8b-instant` on Groq LPUs, raw scraped text snippets are converted into original, objective, 150-word editorial dispatches, eliminating verbatim phrase copying while preserving factual integrity.
 
 ### 1.3 Deterministic Corroboration & Verification Scoring
 Single-source journalism is prone to unverified claims and publisher bias. NewsAI introduces a quantitative **Corroboration Confidence Metric** ($C(N)$) based on multi-source triangulation:

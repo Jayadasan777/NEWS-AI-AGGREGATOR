@@ -99,7 +99,7 @@ NewsAI is a publication-grade, full-stack autonomous news intelligence platform.
 
 ## 10. 📊 Empirical Evaluation Benchmark Suite ($N=45$)
 
-- **Formal Evaluation Dataset (`testCases.json`):** 45 labeled real-world wire headline pairs across 12 news domains (16 `SAME`, 29 `DIFFERENT`).
+- **Formal Evaluation Dataset (`testCases.json`):** 45 labeled real-world wire headline pairs across 12 news domains (17 `SAME`, 28 `DIFFERENT`).
 - **Benchmark Performance Metrics (`evaluation-results-n45.json`):**
   - **Accuracy:** **$97.78\%$** (44 out of 45 correct predictions)
   - **Precision:** **$94.44\%$**

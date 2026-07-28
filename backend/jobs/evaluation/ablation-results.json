@@ -1,0 +1,57 @@
+{
+  "total_test_cases": 45,
+  "strategies": {
+    "jaccard_only": {
+      "accuracy": "64.44%",
+      "precision": "54.55%",
+      "recall": "35.29%",
+      "f1_score": "42.86%",
+      "llm_calls_made": 0,
+      "confusion_matrix": {
+        "True_Positives": 6,
+        "True_Negatives": 23,
+        "False_Positives": 5,
+        "False_Negatives": 11
+      }
+    },
+    "cosine_only": {
+      "accuracy": "66.67%",
+      "precision": "62.50%",
+      "recall": "29.41%",
+      "f1_score": "40.00%",
+      "llm_calls_made": 0,
+      "confusion_matrix": {
+        "True_Positives": 5,
+        "True_Negatives": 25,
+        "False_Positives": 3,
+        "False_Negatives": 12
+      }
+    },
+    "llm_only": {
+      "accuracy": "97.78%",
+      "precision": "94.44%",
+      "recall": "100.00%",
+      "f1_score": "97.14%",
+      "llm_calls_made": 45,
+      "confusion_matrix": {
+        "True_Positives": 17,
+        "True_Negatives": 27,
+        "False_Positives": 1,
+        "False_Negatives": 0
+      }
+    },
+    "hybrid_production": {
+      "accuracy": "73.33%",
+      "precision": "85.71%",
+      "recall": "35.29%",
+      "f1_score": "50.00%",
+      "llm_calls_made": 11,
+      "confusion_matrix": {
+        "True_Positives": 6,
+        "True_Negatives": 27,
+        "False_Positives": 1,
+        "False_Negatives": 11
+      }
+    }
+  }
+}

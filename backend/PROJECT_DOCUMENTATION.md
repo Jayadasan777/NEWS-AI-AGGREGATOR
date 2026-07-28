@@ -8,7 +8,7 @@ them in a categorized, easy-to-read interface. Built using the MERN stack
 (MongoDB, Express, React, Node.js).
 
 ## 2. Motivation
-- Avoid copyright issues by not displaying copied/scraped content directly.
+- Design to reduce copyright exposure through transformative rewriting (a legally unsettled area, not a guaranteed exemption) rather than displaying copied/scraped content directly.
 - Use "transformative" AI rewriting to generate original text and images.
 - Automate the entire content pipeline using scheduled background jobs.
 

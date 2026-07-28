@@ -57,7 +57,7 @@ graph TD
 ## 🌟 Key Features & Evolution (Phases 1–4)
 
 ### 📌 Phase 1: Core MERN Pipeline & AI Transformation
-- **Transformative Rewriting:** Avoids copyright infringement by using LLMs to rewrite raw scraped news snippets into original 150-word editorial dispatches.
+- **Transformative Rewriting:** Designed to reduce copyright exposure through transformative rewriting (a legally unsettled area, not a guaranteed exemption) by using LLMs to synthesize raw scraped news snippets into original 150-word editorial dispatches.
 - **Keyless Image Generation:** Utilizes URL-based prompt encoding via `pollinations.ai` to dynamically generate contextual thumbnail artwork without managing complex third-party image API keys.
 - **RESTful Architecture:** Express API server backed by MongoDB Atlas with full CORS support and clean JSON response structures.
 

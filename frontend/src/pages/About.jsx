@@ -46,7 +46,7 @@ export default function About() {
     {
       num: '07',
       title: 'Autonomous Social Media Broadcast',
-      desc: 'Synthesized articles, custom AI images, and viral hashtags are dispatched 24/7 via real-time webhooks (Make.com/Zapier) directly to Facebook and Instagram channels.',
+      desc: 'Synthesized articles, custom AI images, and viral hashtags are dispatched 24/7 to a configurable automation webhook (e.g. Make.com), which can be configured to relay posts to platforms such as Facebook or Instagram.',
       tag: '24/7 AUTONOMOUS MEDIA HOUSE',
     },
   ];
