@@ -1,0 +1,48 @@
+{
+  "baseline_production_hybrid_2stage": {
+    "strategy": "Hybrid 2-Stage (Jaccard + Char Cosine)",
+    "accuracy": "73.33%",
+    "precision": "85.71%",
+    "recall": "35.29%",
+    "f1_score": "50.00%",
+    "llm_calls": 11
+  },
+  "baseline_llm_only": {
+    "strategy": "LLM-Only (Unconditional)",
+    "accuracy": "97.78%",
+    "precision": "94.44%",
+    "recall": "100.00%",
+    "f1_score": "97.14%",
+    "llm_calls": 45
+  },
+  "full_hybrid_3stage_experiments": [
+    {
+      "threshold": 0.4,
+      "accuracy": 88.89,
+      "precision": 92.86,
+      "recall": 76.47,
+      "f1_score": 83.87,
+      "llm_calls": 21,
+      "confusion_matrix": {
+        "TP": 13,
+        "TN": 27,
+        "FP": 1,
+        "FN": 4
+      }
+    },
+    {
+      "threshold": 0.45,
+      "accuracy": 84.44,
+      "precision": 91.67,
+      "recall": 64.71,
+      "f1_score": 75.86,
+      "llm_calls": 18,
+      "confusion_matrix": {
+        "TP": 11,
+        "TN": 27,
+        "FP": 1,
+        "FN": 6
+      }
+    }
+  ]
+}
