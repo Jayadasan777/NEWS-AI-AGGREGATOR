@@ -20,9 +20,9 @@ Existing news aggregation solutions present severe operational trade-offs. Keywo
 
 This paper presents the design, implementation, and empirical evaluation of **NISE** (News Intelligence and Synthesis Engine), a deployed hybrid clustering and distribution pipeline combining established lexical pre-filtering and LLM verification techniques. NISE continuously ingests live RSS wire feeds from 21 streams across 14 multi-domain sectors, executes pre-LLM multi-layer deduplication locks (exact URL, title string, and MD5 headline digest hashing), synthesizes 150-word editorial summaries via Meta Llama 3.1-8B on Groq Language Processing Units (LPUs), and clusters multi-source coverage into corroborated event nodes.
 
-Event clustering is driven by a two-stage hybrid pipeline: Stage 1a evaluates local unigram Jaccard similarity ($\tau_J = 0.12$), while Stage 1b computes character 3-gram TF-IDF vector cosine similarity ($\tau_C = 0.25$) to capture synonym-rich headline pairs that share zero unigrams. Pairs passing Stage 1 advance to Stage 2 zero-shot neural verification via Llama 3 (`isSameEvent`), eliminating over $75.9\%$ of LLM inference calls while preserving complete event recall. NISE incorporates a Dynamic Source Stance Detection Agent, an Iterative Hallucination Reflection Guardrail, an Evergreen Content Recirculation Engine, and a Webhook Self-Healing Retry Engine (3 retries at 15-minute intervals) with 1-hour staggered drip-feeding scheduling.
+Event clustering is driven by a two-stage hybrid pipeline: Stage 1a evaluates local unigram Jaccard similarity ($\tau_J = 0.12$), while Stage 1b computes character 3-gram TF-IDF vector cosine similarity ($\tau_C = 0.25$) to capture synonym-rich headline pairs that share zero unigrams. Pairs passing Stage 1 advance to Stage 2 zero-shot neural verification via Llama 3 (`isSameEvent`). On a curated $N=45$ ground-truth benchmark dataset across 12 domains, the deployed two-stage production system achieves **73.33% Accuracy**, **85.71% Precision**, **35.29% Recall**, and **50.00% F1-Score**, while reducing LLM API calls by **75.56%** (making 11 of 45 LLM invocations).
 
-Empirical evaluation on a curated $N=45$ ground-truth benchmark dataset across 12 domains yielded **97.78% Accuracy**, **94.44% Precision**, **100.00% Recall**, and **97.14% F1-Score** ($\text{TP}=17, \text{TN}=27, \text{FP}=1, \text{FN}=0$). We highlight a prompt-migration case study from Gemini to Llama 3 (where recall evolved from 100% to 72.73% to 90.91% across three documented prompt iterations) as an empirical analysis of prompt sensitivity in event clustering. The system is deployed with a 3D Cosmic Glassmorphism WebGL interface (Three.js / React Three Fiber) and an interactive Social Studio dashboard (`/studio`).
+To address the diagnosed recall gap caused by journalist periphrasis, brand metonymy, and acronym variations, we present an experimental, tested-but-not-deployed 3-stage enhancement adding a local CPU sentence transformer embedding gate (`Xenova/all-MiniLM-L6-v2`, running in ~1.8 seconds for all 45 pairs). At semantic threshold $T_{\text{sem}} = 0.40$, this 3-stage pipeline recovers recall to **76.47%** (+41.18 percentage points over production baseline) with **88.89% Accuracy** and **83.87% F1-Score** while preserving a **53.33% LLM call reduction** (21 of 45 LLM calls). We separately report the **LLM-only ceiling (unconditional Llama 3 on all 45 pairs, an upper bound rather than the deployed system)** at **97.78% Accuracy**, **94.44% Precision**, **100.00% Recall**, and **97.14% F1-Score**. NISE incorporates a Dynamic Source Stance Detection Agent, an Iterative Hallucination Reflection Guardrail, an Evergreen Content Recirculation Engine, and a Webhook Self-Healing Retry Engine with 1-hour staggered drip-feeding scheduling. The system is deployed with a 3D Cosmic Glassmorphism WebGL interface (Three.js / React Three Fiber) and an interactive Social Studio dashboard (`/studio`).
 
 **Index Terms** — Autonomous News Aggregation, Event Clustering, Large Language Models, Jaccard Similarity, Character N-Gram Cosine Similarity, Factuality Reflection Loop, Webhook Self-Healing, React Three Fiber, Groq LPUs, MERN Stack.
 
@@ -34,11 +34,11 @@ Empirical evaluation on a curated $N=45$ ground-truth benchmark dataset across 1
 Modern digital news consumption suffers from **Informational Hyper-Fragmentation**. When breaking news occurs—such as a central bank interest rate shift, a geopolitical crisis update, or an artificial intelligence model release—dozens of global newsrooms simultaneously publish articles covering the exact same event. 
 
 ```
-                               ┌──► Reuters ("Fed Cuts Interest Rates by 50bps")
-                               │
+                                ┌──► Reuters ("Fed Cuts Interest Rates by 50bps")
+                                │
 [Real-World Incident] ─────────┼──► Bloomberg ("Jerome Powell Announces Rate Cut")
 (Fed Rate Decision)            │
-                               └──► BBC News ("US Central Bank Lowers Borrowing Costs")
+                                └──► BBC News ("US Central Bank Lowers Borrowing Costs")
 ```
 
 For digital news platforms and consumers, this creates three critical vulnerabilities:
@@ -57,11 +57,11 @@ Prior news processing systems attempt to solve parts of this pipeline, but fall 
 ### 1.3 System Contributions
 Rather than claiming novel core algorithms, this paper presents the design, implementation, and empirical evaluation of a deployed news intelligence system featuring five integrated engineering contributions:
 
-1. **Lightweight Hybrid Two-Stage Clustering Engine (`eventEngine.js`):** Combines established lexical Jaccard IoU ($\tau_J = 0.12$) and sub-word 3-gram cosine vector similarity ($\tau_C = 0.25$) in Stage 1 to filter candidate headline pairs before Stage 2 zero-shot Llama 3 verification. This eliminates $75.9\%$ of LLM inference calls while achieving **100% Recall** ($\text{FN} = 0$).
-2. **Dynamic Source Stance Detection & Divergence Quantification:** Evaluates multi-source article clusters, classifying each publisher's stance as `Supporting`, `Contradicting`, or `Neutral`, and computes a quantitative **Publisher Divergence Score** ($0\text{--}100\%$).
-3. **Iterative Hallucination Guardrail Reflection Loop (`verifyFactualityAndReflect`):** Cross-checks LLM fused summaries against raw wire snippets for fabricated statistics, unsupported entities, or ungrounded claims, executing automatic self-correcting passes prior to database storage.
-4. **Autonomous Smart-Queue & Self-Healing Webhook Syndication (`socialBroadcast.js`):** Formats universal dual-structure JSON payloads, enforces 1-hour staggered drip-feeding, and implements self-healing retry logic (up to 3 retries at 15-minute intervals) for zero-duplicate automated social broadcasting to configurable webhooks (e.g., Make.com), which can relay posts to social platforms such as Facebook or Instagram.
-5. **Formal Empirical Evaluation & Prompt Migration Study:** Evaluation on a curated $N=45$ dataset (**97.78% Accuracy**) and a documented prompt-migration case study (Gemini to Llama 3 across 3 prompt revisions: 100% to 72.73% to 90.91% recall).
+1. **Lightweight Hybrid Two-Stage Clustering Engine (`eventEngine.js`):** Combines established lexical Jaccard IoU ($\tau_J = 0.12$) and sub-word 3-gram cosine vector similarity ($\tau_C = 0.25$) in Stage 1 to filter candidate headline pairs before Stage 2 zero-shot Llama 3 verification. This cuts LLM API inference calls by $75.56\%$ in production while providing a baseline accuracy of $73.33\%$ ($\text{F1} = 50.00\%$).
+2. **Empirical Gate Failure Diagnosis & Local Semantic Extension:** We conduct a comprehensive error breakdown on the $N=45$ benchmark dataset, identifying that journalist periphrasis and brand metonymy account for 63.6% of gate misses. We evaluate an experimental local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`) that recovers recall from $35.29\%$ to $76.47\%$ ($88.89\%$ accuracy) at $53.33\%$ LLM call savings.
+3. **Dynamic Source Stance Detection & Divergence Quantification:** Evaluates multi-source article clusters, classifying each publisher's stance as `Supporting`, `Contradicting`, or `Neutral`, and computes a quantitative **Publisher Divergence Score** ($0\text{--}100\%$).
+4. **Iterative Hallucination Guardrail Reflection Loop (`verifyFactualityAndReflect`):** Cross-checks LLM fused summaries against raw wire snippets for fabricated statistics, unsupported entities, or ungrounded claims, executing automatic self-correcting passes prior to database storage.
+5. **Autonomous Smart-Queue & Self-Healing Webhook Syndication (`socialBroadcast.js`):** Formats universal dual-structure JSON payloads, enforces 1-hour staggered drip-feeding, and implements self-healing retry logic (up to 3 retries at 15-minute intervals) for zero-duplicate automated social broadcasting to configurable webhooks (e.g., Make.com), which can relay posts to social platforms such as Facebook or Instagram.
 
 ---
 
@@ -76,12 +76,12 @@ Modern semantic frameworks (Reimers & Gurevych's Sentence-BERT [3]) map text to 
 LLM-assisted news event discovery and clustering represents an active research domain:
 
 - **Tarekegn, Rabbi, and Tessem (2024) [6]** presented LLM-enhanced event detection over the GDELT news corpus. While effective, GDELT operates on a pre-built offline database rather than live RSS wire feed ingestion.
-- **Nakshatri et al. (EMNLP 2023) [7]** proposed temporal-guided news stream clustering with LLM summaries, demonstrating a near-identical temporal clustering and LLM summarization framework for key event discovery. Our system extends this methodology by evaluating how a lightweight two-stage lexical pre-filter reduces LLM call overhead by 75.9% prior to LLM verification.
+- **Nakshatri et al. (EMNLP 2023) [7]** proposed temporal-guided news stream clustering with LLM summaries, demonstrating a near-identical temporal clustering and LLM summarization framework for key event discovery. Our system extends this methodology by evaluating how a lightweight two-stage lexical pre-filter reduces LLM call overhead by 75.56% prior to LLM verification.
 - **ACL 2025 Event-Centric Summarization [8]** explored multilingual event-cluster summarization. Our work explores deployment feasibility using a lightweight 8B-parameter open-weight model (`llama-3.1-8b-instant`) rather than larger proprietary LLMs.
 - **Fan et al. (2019) [9]** introduced BASIL (Bias Annotation Spans on the Informational Level) for media bias and stance analysis. Our stance-detection component utilizes zero-shot LLM classification rather than a trained or validated classifier benchmarked on BASIL, which we explicitly note as a system limitation.
 
 **System Differentiation:**
-While prior works explore individual components of neural clustering or summarization, NISE adds three distinct operational contributions: (a) a lightweight two-stage lexical pre-filter cutting LLM calls by 75.9% before verification; (b) complete deployment feasibility on an 8B open-weight model running on low-power LPU hardware; and (c) a fully deployed end-to-end pipeline including autonomous multi-channel distribution via configurable webhooks, which none of the cited works implement or evaluate.
+While prior works explore individual components of neural clustering or summarization, NISE adds three distinct operational contributions: (a) a lightweight two-stage lexical pre-filter cutting LLM calls by 75.56% before verification; (b) complete deployment feasibility on an 8B open-weight model running on low-power LPU hardware; and (c) a fully deployed end-to-end pipeline including autonomous multi-channel distribution via configurable webhooks, which none of the cited works implement or evaluate.
 
 ### 2.3 Comprehensive System Capability Comparison
 Table I summarizes NISE against existing academic and commercial news processing paradigms.
@@ -94,12 +94,12 @@ Table I summarizes NISE against existing academic and commercial news processing
 | **Pre-LLM Dedup Lock** | ❌ No | ❌ No | ❌ No | **✅ URL + MD5 Title Hash + Title** |
 | **Clustering Latency** | Low | High (GPU load) | Very High ($\mathcal{O}(N^2)$ LLM) | **Minimal (Stage 1 Algorithmic Gate)** |
 | **Synonym Pair Resolution**| ❌ Failed | ✅ High | ✅ High | **✅ High (3-Gram Cosine + Llama 3)** |
-| **LLM Call Reduction** | N/A | N/A | $0\%$ | **$75.9\%$ API Call Savings** |
+| **LLM Call Reduction** | N/A | N/A | $0\%$ | **$75.56\%$ Deployed API Savings** |
 | **Stance Detection** | ❌ No | ❌ No | ❌ No | **✅ Supporting / Contradicting / Neutral** |
 | **Hallucination Guard** | ❌ No | ❌ No | ❌ No | **✅ Two-Pass Reflection Loop** |
 | **Self-Healing Webhooks**| ❌ No | ❌ No | ❌ No | **✅ 3 Retries @ 15-Min Intervals** |
 | **Hardware Requirement** | CPU | High-End GPU | Cloud API | **Standard Commodity Server** |
-| **Empirical Evaluation** | Unrated | Unrated | Unrated | **✅ $N=45$ Dataset (97.78% Acc)** |
+| **Empirical Evaluation** | Unrated | Unrated | Unrated | **✅ $N=45$ Dataset (73.33% Deployed / 97.78% LLM-Only Ceiling)** |
 
 ---
 
@@ -305,13 +305,38 @@ The Social Studio provides a command dashboard for operators:
 ## V. EXPERIMENTAL EVALUATION & PERFORMANCE BENCHMARKS
 
 ### 5.1 Evaluation Setup & Ground-Truth Test Corpus
-To evaluate the event clustering engine's accuracy, a formal evaluation suite (`runEvaluation.js`) was constructed. The dataset (`testCases.json`) contains **45 ground-truth headline pairs** collected from real-world wire reports across 12 news sectors.
+To evaluate the event clustering engine's accuracy, a ground-truth dataset (`testCases.json`) containing **45 headline pairs** collected from real-world wire reports across 12 news sectors was evaluated:
 
 * **SAME Event Pairs:** 17 pairs describing the identical real-world incident using different phrasing.
 * **DIFFERENT Event Pairs:** 28 pairs describing distinct incidents within the same domain or involving the same entity.
 
-### 5.2 Confusion Matrix & Metric Calculations
-Evaluating `isSameEvent()` against the 45 test cases yielded the following confusion matrix:
+### 5.2 Primary Evaluation Results: Production System vs. Ceiling vs. Proposed Enhancement
+Table II presents the comparative evaluation across four configuration paradigms on the same $N=45$ ground-truth dataset.
+
+**TABLE II: PRODUCTION SYSTEM VS. CEILING VS. PROPOSED ENHANCEMENT**
+
+| Strategy / Configuration | Accuracy | Precision | Recall | F1-Score | LLM Calls (out of 45) | LLM Call Reduction |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Production 2-Stage Baseline** <br> *(Jaccard $\ge 0.12$ OR Char Cosine $\ge 0.25$)* | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **11** | **75.56%** |
+| **Full 3-Stage Hybrid ($T_{\text{sem}} = 0.45$)** <br> *(Jaccard OR Char Cosine OR Semantic $\ge 0.45$)* | **84.44%** | **91.67%** | **64.71%** | **75.86%** | **18** | **60.00%** |
+| **Full 3-Stage Hybrid ($T_{\text{sem}} = 0.40$)** <br> *(Jaccard OR Char Cosine OR Semantic $\ge 0.40$)* | **88.89%** | **92.86%** | **76.47%** | **83.87%** | **21** | **53.33%** |
+| **LLM-Only Ceiling (Upper Bound, Not Deployed)** <br> *(Unconditional Llama 3 on all 45 pairs)* | **97.78%** | **94.44%** | **100.00%** | **97.14%** | **45** | **0.00%** |
+
+### 5.3 Confusion Matrices
+
+#### Deployed Production System Confusion Matrix (73.33% Accuracy Row)
+Evaluating the deployed two-stage production gate ($(J \ge 0.12) \lor (\cos \ge 0.25)$) against the $N=45$ test cases yielded:
+
+$$\text{TP} = 6, \quad \text{TN} = 27, \quad \text{FP} = 1, \quad \text{FN} = 11$$
+
+```
+                           PREDICTED SAME      PREDICTED DIFFERENT
+ACTUAL SAME               TP = 6              FN = 11
+ACTUAL DIFFERENT          FP = 1              TN = 27
+```
+
+#### LLM-Only Ceiling Confusion Matrix (Upper Bound, Not Deployed)
+Evaluating unconditional Llama 3 direct verification (`isSameEvent()`) on all 45 pairs without any pre-filtering gate yielded:
 
 $$\text{TP} = 17, \quad \text{TN} = 27, \quad \text{FP} = 1, \quad \text{FN} = 0$$
 
@@ -321,52 +346,64 @@ ACTUAL SAME               TP = 17             FN = 0
 ACTUAL DIFFERENT          FP = 1              TN = 27
 ```
 
-Using standard classification formulas:
+### 5.4 Measured Latency & Throughput Benchmark
+To replace unverified estimations, execution latency was empirically measured across **20 real synthesis calls** to `synthesizeWithGroq()` using actual wire headlines (`backend/jobs/evaluation/latency-benchmark-results.json`):
 
-$$\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{Total}} = \frac{17 + 27}{45} = \frac{44}{45} = \mathbf{97.78\%}$$
-
-$$\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}} = \frac{17}{17 + 1} = \frac{17}{18} = \mathbf{94.44\%}$$
-
-$$\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}} = \frac{17}{17 + 0} = \frac{17}{17} = \mathbf{100.00\%}$$
-
-$$\text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} = 2 \times \frac{0.9444 \times 1.0}{0.9444 + 1.0} = \mathbf{97.14\%}$$
+* **Minimum Latency:** $1,017.17\text{ ms}$ ($1.02\text{ s}$)
+* **Maximum Latency:** $7,565.77\text{ ms}$ ($7.57\text{ s}$)
+* **Mean Latency:** $2,994.45\text{ ms}$ ($\approx 2.99\text{ s}$)
+* **Median Latency:** $2,418.88\text{ ms}$ ($\approx 2.42\text{ s}$)
+* **P95 Latency:** $5,194.10\text{ ms}$ ($\approx 5.19\text{ s}$)
+* **Measured Throughput:** **96.83 tokens/sec** (measured directly from Groq SDK's `completion.usage` response object).
 
 ---
 
-### 5.3 Benchmark Comparison: Baseline ($N=11$) vs. Expanded ($N=45$)
-Table II compares the initial baseline benchmark against the expanded $N=45$ empirical dataset exported to `evaluation-results-n45.json`.
+### 5.5 Gate Failure Diagnosis and Recovery
 
-**TABLE II: EMPIRICAL EVALUATION RESULTS**
+#### Empirical Failure Diagnosis (All 11 Failing `SAME` Pairs)
+To investigate the root cause of the $35.29\%$ recall baseline in the production system, we executed a full diagnostic audit (`diagnoseGateFailures.js`). Out of 17 `SAME`-labeled ground-truth pairs, 11 failed the Stage 1 pre-filter ($(J < 0.12) \land (\cos < 0.25)$). Table III presents the complete breakdown.
 
-| Metric | Baseline Dataset ($N=11$) | Expanded Benchmark ($N=45$) | Result Status |
-| :--- | :---: | :---: | :---: |
-| **Total Test Cases** | 11 | **45** | Expanded 4x |
-| **True Positives (TP)** | 5 | **17** | Verified |
-| **True Negatives (TN)** | 5 | **27** | Verified |
-| **False Positives (FP)** | 1 | **1** | Single Edge Case |
-| **False Negatives (FN)** | 0 | **0** | **Zero Missed Events** |
-| **Accuracy** | $90.91\%$ | **97.78%** | **+6.87% Gain** |
-| **Precision** | $83.33\%$ | **94.44%** | **+11.11% Gain** |
-| **Recall** | $100.00\%$ | **100.00%** | **Perfect 1.0 Recall** |
-| **F1-Score** | $90.91\%$ | **97.14%** | **+6.23% Gain** |
+**TABLE III: STAGE 1 GATE FAILURE DIAGNOSIS (11 FAILING `SAME` PAIRS)**
 
-### 5.4 Algorithmic Gating Efficiency & API Rate Savings
-During full 14-sector wire processing runs (averaging 87 candidate article pairs), Stage 1a (Jaccard IoU) and Stage 1b (3-Gram Cosine) successfully filter non-matching headline pairs without calling Groq APIs:
+| # | Headline A | Headline B | Jaccard Score (vs 0.12) | Char Cosine (vs 0.25) | Diagnostic Failure Category |
+| :--- | :--- | :--- | :---: | :---: | :--- |
+| **1** | *"Wall Street Suffers Steep Setback as Tech Slumps and Oil Spikes"* | *"Oil Surge From Iran War Sends US Stocks and Bonds Lower Amid AI Spending Fears"* | **0.1053** (-0.0147) | **0.1918** (-0.0582) | High Vocabulary Divergence |
+| **2** | *"Dow drops 507 points as tech selloff deepens on Alphabet, Tesla earnings and Iran tensions"* | *"US stocks fall as oil prices surge amid Middle East conflict, Alphabet AI spending worries weigh on market"* | **0.0400** (-0.0800) | **0.1542** (-0.0958) | High Vocabulary Divergence |
+| **3** | *"Nvidia quarterly revenue reaches record $57 billion on Blackwell demand"* | *"Chipmaker Nvidia posts 62% sales surge as AI infrastructure boom continues"* | **0.0667** (-0.0533) | **0.0953** (-0.1547) | Numerical Phrasing Variation |
+| **4** | *"NASA's Artemis II crew completes final launch pad dress rehearsal"* | *"Astronauts clear major milestone ahead of upcoming lunar flyby mission"* | **0.0000** (-0.1200) | **0.0738** (-0.1762) | Zero Shared Unigrams |
+| **5** | *"Bitcoin crosses $100,000 mark for the first time in history"* | *"World's largest cryptocurrency surges past landmark six-figure threshold"* | **0.0000** (-0.1200) | **0.1156** (-0.1344) | Metaphorical Rewriting |
+| **6** | *"Tesla delivers record 1.8 million electric vehicles in full-year report"* | *"Musk's EV giant hits annual delivery target despite global market slowdown"* | **0.0000** (-0.1200) | **0.0960** (-0.1540) | Brand Metonymy (*"Musk's EV giant"*) |
+| **7** | *"UN Security Council passes resolution demanding immediate ceasefire in Middle East conflict"* | *"United Nations votes unanimously for emergency cessation of hostilities"* | **0.0000** (-0.1200) | **0.0958** (-0.1542) | Acronym Variation (*"UN" vs "United Nations"*) |
+| **8** | *"FDA approves first CRISPR gene-editing therapy for sickle cell disease"* | *"US health regulators clear landmark gene therapy Casgevy for commercial use"* | **0.0625** (-0.0575) | **0.2002** (-0.0498) | Agency Alias (*"FDA" vs "US health regulators"*) |
+| **9** | *"Avatar 3 trailer debuts at CinemaCon ahead of December theatrical release"* | *"James Cameron previews next Sci-Fi installment during industry showcase"* | **0.0000** (-0.1200) | **0.0269** (-0.2231) | Zero Shared Unigrams |
+| **10** | *"Global climate summit concludes with historic pledge to transition away from fossil fuels"* | *"COP delegates reach agreement on renewable energy phase-in at annual conference"* | **0.0000** (-0.1200) | **0.0947** (-0.1553) | Domain Synonymy (*"Climate summit" vs "COP"*) |
+| **11** | *"Real Madrid wins Champions League final with dramatic 2-1 victory over Dortmund"* | *"Spanish giants secure 15th European crown after late goals at Wembley"* | **0.0000** (-0.1200) | **0.0270** (-0.2230) | Metonymy / Periphrasis (*"Spanish giants"*) |
 
-$$\text{API Call Savings} = \frac{87 - 21}{87} = \frac{66}{87} = \mathbf{75.86\%} \approx \mathbf{75.9\%}$$
+#### Empirical Reproduction of the Dense Embedding Motivation
+This diagnostic breakdown provides an empirical reproduction of the exact limitation documented by Reimers & Gurevych [3] when introducing Sentence-BERT. Journalist periphrasis (*"Spanish giants"* for Real Madrid, *"Musk's EV giant"* for Tesla, *"six-figure threshold"* for $100,000) and agency aliases (*"US health regulators"* for FDA) yield exactly zero unigram token overlap and near-zero character 3-gram overlap. Lexical and character-level TF-IDF pre-filters are fundamentally incapable of bridging these semantic gaps without semantic vector representations.
 
-By bypassing $75.9\%$ of unnecessary LLM invocations, NISE prevents API quota exhaustion and maintains sub-second execution speeds across batch ingestion cycles.
+#### Proposed Local CPU Semantic Embedding Extension (`testSemanticGate.js`)
+To test recovery without incurring GPU costs or external API latency, we evaluated a third OR-gate condition using a lightweight local CPU sentence transformer model (`Xenova/all-MiniLM-L6-v2` via `@xenova/transformers`, running in ~1.8 seconds for all 45 pairs on standard CPU hardware).
+
+The full three-stage gating condition is defined as:
+
+$$\text{PassesGating} = (J(A,B) \ge 0.12) \lor (\cos_{\text{char}}(V_A, V_B) \ge 0.25) \lor (\cos_{\text{semantic}}(E_A, E_B) \ge T_{\text{sem}})$$
+
+As detailed in Table II, setting $T_{\text{sem}} = 0.40$ recovers recall from **35.29% to 76.47%** (+41.18 percentage points) while maintaining **88.89% Accuracy**, **92.86% Precision**, and a **53.33% LLM call reduction** (21 of 45 calls). 
+
+*Methodological Caveat:* The semantic threshold ($T_{\text{sem}} = 0.40$) was selected by inspecting performance on this same 45-pair dataset rather than a separate held-out validation set; the reported recall recovery represents an upper-bound estimate pending validation on unseen wire data. This extension has been experimentally evaluated in `testFullHybridWithSemantic.js` but is **not integrated into the deployed production system**.
 
 ---
 
 ## VI. THREATS TO VALIDITY
 
-Before concluding, we explicitly document four methodological and operational threats to validity:
+Before concluding, we explicitly document five methodological and operational threats to validity:
 
 1. **Benchmark Scale & Single-Annotator Labeling:** The $N=45$ evaluation dataset represents a modest, single-annotator-labeled benchmark collected over a 6-week wire window. Inter-annotator agreement metrics were not formally measured on a multi-annotator panel.
 2. **Evaluation Scale vs. Enterprise Corpora:** While NISE is evaluated against live RSS wire streams, we do not present direct empirical comparisons against large-scale static databases such as GDELT or Event Registry at their full operating volume ($10^6+$ daily documents).
 3. **Unvalidated Sub-Components:** The stance-detection agent and factuality reflection loop are fully implemented and operational in code, but their isolated classification accuracy has not been benchmarked against dedicated domain datasets (e.g., BASIL for stance annotation or FACTS Grounding for hallucination evaluation).
 4. **Legal Status of Transformative Rewriting:** The copyright reduction strategy is a software design goal intended to minimize exposure through transformative rewriting. It does not constitute a legally guaranteed exemption under copyright law, acknowledging active 2025 litigation surrounding AI news summarization (e.g., *Advance Local Media LLC v. Cohere Inc.*).
+5. **Experimental Threshold Selection on Evaluation Set:** The semantic gate threshold ($T_{\text{sem}} = 0.40$) evaluated in Section 5.5 was selected via inspection of performance on the same $N=45$ evaluation dataset rather than a separate held-out validation set; the reported recall recovery should be treated as an upper estimate pending validation on unseen data.
 
 ---
 
@@ -374,7 +411,7 @@ Before concluding, we explicitly document four methodological and operational th
 
 This paper presented **NISE**, a deployed news intelligence platform combining a two-stage hybrid event clustering pipeline ($J \ge 0.12 \lor \cos \ge 0.25 \rightarrow \text{Llama 3}$), Groq LPU inference, Pollinations FLUX Realism image generation, dynamic stance analysis, hallucination reflection loops, and self-healing webhooks.
 
-Empirical benchmarking on an $N=45$ dataset demonstrated **97.78% Accuracy, 94.44% Precision, 100% Recall, and 97.14% F1-Score** while reducing LLM API overhead by **75.9%**. The system is open-sourced and deployed with an interactive 3D WebGL interface.
+Empirical evaluation on an $N=45$ dataset established that the deployed two-stage production system achieves **73.33% Accuracy**, **85.71% Precision**, **35.29% Recall**, and **50.00% F1-Score** while reducing LLM API calls by **75.56%**. An experimental 3-stage extension adding a local CPU sentence transformer gate ($T_{\text{sem}} = 0.40$) demonstrated recall recovery to **76.47%** (**88.89% Accuracy**, **83.87% F1-Score**) at a **53.33% LLM call reduction**. We separately report the **LLM-only ceiling (unconditional Llama 3 upper bound, not deployed)** at **97.78% Accuracy, 94.44% Precision, 100.00% Recall, and 97.14% F1-Score**. The system is open-sourced and deployed with an interactive 3D WebGL interface.
 
 ---
 
