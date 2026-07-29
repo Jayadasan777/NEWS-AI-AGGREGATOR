@@ -143,6 +143,10 @@ The frontend dev server will launch at `http://localhost:5173`. Open this URL in
 - `GET /api/events` — Retrieve clustered news events (sorted by latest activity).
 - `GET /api/events/:id` — Retrieve a single event with full corroborated source article details.
 
+### Health & Enterprise Telemetry Endpoints (`/api/health`)
+- `GET /api/health` — Returns basic system status (`UP`), uptime, memory usage, node version, and DB state.
+- `GET /api/health/metrics` — Returns full system metrics including AI token counts, average inference latency, article/event counts, and cache statistics.
+
 ### Social Studio & Distribution Endpoints (`/api/social`)
 - `GET /api/social/queue` — Retrieve social broadcasting queue (Supports `?status=pending|broadcasted|all` & `?limit=20`).
 - `POST /api/social/trigger-scrape` — Trigger an immediate AI news scrape directly from the Social Studio UI.
@@ -152,10 +156,21 @@ The frontend dev server will launch at `http://localhost:5173`. Open this URL in
 
 ---
 
+## 🛠️ CLI Developer Tooling
+
+- `npm run doctor` — Runs the **System Doctor** diagnostic CLI tool (`doctor.js`) inspecting env configuration, DB connectivity, Groq API key presence, RSS stream reachability, and memory metrics.
+- `npm run verify-indexes` — Verifies and synchronizes MongoDB compound indexes on `Article` and `Event` collections (`verifyIndexes.js`).
+- `npm test` — Executes zero-dependency automated integration test suite (`apiHealth.test.js`) validating API route statuses and JSON response schemas.
+- `node backend/jobs/evaluation/benchmarkLoad.js` — Runs high-volume synthetic load benchmark testing in-memory hashing and gating throughput up to 5,000 headlines.
+
+---
+
 ## 📚 Documentation Directory
-- **[Academic Research Paper & Analysis](file:///e:/ai-news-aggregator/docs/PROJECT_ANALYSIS.md):** Comprehensive 500+ line academic paper draft detailing theoretical foundations, data flow diagrams, Jaccard IoU & Cosine formulas, technology stack matrices, $N=45$ empirical benchmark results (**97.78% Accuracy, 100% Recall**), and system audit logs.
-- **[System Feature Catalog](file:///e:/ai-news-aggregator/docs/SYSTEM_FEATURES.md):** Complete catalog enumerating all 11 core feature suites across multi-source RSS ingestion, Llama 3 synthesis, FLUX photojournalism, NISE two-stage clustering, stance detection, social webhooks, 3D Cosmic UI, and cloud monitoring.
-- **[Backend & System Architecture Documentation](file:///e:/ai-news-aggregator/backend/PROJECT_DOCUMENTATION.md):** In-depth technical breakdown of all 4 development phases, algorithmic formulas, challenges encountered, prompt engineering iterations, and evaluation results.
+- **[Enterprise Operations Manual](file:///e:/ai-news-aggregator/docs/ENTERPRISE_OPERATIONS_MANUAL.md):** Complete technical operations manual covering system architecture, deployment guides, environment configuration, database index management, health telemetry, troubleshooting, recovery procedures, and API references.
+- **[14-Page IEEE Research Paper Manuscript](file:///e:/ai-news-aggregator/docs/IEEE_RESEARCH_PAPER_14PAGES.md):** Full academic manuscript detailing system design, equations, empirical evaluation, 11-pair failure diagnosis, and sentence transformer extension.
+- **[System Feature Catalog](file:///e:/ai-news-aggregator/docs/SYSTEM_FEATURES.md):** Complete catalog enumerating all 12 core feature suites across multi-source RSS ingestion, Llama 3 synthesis, FLUX photojournalism, NISE two-stage clustering, stance detection, social webhooks, 3D Cosmic UI, and production hardening.
+- **[Academic Research Paper & Analysis](file:///e:/ai-news-aggregator/docs/PROJECT_ANALYSIS.md):** Comprehensive academic paper draft detailing theoretical foundations, data flow diagrams, Jaccard IoU & Cosine formulas, technology stack matrices, $N=45$ empirical benchmark results (**97.78% Accuracy, 100% Recall**), and system audit logs.
+- **[Backend & System Architecture Documentation](file:///e:/ai-news-aggregator/backend/PROJECT_DOCUMENTATION.md):** In-depth technical breakdown of development phases, algorithmic formulas, challenges encountered, prompt engineering iterations, and evaluation results.
 - **[Frontend Architecture Guide](file:///e:/ai-news-aggregator/frontend/README.md):** Detailed guide on the Three.js / React Three Fiber setup, Cosmic Glassmorphism design system, component hierarchy, and routing.
 
 ---

@@ -114,3 +114,23 @@ NewsAI is a publication-grade, full-stack autonomous news intelligence platform.
 - **Keep-Alive Health Endpoint (`GET /ping`):** Prevents cloud host server hibernation (Render, Railway, Heroku) when pinged by external monitors (`cron-job.org`, UptimeRobot).
 - **Asynchronous Ingestion Endpoint (`GET /api/trigger`):** Launches background news scrapes while immediately returning a 200 OK JSON response, eliminating HTTP gateway timeouts.
 - **Optimized Weekly Cron (`0 8 * * 1`):** Automatically runs full 14-feed scrapes every Monday at 08:00 UTC, conserving Groq LPU quotas and image generation bandwidth.
+
+---
+
+## 12. 🛡️ Enterprise Production Hardening & Observability Suite
+
+- **Graceful Process Shutdown (`server.js`):** Traps `SIGINT`/`SIGTERM` signals, drains HTTP connections, halts cron timers, and closes MongoDB connection pools cleanly within a 10s bounded timeout.
+- **Startup Environment Validator (`envValidator.js`):** Fails fast if required variables (`MONGO_URI`, `GROQ_API_KEY`) are missing, issuing diagnostic warnings for optional variables without exposing secret credentials.
+- **Global Process Error Safety Net & Secret Redactor (`logger.js`):** Intercepts `unhandledRejection` and `uncaughtException`, logging structured traces with regex-based credential redaction.
+- **Multi-Pass JSON Self-Healing Parser (`jsonRepair.js`):** Auto-corrects malformed LLM outputs (trailing commas, smart quotes, missing brackets) before falling back.
+- **MongoDB Compound Indexing (`verifyIndexes.js`):** Defines compound indexes on `Article` and `Event` models for $\mathcal{O}(\log N)$ query speedups; includes `npm run verify-indexes` CLI tool.
+- **Sliding-Window Rate Limiter & Security Headers (`rateLimiter.js`):** Enforces 100 reqs/15m on feed endpoints and 5 reqs/1m on trigger endpoints, appending HTTP security headers (`nosniff`, `SAMEORIGIN`, `XSS-Protection`).
+- **AI Token, Latency & Cost Telemetry (`aiTelemetry.js`):** Tracks cumulative prompt/completion tokens, inference latency, model usage, and success/failure ratios.
+- **In-Memory 30s TTL Response Cache (`cache.js`):** Caches read-heavy GET routes (`/api/articles`, `/api/events`), automatically invalidating cache keys upon ingestion completion.
+- **System Health & Observability Metrics API (`healthRoutes.js`):** Exposes `GET /api/health` and `GET /api/health/metrics` for real-time monitoring and APM tools.
+- **System Doctor Self-Diagnostic CLI (`doctor.js`):** One-command diagnostic health suite (`npm run doctor`) inspecting env, DB, RSS streams, memory, and indexes.
+- **Automated Integration Test Suite (`apiHealth.test.js`):** Zero-dependency integration test runner (`npm test`) validating route statuses and JSON structures.
+- **Dynamic Event Lifecycle & Source Reliability Intelligence (`eventLifecycle.js` & `sourceReliability.js`):** Computes dynamic `lifecycle_stage` and publisher consensus metrics without schema changes.
+- **High-Volume Ingestion & Gating Load Benchmark (`benchmarkLoad.js`):** In-memory synthetic load runner testing hashing and gating throughput up to 5,000 articles.
+- **Enterprise Operations Manual (`docs/ENTERPRISE_OPERATIONS_MANUAL.md`):** Comprehensive technical operations manual covering architecture, deployment, monitoring, and recovery.
+
