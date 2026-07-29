@@ -332,10 +332,10 @@ Table I presents the notation table for mathematical formalizations in EFSA and 
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Traditional Lexical Jaccard** ($\tau_J = 0.12$) | 68.89% | 75.00% | 17.65% | 28.57% | 0.214 | 0 | 100.00% |
 | **Character 3-Gram Cosine** ($\tau_C = 0.25$) | 71.11% | 80.00% | 23.53% | 36.36% | 0.298 | 0 | 100.00% |
-| **Production 2-Stage Baseline** *(Jaccard OR Cosine + LLM)* | 71.11% | 83.33% | 29.41% | 43.48% | 0.369 | 10 | 77.78% |
-| **Proposed EFSA Gate-Only** ($S_{\text{EFSA}} \ge 0.22$, No LLM) | 66.67% | 60.00% | 35.29% | 44.44% | 0.245 | 0 | 100.00% |
-| **Proposed EFSA Full Pipeline** *(EFSA Gate + Llama 3)* | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **0.424** | **10** | **77.78%** |
-| **Proposed EFSA + DPCS Full Pipeline** *(EFSA + DPCS + Llama 3)* | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **0.424** | **9** | **80.00%** |
+| **Production 2-Stage Baseline** *(Jaccard OR Cosine + LLM)* | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **0.424** | **11** | **75.56%** |
+| **Proposed EFSA Gate-Only** ($S_{\text{EFSA}} \ge 0.22$, No LLM) | 60.00% | 46.15% | 35.29% | 40.00% | 0.110 | 0 | 100.00% |
+| **Proposed EFSA Full Pipeline** *(EFSA Gate + Llama 3)* | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **0.424** | **13** | **71.11%** |
+| **Proposed EFSA + DPCS Full Pipeline** *(EFSA + DPCS + Llama 3)* | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **0.424** | **10** | **77.78%** |
 | **Experimental 3-Stage Semantic Gate** *(Local MiniLM CPU)* | 88.89% | 92.86% | 76.47% | 83.87% | 0.751 | 21 | 53.33% |
 | **LLM-Only Ceiling (Upper Bound, Not Deployed)** | 97.78% | 94.44% | 100.00% | 97.14% | 0.949 | 45 | 0.00% |
 
@@ -347,12 +347,12 @@ To quantify the individual contribution of each evidence dimension in EFSA, we e
 **TABLE III: REAL 5-COMPONENT EFSA ABLATION RESULTS (GATE-ONLY)**
 | Ablated Component / Variant | Accuracy | Precision | Recall | F1-Score | MCC | Operational Impact |
 | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Full EFSA Gate (All 5 Components)** | **66.67%** | **60.00%** | **35.29%** | **44.44%** | **0.245** | Baseline multi-evidence gate |
-| *w/o Sector Match ($S_{\text{sec}}$)* | 42.22% | 30.43% | 41.18% | 35.00% | -0.155 | Severe cross-domain false candidate leaks |
-| *w/o Unigram Keyword IoU ($S_{\text{key}}$)* | 51.11% | 35.29% | 35.29% | 35.29% | -0.040 | Significant precision loss on short titles |
-| *w/o Named Entity Overlap ($S_{\text{ent}}$)* | 57.78% | 41.67% | 29.41% | 34.48% | 0.048 | Drops precision on proper noun pairs |
+| **Full EFSA Gate (All 5 Components)** | **60.00%** | **46.15%** | **35.29%** | **40.00%** | **0.110** | Baseline multi-evidence gate |
+| *w/o Sector Match ($S_{\text{sec}}$)* | 44.44% | 34.62% | 52.94% | 41.86% | -0.076 | Severe cross-domain false candidate leaks |
+| *w/o Unigram Keyword IoU ($S_{\text{key}}$)* | 42.22% | 28.57% | 35.29% | 31.58% | -0.178 | Significant precision loss on short titles |
+| *w/o Named Entity Overlap ($S_{\text{ent}}$)* | 62.22% | 50.00% | 41.18% | 45.16% | 0.169 | Drops precision on proper noun pairs |
 | *w/o Headline Character Cosine ($S_{\text{head}}$)* | 64.44% | 55.56% | 29.41% | 38.46% | 0.183 | Misses character-level n-gram variations |
-| *w/o Temporal Decay ($S_{\text{temp}}$)* | 71.11% | 83.33% | 29.41% | 43.48% | 0.369 | Removes time window decay weighting |
+| *w/o Temporal Decay ($S_{\text{temp}}$)* | 68.89% | 71.43% | 29.41% | 41.67% | 0.298 | Removes time window decay weighting |
 
 ---
 

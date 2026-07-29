@@ -9,11 +9,7 @@
  *   where sum(w_i) = 1.0
  */
 
-const STOP_WORDS = new Set([
-  'the', 'a', 'an', 'in', 'of', 'on', 'at', 'by', 'for', 'with', 'about', 'against', 'between',
-  'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down',
-  'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why'
-]);
+const { calculateJaccardSimilarity, calculateSemanticCosineSimilarity } = require('./textSimilarity');
 
 // Normalized Evidence Weights (sum = 1.0)
 const WEIGHTS = {
@@ -38,54 +34,12 @@ const extractEntities = (text) => {
 /**
  * Calculates unigram keyword IoU similarity S_key.
  */
-const calculateKeywordScore = (titleA, titleB) => {
-  const getTokens = (t) => new Set(t.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w)));
-  const setA = getTokens(titleA);
-  const setB = getTokens(titleB);
-  if (setA.size === 0 || setB.size === 0) return 0;
-  let intersection = 0;
-  for (const token of setA) {
-    if (setB.has(token)) intersection++;
-  }
-  const union = setA.size + setB.size - intersection;
-  return union > 0 ? (intersection / union) : 0;
-};
+const calculateKeywordScore = (titleA, titleB) => calculateJaccardSimilarity(titleA, titleB);
 
 /**
  * Calculates character 3-gram TF-IDF vector cosine similarity S_head.
  */
-const calculateHeadlineCosineScore = (titleA, titleB) => {
-  const getCharNgrams = (t) => {
-    const s = t.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const counts = {};
-    for (let i = 0; i <= s.length - 3; i++) {
-      const gram = s.substring(i, i + 3);
-      counts[gram] = (counts[gram] || 0) + 1;
-    }
-    return counts;
-  };
-
-  const vecA = getCharNgrams(titleA);
-  const vecB = getCharNgrams(titleB);
-  const keysA = Object.keys(vecA);
-  const keysB = Object.keys(vecB);
-  if (keysA.length === 0 || keysB.length === 0) return 0;
-
-  let dotProduct = 0;
-  let magA = 0;
-  let magB = 0;
-
-  for (const key of keysA) {
-    magA += vecA[key] * vecA[key];
-    if (vecB[key]) dotProduct += vecA[key] * vecB[key];
-  }
-  for (const key of keysB) {
-    magB += vecB[key] * vecB[key];
-  }
-
-  const denominator = Math.sqrt(magA) * Math.sqrt(magB);
-  return denominator > 0 ? (dotProduct / denominator) : 0;
-};
+const calculateHeadlineCosineScore = (titleA, titleB) => calculateSemanticCosineSimilarity(titleA, titleB);
 
 /**
  * Calculates named entity overlap ratio S_ent.

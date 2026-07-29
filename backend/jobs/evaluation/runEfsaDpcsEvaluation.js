@@ -11,8 +11,12 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 const fs = require('fs');
-const { computeEfsaScore, calculateKeywordScore, calculateHeadlineCosineScore } = require('../../utils/efsaEngine');
+const { computeEfsaScore } = require('../../utils/efsaEngine');
 const { updatePublisherCredibility, getPublisherCredibilityScore } = require('../../utils/dpcsEngine');
+const {
+  calculateJaccardSimilarity,
+  calculateSemanticCosineSimilarity
+} = require('../../utils/textSimilarity');
 const { isSameEvent } = require('../eventEngine');
 
 const JACCARD_THRESHOLD = 0.12;
@@ -76,15 +80,15 @@ const runRigorousEvaluation = async () => {
     updatePublisherCredibility(publisher, { stance: isActualSame ? 'Supporting' : 'Neutral' });
     const pubScore = getPublisherCredibilityScore(publisher);
 
-    // Baseline calculation
-    const jaccard = calculateKeywordScore(tc.headline_a, tc.headline_b);
-    const cosine = calculateHeadlineCosineScore(tc.headline_a, tc.headline_b);
+    // Baseline calculation using exact production functions
+    const jaccard = calculateJaccardSimilarity(tc.headline_a, tc.headline_b);
+    const cosine = calculateSemanticCosineSimilarity(tc.headline_a, tc.headline_b);
     const baselinePasses = (jaccard >= JACCARD_THRESHOLD) || (cosine >= COSINE_THRESHOLD);
 
     if (baselinePasses) {
       if (isActualSame) bGateTP++; else bGateFP++;
       bLlmCalls++;
-      const llmMatches = await isSameEvent(tc.headline_b, tc.headline_a);
+      const llmMatches = await isSameEvent(tc.headline_a, tc.headline_b);
       if (llmMatches) {
         if (isActualSame) bFullTP++; else bFullFP++;
       } else {
@@ -102,7 +106,7 @@ const runRigorousEvaluation = async () => {
     if (efsaPasses) {
       if (isActualSame) efsaGateTP++; else efsaGateFP++;
       efsaLlmCalls++;
-      const llmMatches = await isSameEvent(tc.headline_b, tc.headline_a);
+      const llmMatches = await isSameEvent(tc.headline_a, tc.headline_b);
       if (llmMatches) {
         if (isActualSame) efsaFullTP++; else efsaFullFP++;
       } else {
@@ -120,7 +124,7 @@ const runRigorousEvaluation = async () => {
 
     if (dpcsPasses) {
       dpcsLlmCalls++;
-      const llmMatches = await isSameEvent(tc.headline_b, tc.headline_a);
+      const llmMatches = await isSameEvent(tc.headline_a, tc.headline_b);
       if (llmMatches) {
         if (isActualSame) dpcsFullTP++; else dpcsFullFP++;
       } else {
