@@ -4,6 +4,7 @@ const cors = require('cors');
 const cron = require('node-cron');
 const connectDB = require('./config/db');
 const runNewsEngine = require('./jobs/newsEngine');
+const { recirculateEvergreenArticles } = require('./jobs/recirculateEngine');
 const articleRoutes = require('./routes/articleRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const socialRoutes = require('./routes/socialRoutes');
@@ -52,6 +53,18 @@ cron.schedule('0 8 * * 1', async () => {
 });
 
 console.log('⏰ Cron job scheduled: news engine will run weekly on Monday at 08:00 AM UTC.');
+
+// --- Scheduled job: Evergreen Content Recirculation (runs daily at 12:00 PM UTC) ---
+cron.schedule('0 12 * * *', async () => {
+  console.log('\n♻️ Scheduled job triggered (Evergreen Content Recirculation):', new Date().toLocaleString());
+  try {
+    await recirculateEvergreenArticles();
+  } catch (error) {
+    console.error('❌ Evergreen Recirculation job failed:', error.message);
+  }
+});
+
+console.log('⏰ Cron job scheduled: evergreen content recirculation will run daily at 12:00 PM UTC.');
 
 
 

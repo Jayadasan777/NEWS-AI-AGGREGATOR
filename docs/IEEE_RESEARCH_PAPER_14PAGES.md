@@ -274,7 +274,7 @@ Before dispatching, the engine validates `broadcast_status === 'pending'`. Dispa
 ---
 
 ### 3.9 Evergreen Content Recirculation Engine (`recirculateEngine.js`)
-To maintain feed engagement during low wire activity, `recirculateEvergreenArticles()` periodically scans MongoDB for high-confidence articles linked to events with $C(N) \ge 90\%$ created $>48$ hours ago that have not been recirculated (`is_recirculated !== true`).
+To maintain feed engagement during low wire activity, `recirculateEvergreenArticles()` is scheduled via a daily `node-cron` background job (`0 12 * * *` at 12:00 PM UTC) to scan MongoDB for high-confidence articles linked to events with $C(N) \ge 90\%$ created $>48$ hours ago that have not been recirculated (`is_recirculated !== true`).
 
 It prepends `"ICYMI: "` *(In Case You Missed It)* to the caption, sets `is_recirculated = true`, and safely re-queues a single article instance through the drip queue, guaranteeing zero spam risk.
 
