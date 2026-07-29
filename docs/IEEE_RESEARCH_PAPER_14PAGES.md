@@ -198,12 +198,6 @@ Image fetching is delegated directly to the client's web browser, bypassing serv
 ```
 
 #### Stage 1a: Algorithmic Pre-Filter (Jaccard Unigram IoU)
-Given headline token set $A$ and event title token set $B$, text is lowercased, special characters are removed, and words are filtered against an explicit 80+ English stop-word set (`STOP_WORDS`) following standard information retrieval text normalization principles (Manning et al. [20]). Tokens with length $\le 2$ are removed. The Jaccard similarity coefficient $J(A,B)$ is calculated as:
-
-$$J(A, B) = \frac{|A \cap B|}{|A \cup B|}$$
-
-The empirical threshold is set to $\tau_J = 0.12$ ($12\%$).
-
 #### Stage 1b: Semantic Vector Space Pre-Filter (Sub-Word 3-Gram Cosine Similarity)
 To catch synonym-rich headline pairs that share zero unigram tokens, NISE constructs sub-word character 3-gram frequency vectors $V_A$ and $V_B$:
 

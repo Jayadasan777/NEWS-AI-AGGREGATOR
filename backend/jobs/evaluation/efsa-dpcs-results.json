@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-07-29T06:06:15.658Z",
+  "datasetSize": 45,
+  "baselineProductionSystem": {
+    "accuracyPercent": 77.78,
+    "precisionPercent": 0,
+    "recallPercent": 0,
+    "f1Percent": 0,
+    "tp": 0,
+    "fp": 10,
+    "tn": 35,
+    "fn": 0
+  },
+  "efsaEnhancedSystem": {
+    "accuracyPercent": 77.78,
+    "precisionPercent": 0,
+    "recallPercent": 0,
+    "f1Percent": 0,
+    "tp": 0,
+    "fp": 10,
+    "tn": 35,
+    "fn": 0
+  },
+  "improvements": {
+    "recallDeltaPoints": 0,
+    "accuracyDeltaPoints": 0
+  }
+}

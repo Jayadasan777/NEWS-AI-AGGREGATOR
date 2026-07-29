@@ -4,6 +4,8 @@ const Event = require('../models/Event');
 const Article = require('../models/Article');
 const { repairAndParseJson } = require('../utils/jsonRepair');
 const { recordAiSuccess, recordAiFailure } = require('../utils/aiTelemetry');
+const { computeEfsaScore } = require('../utils/efsaEngine');
+const { updatePublisherCredibility } = require('../utils/dpcsEngine');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -132,19 +134,21 @@ const findMatchingEvent = async (article) => {
   for (const event of recentEvents) {
     const jaccard = calculateJaccardSimilarity(event.event_title, article.title);
     const cosine = calculateSemanticCosineSimilarity(event.event_title, article.title);
+    const efsaResult = computeEfsaScore(article, event);
 
     const passesJaccard = jaccard >= JACCARD_THRESHOLD;
     const passesCosine = cosine >= SEMANTIC_COSINE_THRESHOLD;
+    const passesEfsa = efsaResult.passesEfsa;
 
-    if (passesJaccard || passesCosine) {
-      const triggerReason = passesJaccard
-        ? `Jaccard ${(jaccard * 100).toFixed(1)}%`
-        : `Cosine ${(cosine * 100).toFixed(1)}%`;
+    if (passesJaccard || passesCosine || passesEfsa) {
+      const triggerReason = passesEfsa
+        ? `EFSA ${(efsaResult.S_EFSA * 100).toFixed(1)}%`
+        : (passesJaccard ? `Jaccard ${(jaccard * 100).toFixed(1)}%` : `Cosine ${(cosine * 100).toFixed(1)}%`);
       console.log(`⚡ [${triggerReason}] threshold met for "${article.title}" vs "${event.event_title}". Calling Llama 3...`);
       const matches = await isSameEvent(event.event_title, article.title);
       if (matches) return event;
     } else {
-      console.log(`⏩ Skipped LLM call (Jaccard ${(jaccard * 100).toFixed(1)}% | Cosine ${(cosine * 100).toFixed(1)}%) for "${article.title}"`);
+      console.log(`⏩ Skipped LLM call (Jaccard ${(jaccard * 100).toFixed(1)}% | Cosine ${(cosine * 100).toFixed(1)}% | EFSA ${(efsaResult.S_EFSA * 100).toFixed(1)}%) for "${article.title}"`);
     }
   }
   return null;
@@ -234,10 +238,16 @@ Return ONLY valid JSON array. No explanation before or after the JSON.`;
 
     const stanceAnalysis = stanceData.map((s) => {
       const article = articles[s.source_index - 1];
+      const publisher = extractPublisherFromTitle(article?.title);
+      const stance = s.stance || 'Neutral';
+
+      // Update DPCS online credibility model
+      updatePublisherCredibility(publisher, { stance });
+
       return {
         article_id: article?._id,
-        publisher: extractPublisherFromTitle(article?.title),
-        stance: s.stance || 'Neutral',
+        publisher,
+        stance,
         framing: s.framing || '',
         rationale: s.rationale || '',
       };
