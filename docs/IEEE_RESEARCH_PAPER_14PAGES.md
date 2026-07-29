@@ -384,7 +384,7 @@ Unlike prior systems relying either on static lexical heuristics (Jaccard/TF-IDF
 
 ## VII. CONCLUSION & FUTURE WORK
 
-This paper presented **NISE** and its core novel algorithmic contributions: the **Enhanced Fusion Scoring Algorithm (EFSA)** and **Dynamic Publisher Credibility Scoring (DPCS)**. Experimental evaluation on $N=45$ real-world wire headlines demonstrates that EFSA + DPCS achieves **73.33% Accuracy** and **50.00% F1-Score** while saving **80.00% of LLM API calls** (reducing LLM invocations to 9 of 45 pairs). Future work includes extending DPCS to Graph Neural Networks (GNNs) for multi-agent publisher network trust propagation and integrating cross-lingual multi-modal vision-language event fusion.
+This paper presented **NISE** and its core novel algorithmic contributions: the **Enhanced Fusion Scoring Algorithm (EFSA)** and **Dynamic Publisher Credibility Scoring (DPCS)**. Experimental evaluation on $N=45$ real-world wire headlines demonstrates that EFSA + DPCS achieves **73.33% Accuracy** and **50.00% F1-Score** while saving **77.78% of LLM API calls** (reducing LLM invocations to 10 of 45 pairs). Future work includes extending DPCS to Graph Neural Networks (GNNs) for multi-agent publisher network trust propagation and integrating cross-lingual multi-modal vision-language event fusion.
 
 ### 5.4 Measured Latency & Throughput Benchmark
 To replace unverified estimations, execution latency was empirically measured across **20 real synthesis calls** to `synthesizeWithGroq()` using actual wire headlines (`backend/jobs/evaluation/latency-benchmark-results.json`):

@@ -1,0 +1,370 @@
+{
+  "timestamp": "2026-07-29T09:03:32.555Z",
+  "datasetSize": 45,
+  "production_baseline": {
+    "gate_only": {
+      "accuracyPercent": 64.44,
+      "precisionPercent": 54.55,
+      "recallPercent": 35.29,
+      "f1Percent": 42.86,
+      "mcc": 0.197,
+      "tp": 6,
+      "fp": 5,
+      "tn": 23,
+      "fn": 11,
+      "llmCalls": 0,
+      "llmCallSavingsPercent": 100
+    },
+    "full_pipeline": {
+      "accuracyPercent": 73.33,
+      "precisionPercent": 85.71,
+      "recallPercent": 35.29,
+      "f1Percent": 50,
+      "mcc": 0.424,
+      "tp": 6,
+      "fp": 1,
+      "tn": 27,
+      "fn": 11,
+      "llmCalls": 11,
+      "llmCallSavingsPercent": 75.56
+    }
+  },
+  "threshold_sweep": {
+    "0.15": {
+      "threshold": 0.15,
+      "efsa_gate_only": {
+        "accuracyPercent": 37.78,
+        "precisionPercent": 32.26,
+        "recallPercent": 58.82,
+        "f1Percent": 41.67,
+        "mcc": -0.169,
+        "tp": 10,
+        "fp": 21,
+        "tn": 7,
+        "fn": 7,
+        "llmCalls": 0,
+        "llmCallSavingsPercent": 100
+      },
+      "efsa_full_pipeline": {
+        "accuracyPercent": 82.22,
+        "precisionPercent": 90.91,
+        "recallPercent": 58.82,
+        "f1Percent": 71.43,
+        "mcc": 0.623,
+        "tp": 10,
+        "fp": 1,
+        "tn": 27,
+        "fn": 7,
+        "llmCalls": 31,
+        "llmCallSavingsPercent": 31.11
+      },
+      "efsa_plus_dpcs_full_pipeline": {
+        "accuracyPercent": 82.22,
+        "precisionPercent": 90.91,
+        "recallPercent": 58.82,
+        "f1Percent": 71.43,
+        "mcc": 0.623,
+        "tp": 10,
+        "fp": 1,
+        "tn": 27,
+        "fn": 7,
+        "llmCalls": 30,
+        "llmCallSavingsPercent": 33.33
+      }
+    },
+    "0.18": {
+      "threshold": 0.18,
+      "efsa_gate_only": {
+        "accuracyPercent": 46.67,
+        "precisionPercent": 36,
+        "recallPercent": 52.94,
+        "f1Percent": 42.86,
+        "mcc": -0.041,
+        "tp": 9,
+        "fp": 16,
+        "tn": 12,
+        "fn": 8,
+        "llmCalls": 0,
+        "llmCallSavingsPercent": 100
+      },
+      "efsa_full_pipeline": {
+        "accuracyPercent": 80,
+        "precisionPercent": 90,
+        "recallPercent": 52.94,
+        "f1Percent": 66.67,
+        "mcc": 0.576,
+        "tp": 9,
+        "fp": 1,
+        "tn": 27,
+        "fn": 8,
+        "llmCalls": 25,
+        "llmCallSavingsPercent": 44.44
+      },
+      "efsa_plus_dpcs_full_pipeline": {
+        "accuracyPercent": 75.56,
+        "precisionPercent": 87.5,
+        "recallPercent": 41.18,
+        "f1Percent": 56,
+        "mcc": 0.477,
+        "tp": 7,
+        "fp": 1,
+        "tn": 27,
+        "fn": 10,
+        "llmCalls": 22,
+        "llmCallSavingsPercent": 51.11
+      }
+    },
+    "0.20": {
+      "threshold": 0.2,
+      "efsa_gate_only": {
+        "accuracyPercent": 46.67,
+        "precisionPercent": 31.58,
+        "recallPercent": 35.29,
+        "f1Percent": 33.33,
+        "mcc": -0.109,
+        "tp": 6,
+        "fp": 13,
+        "tn": 15,
+        "fn": 11,
+        "llmCalls": 0,
+        "llmCallSavingsPercent": 100
+      },
+      "efsa_full_pipeline": {
+        "accuracyPercent": 73.33,
+        "precisionPercent": 85.71,
+        "recallPercent": 35.29,
+        "f1Percent": 50,
+        "mcc": 0.424,
+        "tp": 6,
+        "fp": 1,
+        "tn": 27,
+        "fn": 11,
+        "llmCalls": 19,
+        "llmCallSavingsPercent": 57.78
+      },
+      "efsa_plus_dpcs_full_pipeline": {
+        "accuracyPercent": 73.33,
+        "precisionPercent": 85.71,
+        "recallPercent": 35.29,
+        "f1Percent": 50,
+        "mcc": 0.424,
+        "tp": 6,
+        "fp": 1,
+        "tn": 27,
+        "fn": 11,
+        "llmCalls": 14,
+        "llmCallSavingsPercent": 68.89
+      }
+    },
+    "0.22": {
+      "threshold": 0.22,
+      "efsa_gate_only": {
+        "accuracyPercent": 60,
+        "precisionPercent": 46.15,
+        "recallPercent": 35.29,
+        "f1Percent": 40,
+        "mcc": 0.11,
+        "tp": 6,
+        "fp": 7,
+        "tn": 21,
+        "fn": 11,
+        "llmCalls": 0,
+        "llmCallSavingsPercent": 100
+      },
+      "efsa_full_pipeline": {
+        "accuracyPercent": 73.33,
+        "precisionPercent": 85.71,
+        "recallPercent": 35.29,
+        "f1Percent": 50,
+        "mcc": 0.424,
+        "tp": 6,
+        "fp": 1,
+        "tn": 27,
+        "fn": 11,
+        "llmCalls": 13,
+        "llmCallSavingsPercent": 71.11
+      },
+      "efsa_plus_dpcs_full_pipeline": {
+        "accuracyPercent": 73.33,
+        "precisionPercent": 85.71,
+        "recallPercent": 35.29,
+        "f1Percent": 50,
+        "mcc": 0.424,
+        "tp": 6,
+        "fp": 1,
+        "tn": 27,
+        "fn": 11,
+        "llmCalls": 10,
+        "llmCallSavingsPercent": 77.78
+      }
+    },
+    "0.25": {
+      "threshold": 0.25,
+      "efsa_gate_only": {
+        "accuracyPercent": 68.89,
+        "precisionPercent": 66.67,
+        "recallPercent": 35.29,
+        "f1Percent": 46.15,
+        "mcc": 0.298,
+        "tp": 6,
+        "fp": 3,
+        "tn": 25,
+        "fn": 11,
+        "llmCalls": 0,
+        "llmCallSavingsPercent": 100
+      },
+      "efsa_full_pipeline": {
+        "accuracyPercent": 73.33,
+        "precisionPercent": 85.71,
+        "recallPercent": 35.29,
+        "f1Percent": 50,
+        "mcc": 0.424,
+        "tp": 6,
+        "fp": 1,
+        "tn": 27,
+        "fn": 11,
+        "llmCalls": 9,
+        "llmCallSavingsPercent": 80
+      },
+      "efsa_plus_dpcs_full_pipeline": {
+        "accuracyPercent": 71.11,
+        "precisionPercent": 83.33,
+        "recallPercent": 29.41,
+        "f1Percent": 43.48,
+        "mcc": 0.369,
+        "tp": 5,
+        "fp": 1,
+        "tn": 27,
+        "fn": 12,
+        "llmCalls": 8,
+        "llmCallSavingsPercent": 82.22
+      }
+    },
+    "0.28": {
+      "threshold": 0.28,
+      "efsa_gate_only": {
+        "accuracyPercent": 68.89,
+        "precisionPercent": 71.43,
+        "recallPercent": 29.41,
+        "f1Percent": 41.67,
+        "mcc": 0.298,
+        "tp": 5,
+        "fp": 2,
+        "tn": 26,
+        "fn": 12,
+        "llmCalls": 0,
+        "llmCallSavingsPercent": 100
+      },
+      "efsa_full_pipeline": {
+        "accuracyPercent": 71.11,
+        "precisionPercent": 83.33,
+        "recallPercent": 29.41,
+        "f1Percent": 43.48,
+        "mcc": 0.369,
+        "tp": 5,
+        "fp": 1,
+        "tn": 27,
+        "fn": 12,
+        "llmCalls": 7,
+        "llmCallSavingsPercent": 84.44
+      },
+      "efsa_plus_dpcs_full_pipeline": {
+        "accuracyPercent": 71.11,
+        "precisionPercent": 83.33,
+        "recallPercent": 29.41,
+        "f1Percent": 43.48,
+        "mcc": 0.369,
+        "tp": 5,
+        "fp": 1,
+        "tn": 27,
+        "fn": 12,
+        "llmCalls": 7,
+        "llmCallSavingsPercent": 84.44
+      }
+    },
+    "0.30": {
+      "threshold": 0.3,
+      "efsa_gate_only": {
+        "accuracyPercent": 71.11,
+        "precisionPercent": 83.33,
+        "recallPercent": 29.41,
+        "f1Percent": 43.48,
+        "mcc": 0.369,
+        "tp": 5,
+        "fp": 1,
+        "tn": 27,
+        "fn": 12,
+        "llmCalls": 0,
+        "llmCallSavingsPercent": 100
+      },
+      "efsa_full_pipeline": {
+        "accuracyPercent": 73.33,
+        "precisionPercent": 100,
+        "recallPercent": 29.41,
+        "f1Percent": 45.45,
+        "mcc": 0.454,
+        "tp": 5,
+        "fp": 0,
+        "tn": 28,
+        "fn": 12,
+        "llmCalls": 6,
+        "llmCallSavingsPercent": 86.67
+      },
+      "efsa_plus_dpcs_full_pipeline": {
+        "accuracyPercent": 73.33,
+        "precisionPercent": 100,
+        "recallPercent": 29.41,
+        "f1Percent": 45.45,
+        "mcc": 0.454,
+        "tp": 5,
+        "fp": 0,
+        "tn": 28,
+        "fn": 12,
+        "llmCalls": 6,
+        "llmCallSavingsPercent": 86.67
+      }
+    },
+    "0.35": {
+      "threshold": 0.35,
+      "efsa_gate_only": {
+        "accuracyPercent": 68.89,
+        "precisionPercent": 80,
+        "recallPercent": 23.53,
+        "f1Percent": 36.36,
+        "mcc": 0.308,
+        "tp": 4,
+        "fp": 1,
+        "tn": 27,
+        "fn": 13,
+        "llmCalls": 0,
+        "llmCallSavingsPercent": 100
+      },
+      "efsa_full_pipeline": {
+        "accuracyPercent": 71.11,
+        "precisionPercent": 100,
+        "recallPercent": 23.53,
+        "f1Percent": 38.1,
+        "mcc": 0.401,
+        "tp": 4,
+        "fp": 0,
+        "tn": 28,
+        "fn": 13,
+        "llmCalls": 5,
+        "llmCallSavingsPercent": 88.89
+      },
+      "efsa_plus_dpcs_full_pipeline": {
+        "accuracyPercent": 68.89,
+        "precisionPercent": 100,
+        "recallPercent": 17.65,
+        "f1Percent": 30,
+        "mcc": 0.343,
+        "tp": 3,
+        "fp": 0,
+        "tn": 28,
+        "fn": 14,
+        "llmCalls": 4,
+        "llmCallSavingsPercent": 91.11
+      }
+    }
+  }
+}
