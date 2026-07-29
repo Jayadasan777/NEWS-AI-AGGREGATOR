@@ -58,7 +58,7 @@ Prior news processing systems attempt to solve parts of this pipeline, but fall 
 Rather than claiming novel core algorithms, this paper presents the design, implementation, and empirical evaluation of a deployed news intelligence system featuring five integrated engineering contributions:
 
 1. **Lightweight Hybrid Two-Stage Clustering Engine (`eventEngine.js`):** Combines established lexical Jaccard IoU ($\tau_J = 0.12$) and sub-word 3-gram cosine vector similarity ($\tau_C = 0.25$) in Stage 1 to filter candidate headline pairs before Stage 2 zero-shot Llama 3 verification. This cuts LLM API inference calls by $75.56\%$ in production while providing a baseline accuracy of $73.33\%$ ($\text{F1} = 50.00\%$).
-2. **Empirical Gate Failure Diagnosis & Local Semantic Extension:** We conduct a comprehensive error breakdown on the $N=45$ benchmark dataset, identifying that journalist periphrasis and brand metonymy account for 63.6% of gate misses. We evaluate an experimental local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`) that recovers recall from $35.29\%$ to $76.47\%$ ($88.89\%$ accuracy) at $53.33\%$ LLM call savings.
+2. **Empirical Gate Failure Diagnosis & Local Semantic Extension:** We conduct a comprehensive error breakdown on the $N=45$ benchmark dataset, identifying that journalist periphrasis, brand metonymy, acronyms, and agency aliases account for 7 out of 11 gate misses ($63.6\%$, Rows 4–11 of Table III). We evaluate an experimental local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`) that recovers recall from $35.29\%$ to $76.47\%$ ($88.89\%$ accuracy) at $53.33\%$ LLM call savings.
 3. **Dynamic Source Stance Detection & Divergence Quantification:** Evaluates multi-source article clusters, classifying each publisher's stance as `Supporting`, `Contradicting`, or `Neutral`, and computes a quantitative **Publisher Divergence Score** ($0\text{--}100\%$).
 4. **Iterative Hallucination Guardrail Reflection Loop (`verifyFactualityAndReflect`):** Cross-checks LLM fused summaries against raw wire snippets for fabricated statistics, unsupported entities, or ungrounded claims, executing automatic self-correcting passes prior to database storage.
 5. **Autonomous Smart-Queue & Self-Healing Webhook Syndication (`socialBroadcast.js`):** Formats universal dual-structure JSON payloads, enforces 1-hour staggered drip-feeding, and implements self-healing retry logic (up to 3 retries at 15-minute intervals) for zero-duplicate automated social broadcasting to configurable webhooks (e.g., Make.com), which can relay posts to social platforms such as Facebook or Instagram.
@@ -68,7 +68,7 @@ Rather than claiming novel core algorithms, this paper presents the design, impl
 ## II. RELATED WORK & SYSTEM COMPARISON
 
 ### 2.1 Lexical & Vector-Based Text Clustering
-Early news deduplication relied on TF-IDF vector space representations (Salton & Buckley [1]) and unigram Jaccard Indexing [2]. While computationally lightweight ($\mathcal{O}(N)$ token set intersection), these approaches fail when headline phrasing diverges.
+Early news deduplication and event detection relied on TF-IDF vector space representations (Salton & Buckley [1]), unigram Jaccard Indexing [2], Twitter event discovery surveys (Atefeh & Khreich [13]), and MinHash N-gram Jaccard techniques (Nantasenamat et al. [18]). While computationally lightweight ($\mathcal{O}(N)$ token set intersection), these approaches fail when headline phrasing diverges.
 
 Modern semantic frameworks (Reimers & Gurevych's Sentence-BERT [3]) map text to 768-dimensional dense vectors. Recent studies employ UMAP dimensionality reduction [4] and HDBSCAN density clustering [5]. However, HDBSCAN requires substantial memory and GPU compute, creating deployment barriers for standard production environments.
 
@@ -79,6 +79,7 @@ LLM-assisted news event discovery and clustering represents an active research d
 - **Nakshatri et al. (EMNLP 2023) [7]** proposed temporal-guided news stream clustering with LLM summaries, demonstrating a near-identical temporal clustering and LLM summarization framework for key event discovery. Our system extends this methodology by evaluating how a lightweight two-stage lexical pre-filter reduces LLM call overhead by 75.56% prior to LLM verification.
 - **ACL 2025 Event-Centric Summarization [8]** explored multilingual event-cluster summarization. Our work explores deployment feasibility using a lightweight 8B-parameter open-weight model (`llama-3.1-8b-instant`) rather than larger proprietary LLMs.
 - **Fan et al. (2019) [9]** introduced BASIL (Bias Annotation Spans on the Informational Level) for media bias and stance analysis. Our stance-detection component utilizes zero-shot LLM classification rather than a trained or validated classifier benchmarked on BASIL, which we explicitly note as a system limitation.
+- **Saha et al. (2025) [19]** presented an AI chatbot for real-time news delivery. While effective for conversational Q&A, NISE differs by focusing on automated multi-source event clustering, stance quantification, and automated multi-channel social media distribution rather than an interactive chatbot interface.
 
 **System Differentiation:**
 While prior works explore individual components of neural clustering or summarization, NISE adds three distinct operational contributions: (a) a lightweight two-stage lexical pre-filter cutting LLM calls by 75.56% before verification; (b) complete deployment feasibility on an 8B open-weight model running on low-power LPU hardware; and (c) a fully deployed end-to-end pipeline including autonomous multi-channel distribution via configurable webhooks, which none of the cited works implement or evaluate.
@@ -119,7 +120,7 @@ graph TD
         Groq --> ImgPrompt["35mm Reuters Photo Prompt"]
     end
 
-    subgraph Layer3["3. Hybrid Image Generation Pipeline"]
+    subgraph Layer3["3. Hybrid Photojournalism Pipeline"]
         ImgPrompt --> RSSImg{"RSS Native Photo?"}
         RSSImg -->|Yes| RealPhoto["Extract Press Photo (<enclosure>)"]
         RSSImg -->|No| Pollinations["Pollinations FLUX Realism (&model=flux-realism)"]
@@ -151,7 +152,7 @@ $$\text{MatchCondition} = (\text{url} = U) \lor (\text{title\_hash} = \text{MD5}
 where $\text{title\_hash}$ is the 32-character hexadecimal MD5 digest of the lowercased, whitespace-trimmed headline string. If any condition evaluates to true, processing is halted immediately.
 
 ### 3.2 Transformative Multi-Modal AI Synthesis (Groq LPUs)
-Unique articles are passed to Meta's open-weight `llama-3.1-8b-instant` model hosted on Groq LPUs. Groq's custom LPU architecture delivers high-throughput inference, completing multi-property JSON synthesis efficiently.
+Unique articles are passed to Meta's open-weight `llama-3.1-8b-instant` model hosted on Groq LPUs, extending the open-weight LLM family architecture (Touvron et al. [14], Meta AI [15]). Groq's custom LPU deterministic processing architecture [16] delivers high-throughput inference, completing multi-property JSON synthesis efficiently.
 
 The model is prompted to output a single JSON object containing:
 1. `summary`: 150-word objective, original editorial summary.
@@ -162,7 +163,7 @@ The model is prompted to output a single JSON object containing:
 ### 3.3 Hybrid Photojournalism & FLUX Realism Image Pipeline
 NISE employs a dual-mode image acquisition strategy:
 - **Primary (Native Press Photo Extraction):** `extractRssImage()` parses RSS XML for `<enclosure>`, `<media:content>`, `<media:thumbnail>`, or embedded HTML `<img>` tags.
-- **Fallback (FLUX Realism AI Generation):** If no native photo exists, `generateAndHostImage()` builds a keyless, prompt-encoded URL using `pollinations.ai`:
+- **Fallback (FLUX Realism AI Generation):** If no native photo exists, `generateAndHostImage()` builds a keyless, prompt-encoded URL using the `pollinations.ai` FLUX Realism engine [17]:
 
 $$\text{URL} = \text{\small https://image.pollinations.ai/prompt/}\text{EncodedPrompt}\text{\small ?width=800\&height=800\&model=flux-realism\&seed=Seed}$$
 
@@ -197,7 +198,7 @@ Image fetching is delegated directly to the client's web browser, bypassing serv
 ```
 
 #### Stage 1a: Algorithmic Pre-Filter (Jaccard Unigram IoU)
-Given headline token set $A$ and event title token set $B$, text is lowercased, special characters are removed, and words are filtered against an explicit 80+ English stop-word set (`STOP_WORDS`). Tokens with length $\le 2$ are removed. The Jaccard similarity coefficient $J(A,B)$ is calculated as:
+Given headline token set $A$ and event title token set $B$, text is lowercased, special characters are removed, and words are filtered against an explicit 80+ English stop-word set (`STOP_WORDS`) following standard information retrieval text normalization principles (Manning et al. [20]). Tokens with length $\le 2$ are removed. The Jaccard similarity coefficient $J(A,B)$ is calculated as:
 
 $$J(A, B) = \frac{|A \cap B|}{|A \cup B|}$$
 
@@ -240,7 +241,7 @@ where $D \in [0, 100]$. A score of $D = 0\%$ indicates full publisher alignment,
 ---
 
 ### 3.7 Iterative Hallucination Guardrail Reflection Loop
-To eliminate AI hallucinations in fused summaries, `verifyFactualityAndReflect()` executes a two-pass verification loop:
+Large language models frequently suffer from hallucinations—generating fabricated statistics, unsupported named entities, or ungrounded causal claims [10], [11]. To eliminate AI hallucinations in fused summaries, `verifyFactualityAndReflect()` executes a two-pass verification loop:
 
 1. **Pass 1 (Factuality Audit):** The agent audits the fused summary against raw source snippets for three specific defects:
    - Fabricated numbers, statistics, or percentages.
@@ -248,12 +249,12 @@ To eliminate AI hallucinations in fused summaries, `verifyFactualityAndReflect()
    - Unverified causal claims or speculative conclusions.
 2. **Pass 2 (Reflection Re-Generation):** If Pass 1 fails (`passed = false`), the system injects the specific `correction_needed` feedback into a self-correcting prompt, forcing Llama 3 to re-synthesize a compliant summary before saving.
 
-Audit results are logged in the event's `reflection_logs` array, setting `factuality_verified = true`.
+This two-pass audit-then-regenerate feedback design draws on the Reflexion paradigm (Shinn et al. [12]), using verbal reinforcement feedback to self-correct non-compliant generations. Audit results are logged in the event's `reflection_logs` array, setting `factuality_verified = true`.
 
 ---
 
 ### 3.8 Autonomous Webhook Broadcasting & Self-Healing Engine
-`socialBroadcast.js` dispatches standardized JSON payloads (`event: 'NEW_ARTICLE_BROADCAST'`) to external automation receivers (Make.com, Zapier, n8n, Discord, Telegram).
+`socialBroadcast.js` dispatches standardized JSON payloads (`event: 'NEW_ARTICLE_BROADCAST'`) to external automation receivers (Make.com, Zapier, n8n, Discord, Telegram), implementing a production-grade webhook syndication pattern (Kumar et al. [21]).
 
 **Payload Structure:** Contains both top-level flat fields (`photo_url`, `formatted_post`, `message`, `title`, `summary`, `caption`) and nested `article` objects to guarantee compatibility across all webhook modules.
 
@@ -417,7 +418,7 @@ Empirical evaluation on an $N=45$ dataset established that the deployed two-stag
 
 ## VIII. REFERENCES
 
-1. P. Salton and C. Buckley, "Term-weighting approaches in automatic text retrieval," *Information Processing & Management*, vol. 24, no. 5, pp. 513–523, 1988.
+1. G. Salton and C. Buckley, "Term-weighting approaches in automatic text retrieval," *Information Processing & Management*, vol. 24, no. 5, pp. 513–523, 1988.
 2. P. Jaccard, "Étude comparative de la distribution florale dans une portion des Alpes et du Jura," *Bulletin de la Société Vaudoise des Sciences Naturelles*, vol. 37, pp. 547–579, 1901.
 3. N. Reimers and I. Gurevych, "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks," in *Proc. EMNLP-IJCNLP*, 2019, pp. 3982–3992.
 4. L. McInnes, J. Healy, and J. Melville, "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction," *arXiv preprint arXiv:1802.03426*, 2018.
@@ -438,4 +439,3 @@ Empirical evaluation on an $N=45$ dataset established that the deployed two-stag
 19. A. Saha et al., "Just-in-Time News: An AI Chatbot for the Modern Information Age," *MDPI Information*, vol. 16, no. 3, p. 209, 2025.
 20. C. D. Manning, P. Raghavan, and H. Schütze, *Introduction to Information Retrieval*, Cambridge University Press, 2008.
 21. R. Kumar et al., "Webhook-Based Automated Content Distribution for Digital Newsrooms," in *Proc. IEEE CCCI*, 2023, pp. 1–7.
-22. Meta Platforms Inc., "Facebook Graph API Reference: Pages Photo Publishing," Meta for Developers, 2024.
