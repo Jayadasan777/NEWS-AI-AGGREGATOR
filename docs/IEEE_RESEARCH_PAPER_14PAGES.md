@@ -341,6 +341,21 @@ Table I presents the notation table for mathematical formalizations in EFSA and 
 
 ---
 
+**TABLE II-B: FULL COST/ACCURACY PARETO COMPARISON ACROSS ALL PROPOSED STRATEGIES**
+| Strategy | Accuracy | Recall | F1-Score | LLM Calls | Savings |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Production 2-Stage Baseline** | 73.33% | 35.29% | 50.00% | 11 | 75.56% |
+| **EFSA Full Pipeline** ($\tau=0.22$, current) | 73.33% | 35.29% | 50.00% | 13 | 71.11% |
+| **EFSA + DPCS Full Pipeline** ($\tau=0.22$, current) | 73.33% | 35.29% | 50.00% | 10 | 77.78% |
+| **EFSA Full Pipeline** ($\tau=0.18$) | 80.00% | 52.94% | 66.67% | 25 | 44.44% |
+| **EFSA Full Pipeline** ($\tau=0.15$) | 82.22% | 58.82% | 71.43% | 31 | 31.11% |
+| **Semantic Gate** (`Xenova/all-MiniLM-L6-v2`, $T_{\text{sem}}=0.40$) | 88.89% | 76.47% | 83.87% | 21 | 53.33% |
+| **LLM-Only Ceiling** (upper bound, not deployed) | 97.78% | 100.00% | 97.14% | 45 | 0.00% |
+
+*Empirical Strategy Comparison:* As demonstrated in Table II-B, the experimental local semantic embedding gate (`Xenova/all-MiniLM-L6-v2` at $T_{\text{sem}}=0.40$) strictly dominates every EFSA operating point tested ($\tau = 0.15$ through $0.35$) across accuracy (88.89%), recall (76.47%), F1-score (83.87%), and LLM call count (21 calls) simultaneously. No EFSA threshold in the sensitivity sweep matches or exceeds the semantic gate's performance at an equal or lower call count. Consequently, EFSA and DPCS are presented not as outperforming alternatives to neural semantic embeddings, but as dependency-free, pure-heuristic strategies with their own characterized cost/accuracy tradeoff curves. These heuristic methods are explicitly useful for constrained runtime environments where loading even a lightweight local transformer model (`Xenova/all-MiniLM-L6-v2`) is undesirable or infeasible.
+
+---
+
 ### 5.3 Real 5-Component Ablation Study
 To quantify the individual contribution of each evidence dimension in EFSA, we execute a 5-component ablation experiment across all 45 test pairs using `runEfsaDpcsEvaluation.js` (`backend/jobs/evaluation/efsa-dpcs-results.json`).
 
@@ -444,14 +459,13 @@ Before concluding, we explicitly document five methodological and operational th
 3. **Unvalidated Sub-Components:** The stance-detection agent and factuality reflection loop are fully implemented and operational in code, but their isolated classification accuracy has not been benchmarked against dedicated domain datasets (e.g., BASIL for stance annotation or FACTS Grounding for hallucination evaluation).
 4. **Legal Status of Transformative Rewriting:** The copyright reduction strategy is a software design goal intended to minimize exposure through transformative rewriting. It does not constitute a legally guaranteed exemption under copyright law, acknowledging active 2025 litigation surrounding AI news summarization (e.g., *Advance Local Media LLC v. Cohere Inc.*).
 5. **Experimental Threshold Selection on Evaluation Set:** The semantic gate threshold ($T_{\text{sem}} = 0.40$) evaluated in Section 5.5 was selected via inspection of performance on the same $N=45$ evaluation dataset rather than a separate held-out validation set; the reported recall recovery should be treated as an upper estimate pending validation on unseen data.
+6. **Non-Uniform Credibility Suppression in DPCS:** Dynamic publisher credibility weighting is not uniformly beneficial across all operating points. For example, at threshold $\tau = 0.18$, integrating DPCS into EFSA reduces recall from 52.94% to 41.18% (true positives drop from 9 to 7 out of 17), because credibility suppression filters out genuine same-event pairs from lower-scoring publisher feeds before they reach LLM verification, trading real recall for a modest reduction in LLM calls (25 to 22 calls). This represents an explicit, acknowledged limitation of the current static-factor DPCS weighting scheme under lower gate operating thresholds.
 
 ---
 
-## VII. CONCLUSION
+## VII. CONCLUSION & FUTURE WORK
 
-This paper presented **NISE**, a deployed news intelligence platform combining a two-stage hybrid event clustering pipeline ($J \ge 0.12 \lor \cos \ge 0.25 \rightarrow \text{Llama 3}$), Groq LPU inference, Pollinations FLUX Realism image generation, dynamic stance analysis, hallucination reflection loops, and self-healing webhooks.
-
-Empirical evaluation on an $N=45$ dataset established that the deployed two-stage production system achieves **73.33% Accuracy**, **85.71% Precision**, **35.29% Recall**, and **50.00% F1-Score** while reducing LLM API calls by **75.56%**. An experimental 3-stage extension adding a local CPU sentence transformer gate ($T_{\text{sem}} = 0.40$) demonstrated recall recovery to **76.47%** (**88.89% Accuracy**, **83.87% F1-Score**) at a **53.33% LLM call reduction**. We separately report the **LLM-only ceiling (unconditional Llama 3 upper bound, not deployed)** at **97.78% Accuracy, 94.44% Precision, 100.00% Recall, and 97.14% F1-Score**. The system is open-sourced and deployed with an interactive 3D WebGL interface.
+This paper presented **NISE** alongside two novel algorithmic contributions: the **Enhanced Fusion Scoring Algorithm (EFSA)** and **Dynamic Publisher Credibility Scoring (DPCS)**. EFSA and DPCS provide a dependency-free, pure-heuristic strategy with a fully characterized cost/accuracy tradeoff curve, achieving **73.33% Accuracy**, **50.00% F1-Score**, and **77.78% LLM Call Savings** (10 calls of 45 pairs) at the current production threshold ($\tau=0.22$). Experimental benchmark comparisons demonstrate that while the local semantic embedding extension (`Xenova/all-MiniLM-L6-v2` at $T_{\text{sem}}=0.40$) delivers the strongest overall performance (88.89% Accuracy, 76.47% Recall, 83.87% F1-Score at 21 calls), EFSA and DPCS offer an effective zero-dependency alternative for resource-constrained deployments where loading neural transformer models is undesirable or infeasible. Future work includes extending DPCS to Graph Neural Networks (GNNs) for multi-agent publisher network trust propagation and integrating cross-lingual multi-modal vision-language event fusion.
 
 ---
 
