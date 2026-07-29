@@ -328,31 +328,31 @@ Table I presents the notation table for mathematical formalizations in EFSA and 
 ---
 
 **TABLE II: BASELINE COMPARISON INCLUDING EFSA & DPCS ($N=45$)**
-| Strategy / System Configuration | Accuracy | Precision | Recall | F1-Score | MCC | LLM Call Savings |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Traditional Lexical Jaccard** ($\tau_J = 0.12$) | 68.89% | 75.00% | 17.65% | 28.57% | 0.214 | 86.67% |
-| **Character 3-Gram Cosine** ($\tau_C = 0.25$) | 71.11% | 80.00% | 23.53% | 36.36% | 0.298 | 82.22% |
-| **Production 2-Stage Baseline** *(Jaccard OR Cosine)* | 73.33% | 85.71% | 35.29% | 50.00% | 0.428 | 75.56% |
-| **Proposed EFSA Multi-Evidence Gating** ($S_{\text{EFSA}} \ge 0.22$) | **88.89%** | **92.86%** | **76.47%** | **83.87%** | **0.751** | **53.33%** |
-| **Proposed EFSA + DPCS Credibility Gating** | **91.11%** | **93.33%** | **82.35%** | **87.50%** | **0.803** | **48.89%** |
-| **LLM-Only Ceiling (Upper Bound, Not Deployed)** | 97.78% | 94.44% | 100.00% | 97.14% | 0.949 | 0.00% |
+| Strategy / System Configuration | Accuracy | Precision | Recall | F1-Score | MCC | LLM Calls | LLM Call Savings |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Traditional Lexical Jaccard** ($\tau_J = 0.12$) | 68.89% | 75.00% | 17.65% | 28.57% | 0.214 | 0 | 100.00% |
+| **Character 3-Gram Cosine** ($\tau_C = 0.25$) | 71.11% | 80.00% | 23.53% | 36.36% | 0.298 | 0 | 100.00% |
+| **Production 2-Stage Baseline** *(Jaccard OR Cosine + LLM)* | 71.11% | 83.33% | 29.41% | 43.48% | 0.369 | 10 | 77.78% |
+| **Proposed EFSA Gate-Only** ($S_{\text{EFSA}} \ge 0.22$, No LLM) | 66.67% | 60.00% | 35.29% | 44.44% | 0.245 | 0 | 100.00% |
+| **Proposed EFSA Full Pipeline** *(EFSA Gate + Llama 3)* | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **0.424** | **10** | **77.78%** |
+| **Proposed EFSA + DPCS Full Pipeline** *(EFSA + DPCS + Llama 3)* | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **0.424** | **9** | **80.00%** |
+| **Experimental 3-Stage Semantic Gate** *(Local MiniLM CPU)* | 88.89% | 92.86% | 76.47% | 83.87% | 0.751 | 21 | 53.33% |
+| **LLM-Only Ceiling (Upper Bound, Not Deployed)** | 97.78% | 94.44% | 100.00% | 97.14% | 0.949 | 45 | 0.00% |
 
 ---
 
-### 5.3 10-Way Ablation Study
-To rigorously quantify the contribution of each evidence dimension in EFSA and DPCS, we conduct a 10-way ablation experiment on the $N=45$ ground-truth corpus.
+### 5.3 Real 5-Component Ablation Study
+To quantify the individual contribution of each evidence dimension in EFSA, we execute a 5-component ablation experiment across all 45 test pairs using `runEfsaDpcsEvaluation.js` (`backend/jobs/evaluation/efsa-dpcs-results.json`).
 
-**TABLE III: 10-WAY ABLATION STUDY RESULTS**
-| Ablated Component / Model Variant | Accuracy | Precision | Recall | F1-Score | Impact Explanation |
-| :--- | :---: | :---: | :---: | :---: | :--- |
-| **Full EFSA + DPCS System** | **91.11%** | **93.33%** | **82.35%** | **87.50%** | Optimal multi-evidence balance |
-| *w/o Named Entity Overlap ($S_{\text{ent}}$)* | 82.22% | 88.89% | 58.82% | 70.83% | High recall drop on proper noun pairs |
-| *w/o Character Cosine ($S_{\text{head}}$)* | 77.78% | 85.71% | 47.06% | 60.71% | Misses sub-word synonym variations |
-| *w/o Unigram Keyword IoU ($S_{\text{key}}$)* | 84.44% | 90.91% | 64.71% | 75.86% | Slight precision loss on short titles |
-| *w/o Temporal Decay ($S_{\text{temp}}$)* | 86.67% | 91.67% | 70.59% | 79.79% | Increases cross-window false matches |
-| *w/o Sector Taxonomy ($S_{\text{sec}}$)* | 88.89% | 92.31% | 75.00% | 82.76% | Cross-domain candidate leaks |
-| *w/o Publisher DPCS Score ($C_{\text{pub}}$)* | 88.89% | 92.86% | 76.47% | 83.87% | Removes dynamic wire trust weighting |
-| *w/o EFSA Multi-Evidence Gating* | 73.33% | 85.71% | 35.29% | 50.00% | Reverts to 2-stage production baseline |
+**TABLE III: REAL 5-COMPONENT EFSA ABLATION RESULTS (GATE-ONLY)**
+| Ablated Component / Variant | Accuracy | Precision | Recall | F1-Score | MCC | Operational Impact |
+| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Full EFSA Gate (All 5 Components)** | **66.67%** | **60.00%** | **35.29%** | **44.44%** | **0.245** | Baseline multi-evidence gate |
+| *w/o Sector Match ($S_{\text{sec}}$)* | 42.22% | 30.43% | 41.18% | 35.00% | -0.155 | Severe cross-domain false candidate leaks |
+| *w/o Unigram Keyword IoU ($S_{\text{key}}$)* | 51.11% | 35.29% | 35.29% | 35.29% | -0.040 | Significant precision loss on short titles |
+| *w/o Named Entity Overlap ($S_{\text{ent}}$)* | 57.78% | 41.67% | 29.41% | 34.48% | 0.048 | Drops precision on proper noun pairs |
+| *w/o Headline Character Cosine ($S_{\text{head}}$)* | 64.44% | 55.56% | 29.41% | 38.46% | 0.183 | Misses character-level n-gram variations |
+| *w/o Temporal Decay ($S_{\text{temp}}$)* | 71.11% | 83.33% | 29.41% | 43.48% | 0.369 | Removes time window decay weighting |
 
 ---
 
@@ -384,7 +384,7 @@ Unlike prior systems relying either on static lexical heuristics (Jaccard/TF-IDF
 
 ## VII. CONCLUSION & FUTURE WORK
 
-This paper presented **NISE** and its core novel algorithmic contributions: the **Enhanced Fusion Scoring Algorithm (EFSA)** and **Dynamic Publisher Credibility Scoring (DPCS)**. Experimental evaluation on $N=45$ real-world wire headlines demonstrates that EFSA + DPCS achieves **91.11% Accuracy** and **87.50% F1-Score** while saving **48.89% of LLM API calls**. Future work includes extending DPCS to Graph Neural Networks (GNNs) for multi-agent publisher network trust propagation and integrating cross-lingual multi-modal vision-language event fusion.
+This paper presented **NISE** and its core novel algorithmic contributions: the **Enhanced Fusion Scoring Algorithm (EFSA)** and **Dynamic Publisher Credibility Scoring (DPCS)**. Experimental evaluation on $N=45$ real-world wire headlines demonstrates that EFSA + DPCS achieves **73.33% Accuracy** and **50.00% F1-Score** while saving **80.00% of LLM API calls** (reducing LLM invocations to 9 of 45 pairs). Future work includes extending DPCS to Graph Neural Networks (GNNs) for multi-agent publisher network trust propagation and integrating cross-lingual multi-modal vision-language event fusion.
 
 ### 5.4 Measured Latency & Throughput Benchmark
 To replace unverified estimations, execution latency was empirically measured across **20 real synthesis calls** to `synthesizeWithGroq()` using actual wire headlines (`backend/jobs/evaluation/latency-benchmark-results.json`):
