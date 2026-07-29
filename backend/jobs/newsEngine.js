@@ -5,6 +5,9 @@ const Groq = require('groq-sdk');
 const Article = require('../models/Article');
 const { processArticleIntoEvent } = require('./eventEngine');
 const { broadcastArticle } = require('../utils/socialBroadcast');
+const { repairAndParseJson } = require('../utils/jsonRepair');
+const { recordAiSuccess, recordAiFailure } = require('../utils/aiTelemetry');
+const { invalidateCache } = require('../utils/cache');
 
 const parser = new Parser();
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -81,6 +84,7 @@ Sector: ${sector}
 Return ONLY valid JSON without any markdown code blocks or commentary. Example format:
 {"summary": "...", "social_caption": "...", "social_hashtags": ["#NewsAI", "#Breaking"], "image_prompt": "..."}`;
 
+  const startMs = Date.now();
   try {
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
@@ -89,17 +93,28 @@ Return ONLY valid JSON without any markdown code blocks or commentary. Example f
       response_format: { type: 'json_object' }
     });
 
+    const latencyMs = Date.now() - startMs;
+    recordAiSuccess({
+      model: 'llama-3.1-8b-instant',
+      latencyMs,
+      usage: completion.usage
+    });
+
     const content = completion.choices[0]?.message?.content?.trim();
     if (content) {
-      const parsed = JSON.parse(content);
-      return {
-        summary: parsed.summary || description,
-        social_caption: parsed.social_caption || `🚨 ${title}\n\n${description.slice(0, 180)}...\n\nRead full intelligence dispatch on NewsAI.`,
-        social_hashtags: Array.isArray(parsed.social_hashtags) ? parsed.social_hashtags : [`#${sector}`, '#NewsAI', '#BreakingNews'],
-        image_prompt: parsed.image_prompt || `${title}, Reuters press photograph, shot on 35mm lens, natural lighting, ultra-realistic photojournalism style, 8k resolution`
-      };
+      const parsed = repairAndParseJson(content);
+      if (parsed) {
+        return {
+          summary: parsed.summary || description,
+          social_caption: parsed.social_caption || `🚨 ${title}\n\n${description.slice(0, 180)}...\n\nRead full intelligence dispatch on NewsAI.`,
+          social_hashtags: Array.isArray(parsed.social_hashtags) ? parsed.social_hashtags : [`#${sector}`, '#NewsAI', '#BreakingNews'],
+          image_prompt: parsed.image_prompt || `${title}, Reuters press photograph, shot on 35mm lens, natural lighting, ultra-realistic photojournalism style, 8k resolution`
+        };
+      }
     }
   } catch (error) {
+    const latencyMs = Date.now() - startMs;
+    recordAiFailure({ model: 'llama-3.1-8b-instant', latencyMs, error: error.message });
     console.error('❌ Groq Synthesis Error:', error.message);
   }
 
@@ -261,6 +276,7 @@ const runNewsEngine = async () => {
       }
     }
   }
+  invalidateCache();
   console.log('\n🎉 Enterprise NISE run complete!');
 };
 

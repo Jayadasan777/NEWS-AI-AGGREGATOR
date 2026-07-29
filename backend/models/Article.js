@@ -25,4 +25,11 @@ const articleSchema = new mongoose.Schema({
   broadcast_error: { type: String, default: '' }
 });
 
+// Additive Production Index Definitions (Zero Breaking Schema Changes)
+articleSchema.index({ url: 1 });
+articleSchema.index({ title_hash: 1 });
+articleSchema.index({ timestamp: -1 });
+articleSchema.index({ sector: 1, timestamp: -1 });
+articleSchema.index({ broadcast_status: 1 });
+
 module.exports = mongoose.model('Article', articleSchema);

@@ -3,6 +3,7 @@ const router = express.Router();
 const Article = require('../models/Article');
 const { broadcastArticle } = require('../utils/socialBroadcast');
 const runNewsEngine = require('../jobs/newsEngine');
+const { triggerRateLimiter } = require('../middleware/rateLimiter');
 
 // Global in-memory toggle initialized from environment
 if (typeof global.AUTO_BROADCAST_ENABLED === 'undefined') {
@@ -47,7 +48,7 @@ router.get('/queue', async (req, res) => {
  * POST /api/social/trigger-scrape
  * Manually trigger an immediate news engine scrape across all 14 feeds.
  */
-router.post('/trigger-scrape', async (req, res) => {
+router.post('/trigger-scrape', triggerRateLimiter, async (req, res) => {
   try {
     console.log('⚡ Manual override: Triggering news engine scrape from Social Studio...');
     runNewsEngine().catch(err => console.error('❌ Manual Scrape Error:', err.message));
@@ -65,7 +66,7 @@ router.post('/trigger-scrape', async (req, res) => {
  * POST /api/social/broadcast/:id
  * Manually trigger webhook dispatch for a specific article.
  */
-router.post('/broadcast/:id', async (req, res) => {
+router.post('/broadcast/:id', triggerRateLimiter, async (req, res) => {
   try {
     const { id } = req.params;
     const mongoose = require('mongoose');

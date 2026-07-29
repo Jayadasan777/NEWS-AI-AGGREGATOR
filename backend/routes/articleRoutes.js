@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../models/Article');
+const { cacheMiddleware } = require('../utils/cache');
 
 // GET /api/articles/stats — automation health check
-router.get('/stats', async (req, res) => {
+router.get('/stats', cacheMiddleware(30), async (req, res) => {
   try {
     const total = await Article.countDocuments();
     const latest = await Article.findOne().sort({ timestamp: -1 }).select('timestamp');
@@ -18,7 +19,7 @@ router.get('/stats', async (req, res) => {
 
 // GET /api/articles
 // GET /api/articles?sector=Tech
-router.get('/', async (req, res) => {
+router.get('/', cacheMiddleware(30), async (req, res) => {
   try {
     const { sector } = req.query;
 

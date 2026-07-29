@@ -37,4 +37,8 @@ const eventSchema = new mongoose.Schema({
   reflection_logs: { type: [reflectionLogSchema], default: [] },
 });
 
+// Additive Production Index Definitions (Zero Breaking Schema Changes)
+eventSchema.index({ sector: 1, first_reported: -1 });
+eventSchema.index({ confidence_score: -1 });
+
 module.exports = mongoose.model('Event', eventSchema);

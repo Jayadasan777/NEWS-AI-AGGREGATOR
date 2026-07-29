@@ -2,6 +2,8 @@ require('dotenv').config();
 const Groq = require('groq-sdk');
 const Event = require('../models/Event');
 const Article = require('../models/Article');
+const { repairAndParseJson } = require('../utils/jsonRepair');
+const { recordAiSuccess, recordAiFailure } = require('../utils/aiTelemetry');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -98,6 +100,7 @@ Headline B: "${titleB}"
 
 Do they describe the SAME specific real-world event, or DIFFERENT events? Respond with ONLY one word: "SAME" or "DIFFERENT". Do not write anything else.`;
 
+  const startMs = Date.now();
   try {
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
@@ -105,9 +108,14 @@ Do they describe the SAME specific real-world event, or DIFFERENT events? Respon
       temperature: 0.1,
     });
 
+    const latencyMs = Date.now() - startMs;
+    recordAiSuccess({ model: 'llama-3.1-8b-instant', latencyMs, usage: completion.usage });
+
     const answer = completion.choices[0]?.message?.content?.trim().toUpperCase() || '';
     return answer.includes('SAME');
   } catch (error) {
+    const latencyMs = Date.now() - startMs;
+    recordAiFailure({ model: 'llama-3.1-8b-instant', latencyMs, error: error.message });
     console.error('Groq API Error in isSameEvent:', error.message);
     return false;
   }
@@ -220,9 +228,9 @@ Return ONLY valid JSON array. No explanation before or after the JSON.`;
     });
 
     const raw = completion.choices[0]?.message?.content?.trim() || '[]';
-    // Extract JSON array from response
+    // Extract JSON array from response using repairAndParseJson
     const jsonMatch = raw.match(/\[[\s\S]*\]/);
-    const stanceData = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+    const stanceData = repairAndParseJson(jsonMatch ? jsonMatch[0] : raw) || [];
 
     const stanceAnalysis = stanceData.map((s) => {
       const article = articles[s.source_index - 1];
@@ -300,7 +308,7 @@ Return ONLY valid JSON. No explanation.`;
 
     const raw = verifyCompletion.choices[0]?.message?.content?.trim() || '{}';
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    const result = jsonMatch ? JSON.parse(jsonMatch[0]) : { passed: true, checks: [], correction_needed: '' };
+    const result = repairAndParseJson(jsonMatch ? jsonMatch[0] : raw) || { passed: true, checks: [], correction_needed: '' };
 
     const reflectionLogs = (result.checks || []).map(c => ({
       check: c.check,
