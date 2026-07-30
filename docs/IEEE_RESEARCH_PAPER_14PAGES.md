@@ -58,7 +58,7 @@ Prior news processing systems attempt to solve parts of this pipeline, but fall 
 This paper presents the formal mathematical design, implementation, and empirical evaluation of **NISE** (News Intelligence and Synthesis Engine), introducing **two original algorithms** that bridge existing research gaps in multi-outlet news processing:
 
 1. **Algorithm 1 — Enhanced Fusion Scoring Algorithm (EFSA):** A multi-dimensional evidence fusion model calculating a unified event fusion score $S_{\text{EFSA}} \in [0, 1]$ across unigram lexical IoU ($S_{\text{key}}$), character 3-gram cosine ($S_{\text{head}}$), named entity overlap ($S_{\text{ent}}$), exponential temporal decay ($S_{\text{temp}}$), and sector taxonomy match ($S_{\text{sec}}$).
-2. **Algorithm 2 — Dynamic Publisher Credibility Scoring (DPCS):** A self-learning online credibility model tracking publisher reporting alignment, timeliness, coverage frequency, and contradiction rates, updated via Exponential Moving Average (EMA) smoothing ($C_{\text{pub}}^{(t)}$).
+2. **Algorithm 2 — Dynamic Publisher Credibility Scoring (DPCS):** A self-learning online credibility model evaluating four operational indicators (stance agreement rate $R_{\text{agree}}$, reporting timeliness index $I_{\text{time}}$, coverage frequency $F_{\text{cov}}$, and contradiction penalty $P_{\text{contra}}$) to construct a raw score $C_{\text{raw}}$, updated online via Exponential Moving Average (EMA) smoothing ($C_{\text{pub}}^{(t)} = 0.20 C_{\text{raw}} + 0.80 C_{\text{pub}}^{(t-1)}$, baseline $C_{\text{pub}}^{(0)} = 85.0$).
 3. **Lightweight Hybrid Two-Stage Pipeline:** Integrates EFSA as an intelligent multi-evidence gate preceding Stage 2 zero-shot neural verification (Llama 3 via Groq LPUs), reducing LLM API calls by **75.56%** in production while eliminating false positives.
 4. **Multi-Source Evidence Fusion & Stance Analysis:** Automatically synthesizes consolidated executive dispatches, calculates quantitative publisher stance divergence ($0\text{--}100\%$), and applies a two-pass factuality reflection guardrail loop (`verifyFactualityAndReflect`).
 5. **Production Hardening & Autonomous Syndication Engine:** Fully hardened architecture featuring graceful server shutdown, 30s TTL query caching, sliding-window rate limiting, health telemetry APIs, and automated Facebook Page wall webhooks.
@@ -84,7 +84,7 @@ The most direct antecedents to this work apply large language models to event-le
 Our Enhanced Fusion Scoring Algorithm (EFSA), which combines five independent similarity signals into a single weighted score, draws on a longer tradition in the entity resolution and record linkage literature, where combining multiple similarity features to determine whether two records describe the same real-world entity is a well-studied problem (Christophides et al. [20]). That survey documents that weighted or learned fusion of multiple similarity signals routinely outperforms any single similarity metric in isolation — precisely the motivation for EFSA's five-signal design (lexical overlap, character n-gram similarity, named-entity overlap, temporal decay, and sector match) rather than relying on Jaccard or cosine similarity alone. Unlike the learned fusion weights common in that literature (typically fit via logistic regression or a trained classifier over labeled record pairs), EFSA uses fixed, empirically-tuned weights — a deliberate choice favoring interpretability and zero training-data dependency, at the cost of not adapting to distributional shift the way a learned model might. We characterize this trade-off directly through our threshold sensitivity sweep (Section 5.x), which shows performance varies substantially across operating points, consistent with the general finding in the entity-resolution literature that fusion weight selection materially affects outcome quality.
 
 ### 2.5 Publisher and Source Credibility Modeling
-Assessing the trustworthiness of a news source independent of any single article's content is an active area outside pure NLP. Commercial systems such as NewsGuard assign static, human-reviewed reliability scores to tens of thousands of domains, and recent work has explored training article-level classifiers against such ratings to infer source trustworthiness automatically from content alone. Distinct from both approaches, our Dynamic Publisher Credibility Scoring (DPCS) mechanism updates a per-publisher trust score online via an exponential moving average driven by clustering-outcome agreement, requiring no external rating service or labeled training corpus. This design choice is not without risk: Yang and Menczer [21] audited the ability of large language models themselves to assess news source credibility and found only moderate agreement with human expert ratings (Spearman's $\rho \approx 0.50$) alongside a measurable susceptibility to political bias under certain prompting conditions. This finding is directly relevant to any credibility-scoring mechanism, including our own, and informed our decision to empirically characterize — rather than assume — DPCS's behavior; our threshold sweep (Section 5.4) reveals that DPCS's dynamic suppression is not uniformly beneficial and, at certain operating thresholds, measurably reduces recall by filtering out genuine same-event candidates from lower-scoring sources. We report this as an explicit, acknowledged limitation rather than omitting it.
+Assessing the trustworthiness of a news source independent of any single article's content is an active area outside pure NLP. Commercial systems such as NewsGuard assign static, human-reviewed reliability scores to tens of thousands of domains, and recent work has explored training article-level classifiers against such ratings to infer source trustworthiness automatically from content alone. Distinct from both approaches, our Dynamic Publisher Credibility Scoring (DPCS) mechanism updates a per-publisher trust score online by combining four operational indicators (stance agreement rate $R_{\text{agree}}$, reporting timeliness index $I_{\text{time}}$, coverage frequency $F_{\text{cov}}$, and contradiction penalty $P_{\text{contra}}$) into a composite raw score $C_{\text{raw}}$, which is then smoothed via Exponential Moving Average ($C_{\text{pub}}^{(t)} = 0.20 C_{\text{raw}} + 0.80 C_{\text{pub}}^{(t-1)}$, baseline $C_{\text{pub}}^{(0)} = 85.0$), requiring no external rating service or labeled training corpus. This design choice is not without risk: Yang and Menczer [21] audited the ability of large language models themselves to assess news source credibility and found only moderate agreement with human expert ratings (Spearman's $\rho \approx 0.50$) alongside a measurable susceptibility to political bias under certain prompting conditions. This finding is directly relevant to any credibility-scoring mechanism, including our own, and informed our decision to empirically characterize — rather than assume — DPCS's behavior; our threshold sweep (Section 5.4) reveals that DPCS's dynamic suppression is not uniformly beneficial and, at certain operating thresholds, measurably reduces recall by filtering out genuine same-event candidates from lower-scoring sources. We report this as an explicit, acknowledged limitation rather than omitting it.
 
 ### 2.6 Media Stance and Bias Detection
 Fan et al.'s BASIL corpus [9] provides sentence-level bias annotations across matched triples of articles from three US outlets covering the same 100 events, establishing a rigorous, human-annotated benchmark for measuring informational and lexical bias in news coverage of identical events. Our own stance-detection component, which classifies each contributing source's framing as Supporting, Contradicting, or Neutral relative to a fused event summary, uses zero-shot LLM classification rather than a classifier trained or validated against a benchmark such as BASIL. We state this plainly as a limitation: our stance labels have not been validated against human-annotated ground truth, and future work should benchmark this component against BASIL or a comparable corpus before treating its output as more than an exploratory signal.
@@ -159,16 +159,17 @@ graph TD
     end
 ```
 
-### 3.1 Ingestion Registry & Multi-Layer Anti-Duplication Lock
-NISE monitors 21 RSS wire feeds across 14 distinct news sectors: `Tech`, `Finance`, `Geopolitics`, `Sports`, `AI`, `Startups`, `Crypto`, `Health`, `Science`, `Entertainment`, `Environment`, `Automotive`, `Defense`, and `Space`.
+### 3.1 Pipeline Overview
+The NISE architecture processes continuous multi-source wire dispatches through a 5-layer pipeline spanning ingestion, synthesis, photojournalism, multi-evidence clustering, and autonomous distribution. 
 
-To guarantee zero duplicate ingestion and eliminate unnecessary AI inference, `newsEngine.js` executes a pre-LLM multi-layer query check against MongoDB:
+### 3.2 Ingestion Registry & Multi-Layer Anti-Duplication Lock
+NISE monitors 21 RSS wire feeds across 14 distinct news sectors: `Tech`, `Finance`, `Geopolitics`, `Sports`, `AI`, `Startups`, `Crypto`, `Health`, `Science`, `Entertainment`, `Environment`, `Automotive`, `Defense`, and `Space`. To guarantee zero duplicate ingestion and eliminate unnecessary AI inference, `newsEngine.js` executes a pre-LLM multi-layer query check against MongoDB:
 
-$$\text{MatchCondition} = (\text{url} = U) \lor (\text{title\_hash} = \text{MD5}(\text{title})) \lor (\text{title} = T)$$
+$$\text{MatchCondition} = (\text{url} = U) \lor (\text{title\_hash} = \text{MD5}(\text{title})) \lor (\text{title} = T) \tag{1}$$
 
 where $\text{title\_hash}$ is the 32-character hexadecimal MD5 digest of the lowercased, whitespace-trimmed headline string. If any condition evaluates to true, processing is halted immediately.
 
-### 3.2 Transformative Multi-Modal AI Synthesis (Groq LPUs)
+### 3.3 Transformative Multi-Modal AI Synthesis (Groq LPUs)
 Unique articles are passed to Meta's open-weight `llama-3.1-8b-instant` model hosted on Groq LPUs, extending the open-weight LLM family architecture (Touvron et al. [14], Meta AI [15]). Groq's custom LPU deterministic processing architecture [16] delivers high-throughput inference, completing multi-property JSON synthesis efficiently.
 
 The model is prompted to output a single JSON object containing:
@@ -177,7 +178,7 @@ The model is prompted to output a single JSON object containing:
 3. `social_hashtags`: Array of 10–14 viral hashtags (`#NewsAI #TechNews #Sector`).
 4. `image_prompt`: Camera optics prompt specifying 35mm lens, f/2.8 aperture, natural lighting, and Reuters/AP news photojournalism style.
 
-### 3.3 Hybrid Photojournalism & FLUX Realism Image Pipeline
+### 3.4 Hybrid Photojournalism & FLUX Realism Image Pipeline
 NISE employs a dual-mode image acquisition strategy:
 - **Primary (Native Press Photo Extraction):** `extractRssImage()` parses RSS XML for `<enclosure>`, `<media:content>`, `<media:thumbnail>`, or embedded HTML `<img>` tags.
 - **Fallback (FLUX Realism AI Generation):** If no native photo exists, `generateAndHostImage()` builds a keyless, prompt-encoded URL using the `pollinations.ai` FLUX Realism engine [17]:
@@ -186,108 +187,105 @@ $$\text{URL} = \text{\small https://image.pollinations.ai/prompt/}\text{EncodedP
 
 Image fetching is delegated directly to the client's web browser, bypassing server-side bot protection and eliminating heavy image hosting costs. Inline `onError` handlers on the frontend provide fail-safe fallbacks to Unsplash editorial images.
 
----
+### 3.5 Deployed Two-Stage Lexical/LLM Clustering Gate
+Before invoking an LLM for event verification, candidate pairs within a 48-hour temporal window pass through a lightweight, CPU-based two-stage fast-path gate:
 
-### 3.4 NISE Hybrid Two-Stage Event Clustering Engine
+1. **Stage 1a (Unigram Jaccard IoU):** Computes token-set intersection over union:
+   $$J(A, B) = \frac{|A \cap B|}{|A \cup B|} \tag{2}$$
+   with an empirical threshold $\tau_J = 0.12$ ($12\%$).
 
+2. **Stage 1b (Sub-Word 3-Gram Cosine Similarity):** Constructs character 3-gram frequency vectors $V_A, V_B$ to capture morphological variations and compound terms:
+   $$\cos(V_A, V_B) = \frac{V_A \cdot V_B}{\|V_A\| \|V_B\|} = \frac{\sum_{i=1}^K V_{A,i} V_{B,i}}{\sqrt{\sum_{i=1}^K V_{A,i}^2} \sqrt{\sum_{i=1}^K V_{B,i}^2}} \tag{3}$$
+   with an empirical threshold $\tau_C = 0.25$ ($25\%$).
+
+Candidate pairs satisfying the disjunctive (OR) Stage 1 condition:
+$$\text{GateCondition} = (J(A,B) \ge 0.12) \lor (\cos(V_A, V_B) \ge 0.25) \tag{4}$$
+advance to Stage 2 zero-shot LLM verification (`isSameEvent`), while non-qualifying pairs bypass LLM inference completely.
+
+### 3.6 Algorithm 1: Enhanced Fusion Scoring Algorithm (EFSA)
+To provide a structured, dependency-free multi-evidence alternative to basic lexical matching, EFSA computes a weighted composite fusion score across five normalized similarity dimensions:
+
+$$S_{\text{EFSA}} = 0.25 S_{\text{key}} + 0.30 S_{\text{head}} + 0.25 S_{\text{ent}} + 0.10 S_{\text{temp}} + 0.10 S_{\text{sec}} \tag{5}$$
+
+where $S_{\text{key}}$ is unigram IoU, $S_{\text{head}}$ is character 3-gram cosine, $S_{\text{ent}}$ is named entity overlap ratio, $S_{\text{temp}} = e^{-\lambda \Delta t}$ ($\lambda = 0.02$) is exponential time decay over 48 hours, and $S_{\text{sec}} \in \{0, 0.5, 1.0\}$ is sector taxonomy match.
+
+```text
+Algorithm 1: EFSA Event Fusion Score
+Input: Article A, Candidate Event E
+Output: Composite Fusion Score S_EFSA in [0, 1]
+1: S_key  <- calculateJaccardSimilarity(A.title, E.title)
+2: S_head <- calculateChar3GramCosine(A.title, E.title)
+3: S_ent  <- calculateEntityOverlap(A.content, E.summary)
+4: S_temp <- exp(-0.02 * hoursBetween(A.pubDate, E.firstReported))
+5: S_sec  <- matchSectorTaxonomy(A.category, E.category)
+6: S_EFSA <- 0.25*S_key + 0.30*S_head + 0.25*S_ent + 0.10*S_temp + 0.10*S_sec
+7: return S_EFSA
 ```
-[Incoming Article Headline A] vs [Existing Event Headline B]
-               │
-               ├────────────────────────────────────────┐
-               ▼                                        ▼
-    [Stage 1a: Jaccard IoU]               [Stage 1b: 3-Gram Cosine]
-    J(A, B) = |A ∩ B| / |A ∪ B|           cos(V_A, V_B) = (V_A · V_B) / (||V_A|| ||V_B||)
-               │                                        │
-               ▼                                        ▼
-      Passes J >= 0.12?                        Passes Cosine >= 0.25?
-               │                                        │
-               └───────────────────┬────────────────────┘
-                                   │ (OR Gate)
-                                   ▼
-                       [Stage 2: Llama 3 Verification]
-                       isSameEvent(Headline A, Headline B)
-                                   │
-                         Outputs "SAME" / "DIFFERENT"
-                                   │
-                     ┌─────────────┴─────────────┐
-                     ▼                           ▼
-            [Link to Event Node]        [Create New Event Node]
+
+### 3.7 Algorithm 2: Dynamic Publisher Credibility Scoring (DPCS)
+DPCS maintains an online, self-learning trust record for each publisher domain. For each processed article outcome, four component indicators are computed:
+
+$$R_{\text{agree}} = \frac{N_{\text{supporting}} + 0.5 N_{\text{neutral}}}{N_{\text{total}}}, \quad I_{\text{time}} = \max\left(0, 1 - \frac{\Delta t}{48}\right), \quad F_{\text{cov}} = \min\left(1, \frac{N_{\text{total}}}{20}\right), \quad P_{\text{contra}} = \frac{N_{\text{contradicting}}}{N_{\text{total}}} \tag{6}$$
+
+These indicators are combined into a bounded composite raw score $C_{\text{raw}} \in [0, 100]$:
+
+$$C_{\text{raw}} = 100 \cdot \text{clip}\left(0.40 R_{\text{agree}} + 0.25 I_{\text{time}} + 0.20 F_{\text{cov}} - 0.15 P_{\text{contra}}, 0, 1\right) \tag{7}$$
+
+The publisher's trust score $C_{\text{pub}}^{(t)}$ is updated via Exponential Moving Average (EMA) smoothing ($\alpha = 0.20$, baseline $C_{\text{pub}}^{(0)} = 85.0$):
+
+$$C_{\text{pub}}^{(t)} = 0.20 C_{\text{raw}} + 0.80 C_{\text{pub}}^{(t-1)} \tag{8}$$
+
+```text
+Algorithm 2: DPCS Online Credibility Update
+Input: Publisher domain D, Outcome Metadata M (stance, timeOffset)
+Output: Updated Credibility Score C_pub(t) in [0, 100]
+1: Record R <- getOrCreatePublisherRecord(D, baseline=85.0)
+2: updateDispatchCounts(R, M.stance)
+3: R_agree <- (R.supporting + 0.5*R.neutral) / R.totalDispatches
+4: I_time  <- max(0.0, 1.0 - (M.timeOffset / 48.0))
+5: F_cov   <- min(1.0, R.totalDispatches / 20.0)
+6: P_contra<- R.contradicting / R.totalDispatches
+7: C_raw   <- 100.0 * clamp(0.40*R_agree + 0.25*I_time + 0.20*F_cov - 0.15*P_contra, 0.0, 1.0)
+8: C_pub   <- 0.20 * C_raw + 0.80 * R.credibilityScore
+9: R.credibilityScore <- C_pub
+10: return C_pub
 ```
 
-#### Stage 1a: Algorithmic Pre-Filter (Jaccard Unigram IoU)
-#### Stage 1b: Semantic Vector Space Pre-Filter (Sub-Word 3-Gram Cosine Similarity)
-To catch synonym-rich headline pairs that share zero unigram tokens, NISE constructs sub-word character 3-gram frequency vectors $V_A$ and $V_B$:
+> **Implementation Note:** DPCS's trust-scaling gating multiplier ($S_{\text{EFSA+DPCS}} = S_{\text{EFSA}} \times [0.8 + 0.2 \cdot (C_{\text{pub}}/100)]$) is fully implemented in code (`backend/utils/dpcsEngine.js`) and evaluated offline across benchmark operating points, but is **not currently wired into the live production gate**, which uses the canonical baseline two-stage filter.
 
-$$\text{buildCharNgramVector}(S, n=3) = \{ g : \text{count}(g, S) \mid g \in \text{substrings}(S, 3) \}$$
-
-The cosine similarity between the TF-IDF frequency vectors is computed as:
-
-$$\cos(V_A, V_B) = \frac{V_A \cdot V_B}{\|V_A\| \|V_B\|} = \frac{\sum_{i=1}^K V_{A,i} V_{B,i}}{\sqrt{\sum_{i=1}^K V_{A,i}^2} \sqrt{\sum_{i=1}^K V_{B,i}^2}}$$
-
-The empirical threshold is set to $\tau_C = 0.25$ ($25\%$).
-
-#### Stage 2: Zero-Shot Neural Verification via Meta Llama 3
-Pairs satisfying $(J(A,B) \ge 0.12) \lor (\cos(V_A, V_B) \ge 0.25)$ advance to Stage 2 verification (`isSameEvent`). Llama 3 evaluates the pair under temperature $T=0.1$, returning a deterministic `"SAME"` or `"DIFFERENT"` judgment based on underlying incident identity.
-
----
-
-### 3.5 Corroboration Confidence Metric & Evidence Fusion
+### 3.8 Corroboration Confidence Metric & Publisher Divergence
 When $N$ articles are linked to an event node, NISE calculates a deterministic corroboration confidence metric $C(N)$:
 
-$$C(N) = \begin{cases} 35\%, & \text{if } N = 1 \quad \text{(Single-source unverified report)} \\ 65\%, & \text{if } N = 2 \quad \text{(Dual-source corroborated event)} \\ 90\%, & \text{if } N \ge 3 \quad \text{(Multi-source high-confidence consensus)} \end{cases}$$
+$$C(N) = \begin{cases} 35\%, & \text{if } N = 1 \quad \text{(Single-source unverified report)} \\ 65\%, & \text{if } N = 2 \quad \text{(Dual-source corroborated event)} \\ 90\%, & \text{if } N \ge 3 \quad \text{(Multi-source high-confidence consensus)} \end{cases} \tag{9}$$
 
-When $N \ge 2$, `fuseSummaries()` synthesizes a multi-source executive brief, consolidating facts and highlighting outlet divergences.
+The `detectStancesAndDivergence()` module evaluates multi-source clusters, classifying each publisher's stance (`Supporting`, `Contradicting`, or `Neutral`). The quantitative **Publisher Divergence Score** ($D$) is computed as:
 
----
-
-### 3.6 Dynamic Source Stance Detection & Divergence Quantification
-The `detectStancesAndDivergence()` module evaluates multi-source clusters, prompting Llama 3 to classify each publisher's reporting stance as `Supporting`, `Contradicting`, or `Neutral`, along with a 3–5 word editorial framing descriptor.
-
-The quantitative **Publisher Divergence Score** ($D$) is computed as:
-
-$$D = \left( \frac{N_{\text{contradicting}}}{N_{\text{total}}} \right) \times 100\%$$
+$$D = \left( \frac{N_{\text{contradicting}}}{N_{\text{total}}} \right) \times 100\% \tag{10}$$
 
 where $D \in [0, 100]$. A score of $D = 0\%$ indicates full publisher alignment, while higher values alert readers to major editorial disagreement.
 
----
-
-### 3.7 Iterative Hallucination Guardrail Reflection Loop
+### 3.9 Iterative Hallucination Guardrail Reflection Loop
 Large language models frequently suffer from hallucinations—generating fabricated statistics, unsupported named entities, or ungrounded causal claims [10], [11]. To eliminate AI hallucinations in fused summaries, `verifyFactualityAndReflect()` executes a two-pass verification loop:
 
-1. **Pass 1 (Factuality Audit):** The agent audits the fused summary against raw source snippets for three specific defects:
-   - Fabricated numbers, statistics, or percentages.
-   - Unsupported named entities (people, companies, locations).
-   - Unverified causal claims or speculative conclusions.
+1. **Pass 1 (Factuality Audit):** The agent audits the fused summary against raw source snippets for three specific defects: fabricated numbers, unsupported named entities, or unverified causal claims.
 2. **Pass 2 (Reflection Re-Generation):** If Pass 1 fails (`passed = false`), the system injects the specific `correction_needed` feedback into a self-correcting prompt, forcing Llama 3 to re-synthesize a compliant summary before saving.
 
 This two-pass audit-then-regenerate feedback design draws on the Reflexion paradigm (Shinn et al. [12]), using verbal reinforcement feedback to self-correct non-compliant generations. Audit results are logged in the event's `reflection_logs` array, setting `factuality_verified = true`.
 
----
-
-### 3.8 Autonomous Webhook Broadcasting & Self-Healing Engine
+### 3.10 Autonomous Webhook Broadcasting & Self-Healing Engine
 `socialBroadcast.js` dispatches standardized JSON payloads (`event: 'NEW_ARTICLE_BROADCAST'`) to external automation receivers (Make.com, Zapier, n8n, Discord, Telegram), implementing a production-grade webhook syndication pattern for automated content delivery.
-
-**Payload Structure:** Contains both top-level flat fields (`photo_url`, `formatted_post`, `message`, `title`, `summary`, `caption`) and nested `article` objects to guarantee compatibility across all webhook modules.
 
 #### Smart-Queue Staggered Drip-Feeding
 Batch dispatches are assigned staggered `scheduled_broadcast_time` timestamps offset by 1-hour gaps ($T_i = T_0 + i \times 3600000\text{ ms}$), preventing social platform rate limits.
 
 #### Webhook Self-Healing Retry Logic
-If a dispatch fails, the engine catches the exception, increments `retry_count`, and reschedules execution 15 minutes into the future:
-
-$$T_{\text{retry}} = T_{\text{failure}} + 15\text{ minutes}$$
-
-If `retry_count` reaches 3 without success, `broadcast_status` transitions to `'failed'`, logging the exact error trace (`broadcast_error`).
+If a dispatch fails, the engine catches the exception, increments `retry_count`, and reschedules execution 15 minutes into the future ($T_{\text{retry}} = T_{\text{failure}} + 15\text{ minutes}$). If `retry_count` reaches 3 without success, `broadcast_status` transitions to `'failed'`, logging the exact error trace (`broadcast_error`).
 
 #### Broadcast Idempotency Lock
 Before dispatching, the engine validates `broadcast_status === 'pending'`. Dispatches with status `'broadcasted'` are skipped unless explicitly overridden by a manual user trigger (`{ force: true }`).
 
----
-
-### 3.9 Evergreen Content Recirculation Engine (`recirculateEngine.js`)
-To maintain feed engagement during low wire activity, `recirculateEvergreenArticles()` is scheduled via a daily `node-cron` background job (`0 12 * * *` at 12:00 PM UTC) to scan MongoDB for high-confidence articles linked to events with $C(N) \ge 90\%$ created $>48$ hours ago that have not been recirculated (`is_recirculated !== true`).
-
-It prepends `"ICYMI: "` *(In Case You Missed It)* to the caption, sets `is_recirculated = true`, and safely re-queues a single article instance through the drip queue, guaranteeing zero spam risk.
+### 3.11 Evergreen Content Recirculation Engine (`recirculateEngine.js`)
+To maintain feed engagement during low wire activity, `recirculateEvergreenArticles()` is scheduled via a daily `node-cron` background job (`0 12 * * *` at 12:00 PM UTC) to scan MongoDB for high-confidence articles linked to events with $C(N) \ge 90\%$ created $>48$ hours ago that have not been recirculated (`is_recirculated !== true`). It prepends `"ICYMI: "` *(In Case You Missed It)* to the caption, sets `is_recirculated = true`, and safely re-queues a single article instance through the drip queue, guaranteeing zero spam risk.
 
 ---
 
