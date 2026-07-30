@@ -281,7 +281,6 @@ Batch dispatches are assigned staggered `scheduled_broadcast_time` timestamps of
 
 #### Webhook Self-Healing Retry Logic
 If a dispatch fails, the engine catches the exception, increments `retry_count`, and reschedules execution 15 minutes into the future ($T_{\text{retry}} = T_{\text{failure}} + 15\text{ minutes}$). If `retry_count` reaches 3 without success, `broadcast_status` transitions to `'failed'`, logging the exact error trace (`broadcast_error`).
-
 #### Broadcast Idempotency Lock
 Before dispatching, the engine validates `broadcast_status === 'pending'`. Dispatches with status `'broadcasted'` are skipped unless explicitly overridden by a manual user trigger (`{ force: true }`).
 
@@ -297,7 +296,8 @@ NISE is implemented as a decoupled client-server system realizing the methodolog
 
 ### 4.2 Development Environment
 
-**TABLE IV: DEVELOPMENT ENVIRONMENT & JUSTIFICATION**
+**TABLE IV: DEVELOPMENT ENVIRONMENT & TECHNOLOGY STACK**
+
 | Component | Technology | Justification |
 |---|---|---|
 | Backend Runtime | Node.js, Express 5 | Non-blocking I/O suited to a pipeline dominated by network-bound operations (RSS fetches, LLM calls, webhook dispatches) rather than CPU-bound computation |
@@ -310,11 +310,11 @@ NISE is implemented as a decoupled client-server system realizing the methodolog
 
 ```
         ┌─────────────────────────────┐
-        │   Presentation Layer        │  React dashboard, operator console
+        │   Presentation Layer        │  Dashboard, operator console
         └──────────────┬──────────────┘
                         │ REST (JSON)
         ┌──────────────▼──────────────┐
-        │   API Layer                 │  articleRoutes, eventRoutes, socialRoutes, healthRoutes
+        │   API Layer                 │  Article API, Event API, Distribution API, Health API
         └──────────────┬──────────────┘
                         │
         ┌──────────────▼──────────────┐
@@ -326,34 +326,34 @@ NISE is implemented as a decoupled client-server system realizing the methodolog
         └──────────────┬──────────────┘
                         │
         ┌──────────────▼──────────────┐
-        │   Data Layer                │  Mongoose schemas, MongoDB Atlas
+        │   Data Layer                │  Schemas, MongoDB Atlas
         └─────────────────────────────┘
 ```
 *Figure 2: Five-Layer Backend Software Subsystem Architecture.*
 
-This layered separation was adopted specifically after an internal circular-dependency defect was identified between the clustering and fusion-scoring modules (Section 4.9), motivating extraction of shared similarity functions into an independent utility layer consumed identically by both the production gate and the offline evaluation harness.
+This layered separation isolates similarity computation as a shared, independently-testable utility layer consumed identically by both the production gate and the offline evaluation harness, ensuring architectural consistency between deployed and evaluated behavior.
 
 ### 4.4 Module Implementation
 
-**Event Clustering Engine (`eventEngine.js`)**
+**Event Clustering Engine**
 - *Purpose:* Determines whether an incoming article corresponds to an existing event cluster or should seed a new one.
 - *Input:* A newly ingested article and the set of candidate events within a 48-hour temporal window.
 - *Processing:* Executes the Stage 1 lexical/fusion gate (Section 3.5–3.6), escalates qualifying candidates to LLM verification (Section 3.5), and on a positive match, invokes evidence fusion, stance detection, and the hallucination reflection loop.
 - *Output:* Either an updated event cluster with an appended source article, or a newly created event record.
 
-**Publisher Credibility Engine (`dpcsEngine.js`)**
+**Publisher Credibility Engine**
 - *Purpose:* Maintains an evolving trust record per publisher domain.
 - *Input:* A verification outcome (stance classification, time offset from first report) for a given publisher.
 - *Processing:* Computes the four-component composite score and applies EMA smoothing (Eqs. 6–8).
 - *Output:* An updated scalar credibility score, persisted for future gating evaluation.
 
-**Autonomous Distribution Engine (`socialBroadcast.js`)**
+**Autonomous Distribution Engine**
 - *Purpose:* Dispatches synthesized events to external distribution channels.
-- *Input:* A verified, synthesized event record with `broadcast_status = 'pending'`.
+- *Input:* A verified, synthesized event record marked pending broadcast.
 - *Processing:* Constructs a standardized JSON payload, applies staggered scheduling, and dispatches via HTTP POST to a configurable webhook endpoint.
-- *Output:* An updated broadcast status (`broadcasted` or `failed`, with retry tracking).
+- *Output:* An updated broadcast status (broadcasted or failed, with retry tracking).
 
-**Evergreen Recirculation Engine (`recirculateEngine.js`)**
+**Evergreen Recirculation Engine**
 - *Purpose:* Re-surfaces high-confidence events during periods of low wire activity.
 - *Input:* Events with corroboration confidence $\ge 90\%$, created more than 48 hours prior.
 - *Processing:* Applies an "ICYMI:" caption prefix and re-queues a single instance through the distribution engine.
@@ -379,14 +379,15 @@ This layered separation was adopted specifically after an internal circular-depe
 ```
 *Figure 3: Database Entity Relationship Diagram (ERD).*
 
-Events reference contributing articles via ObjectId arrays rather than duplicating content, preserving full source traceability while avoiding redundant storage. Compound indexes on `timestamp` and `sector` support low-latency lookup within the 48-hour candidacy window central to Section 3.5's gating logic.
+Events reference contributing articles via ObjectId arrays rather than duplicating content, preserving full source traceability while avoiding redundant storage. Compound indexes on timestamp and sector support low-latency lookup within the 48-hour candidacy window central to Section 3.5's gating logic.
 
 ### 4.6 Interface Design
-The frontend presents synthesized events through a categorized dashboard with sector filtering and search, alongside an operator-facing console for monitoring the distribution queue and manually triggering ingestion or broadcast actions. Interface visual design is not further detailed here, as it is not the subject of this paper's evaluation.
+The frontend presents synthesized events through a categorized dashboard with sector filtering and search, alongside an operator-facing console for monitoring the distribution queue and manually triggering ingestion or broadcast actions. Interface visual design is outside this paper's evaluation scope.
 
 ### 4.7 REST API Design
 
 **TABLE V: SYSTEM REST API ENDPOINT SPECIFICATIONS**
+
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/articles` | GET | Retrieve articles, optional sector filter |
@@ -401,42 +402,41 @@ The frontend presents synthesized events through a categorized dashboard with se
 Communication between backend and external distribution channels uses standardized HTTP POST payloads to a configurable webhook URL, rather than direct platform-specific API integration — a deliberate architectural choice allowing the operator to route output to any Make.com, Zapier, or n8n-compatible destination without code changes.
 
 ### 4.8 Deployment Architecture
-Ingestion runs on a weekly `node-cron` schedule (`0 8 * * 1`), and the recirculation engine on a daily schedule (`0 12 * * *`), both wrapped in error-isolating handlers that log failures without terminating the server process. A `/ping` endpoint supports external uptime monitoring on free-tier cloud hosts. Environment configuration (database URI, API keys) is validated at process startup, refusing to start if required variables are absent.
+Ingestion runs on a weekly node-cron schedule, and the recirculation engine on a daily schedule, both wrapped in error-isolating handlers that log failures without terminating the server process. A dedicated health endpoint supports external uptime monitoring on free-tier cloud hosts. Environment configuration (database URI, API keys) is validated at process startup, refusing to start if required variables are absent.
 
 ### 4.9 Engineering Challenges
 
-**Challenge 1 — Database Connectivity:** SRV-based MongoDB connection strings failed with `ECONNREFUSED` under a restrictive local network configuration, despite correct Atlas network-access settings. *Solution:* switched to a non-SRV connection string listing replica set members directly. *Outcome:* reliable connectivity independent of DNS SRV record resolution.
+**Challenge 1 — Database Connectivity:** SRV-based MongoDB connection strings failed with a connection-refused error under a restrictive local network configuration, despite correct Atlas network-access settings. *Solution:* switched to a non-SRV connection string listing replica set members directly. *Outcome:* reliable connectivity independent of DNS SRV record resolution.
 
-**Challenge 2 — Third-Party Inference API Instability:** The initial image-generation provider (Hugging Face's hosted inference API) underwent undocumented routing changes, returning inconsistent model-availability errors. *Solution:* migrated to a keyless, URL-based generation service (Pollinations.ai) requiring no API key management. *Outcome:* eliminated a recurring source of pipeline failure with no loss of functionality.
+**Challenge 2 — Third-Party Inference API Instability:** The initial image-generation provider underwent undocumented routing changes, returning inconsistent model-availability errors. *Solution:* migrated to a keyless, URL-based generation service requiring no API key management. *Outcome:* eliminated a recurring source of pipeline failure with no loss of functionality.
 
-**Challenge 3 — Server-Side Bot Protection:** Server-side image retrieval began returning `403 Forbidden` responses due to Cloudflare bot-detection rules. *Solution:* shifted image loading responsibility to the client browser, which is not subject to the same automated-traffic filtering. *Outcome:* restored reliable image display without violating the provider's intended usage pattern.
+**Challenge 3 — Server-Side Bot Protection:** Server-side image retrieval began returning forbidden-access responses due to bot-detection rules on the image provider. *Solution:* shifted image loading responsibility to the client browser, which is not subject to the same automated-traffic filtering. *Outcome:* restored reliable image display without violating the provider's intended usage pattern.
 
-**Challenge 4 — LLM Provider Rate Limits:** The initial LLM provider's free-tier daily quota (20 requests/day) was insufficient for iterative development and evaluation. *Solution:* migrated text synthesis and event verification to an open-weight model served on dedicated inference hardware. *Outcome:* eliminated the daily quota constraint, at the cost of a documented recall regression requiring subsequent prompt re-tuning (Section 3.3, and the empirical case study in Section 5.5).
+**Challenge 4 — LLM Provider Rate Limits:** The initial LLM provider's free-tier daily quota was insufficient for iterative development and evaluation. *Solution:* migrated text synthesis and event verification to an open-weight model served on dedicated inference hardware. *Outcome:* eliminated the daily quota constraint, at the cost of a documented recall regression requiring subsequent prompt re-tuning (Section 3.3, and the empirical case study in Section 5.5).
 
 **Challenge 5 — Latent Runtime Defects:** A module-scope variable and a required standard-library import were both omitted from the ingestion engine, causing every batch run to fail silently until surfaced through direct code inspection. *Solution:* the missing import and variable declaration were added and independently verified via static syntax checking. *Outcome:* restored correct pipeline execution; this incident directly motivated the verification discipline applied throughout this paper's empirical claims.
+
+**Challenge 6 — Architectural Coupling:** An early implementation computed similarity functions independently within the clustering and fusion-scoring modules, risking silent divergence between the two. *Solution:* the shared logic was extracted into a single utility layer imported by both. *Outcome:* verified elimination of a discrepancy that had previously caused mismatched baseline measurements between the production system and its offline evaluation (Section 5.5).
 
 ### 4.10 Implementation Validation
 
 **TABLE VI: SUBSYSTEM VALIDATION METRICS & METHODOLOGY**
+
 | Module | Validation Method |
 |---|---|
 | Event clustering gate | Verified against the 45-pair labeled benchmark via an ablation harness reusing the exact production similarity functions |
 | EFSA / DPCS | Verified via dedicated evaluation scripts computing real confusion matrices, not simulated or estimated |
 | Hybrid image pipeline | Verified via a dedicated test script confirming both native-photo extraction and generative fallback paths execute correctly |
-| API layer | Verified via an automated integration test suite covering five endpoints (`/ping`, `/api/health`, `/api/articles`, `/api/events`, `/api/social/queue`) using native HTTP assertions |
+| API layer | Verified via an automated integration test suite covering five endpoints using native HTTP assertions |
 | Synthesis latency | Verified via 20 timed, real inference calls rather than vendor-published throughput figures |
 
 ### 4.11 Security Considerations
-Request-level protection is implemented via a zero-dependency, in-memory sliding-window rate limiter, which also manually sets standard HTTP security headers (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Referrer-Policy`) rather than relying on a third-party middleware package. Environment configuration is validated at startup, and API keys are never persisted in version control. We state plainly that no authentication or authorization layer is currently implemented on any API endpoint — an accepted limitation appropriate to the system's current evaluation-focused deployment scale, discussed further below.
+Request-level protection is implemented via a zero-dependency, in-memory sliding-window rate limiter, which also manually sets standard HTTP security headers rather than relying on a third-party middleware package. Environment configuration is validated at startup, and API keys are never persisted in version control. We state plainly that no authentication or authorization layer is currently implemented on any API endpoint — an accepted limitation appropriate to the system's current evaluation-focused deployment scale, discussed further below.
 
 ### 4.12 Limitations of the Current Implementation
 This implementation carries several explicit limitations. No authentication or per-operator access control exists on any endpoint, including manual ingestion and broadcast triggers — acceptable for a research prototype but not for a multi-tenant production deployment. The system operates as a single Node.js process without distributed job queuing, limiting horizontal scalability under substantially higher ingestion volume. Ingestion cadence (weekly, plus daily recirculation) was deliberately chosen to remain within LLM provider rate limits rather than to maximize freshness. DPCS's trust-scaling gating multiplier remains validated only in offline evaluation and is not integrated into the live production gate (Section 3.7). Stance detection and the hallucination reflection loop are functionally implemented but have not been independently validated against external benchmarks (e.g., BASIL for stance, FACTS Grounding for factuality). All processing assumes English-language wire content; multilingual support is not currently implemented.
 
 ### 4.13 Implementation Summary
-The proposed architecture was implemented and deployed as a modular, independently-verifiable pipeline, with each module validated against real test data or automated integration checks rather than assumed correct by design. Computational complexity of the core clustering and fusion algorithms is analyzed in Section 5.4. The following section evaluates the implemented system through quantitative experiments and empirical benchmarking.
-
----
-
 ## V. EXPERIMENTAL EVALUATION & PERFORMANCE BENCHMARKS
 
 ### 5.1 Evaluation Setup & Ground-Truth Test Corpus
