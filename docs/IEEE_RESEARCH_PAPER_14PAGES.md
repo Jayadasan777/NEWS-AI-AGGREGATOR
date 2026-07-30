@@ -293,41 +293,45 @@ To maintain feed engagement during low wire activity, `recirculateEvergreenArtic
 ## IV. IMPLEMENTATION
 
 ### 4.1 Implementation Overview
-NISE is implemented as a decoupled client-server system following a MERN-derived architecture: an Express-based backend handling ingestion, clustering, synthesis, and distribution; a MongoDB Atlas persistence layer; and a React-based frontend for presentation and operator control. The backend is organized into four functional layers — job orchestration, algorithmic utilities, data models, and API routes — each independently testable and independently deployable within the same process.
+NISE is implemented as a decoupled client-server system realizing the methodology of Section III as a modular, independently-deployable pipeline organized across five architectural layers.
 
 ### 4.2 Development Environment
 
-| Component | Technology | Purpose |
+**TABLE IV: DEVELOPMENT ENVIRONMENT & JUSTIFICATION**
+| Component | Technology | Justification |
 |---|---|---|
-| Runtime | Node.js, Express 5 | Backend application server and HTTP routing |
-| Persistence | MongoDB Atlas, Mongoose 9 | Document storage and object-data modeling |
-| LLM Inference | Groq SDK (`llama-3.1-8b-instant`) | Multi-modal synthesis and event verification |
-| Scheduling | node-cron | Background job orchestration |
-| Ingestion | rss-parser, axios | Wire feed retrieval and parsing |
-| Frontend | React 19, Vite 8, Tailwind CSS 4 | Client presentation layer |
-| 3D Visualization | Three.js, React Three Fiber | Interactive dashboard rendering |
-| Client Routing | React Router 7 | Frontend navigation |
+| Backend Runtime | Node.js, Express 5 | Non-blocking I/O suited to a pipeline dominated by network-bound operations (RSS fetches, LLM calls, webhook dispatches) rather than CPU-bound computation |
+| Persistence | MongoDB Atlas, Mongoose 9 | Document model accommodates event records whose structure varies with corroboration count and evolving metadata, avoiding frequent schema migration |
+| LLM Inference | Groq SDK, `llama-3.1-8b-instant` | Open-weight model on dedicated inference hardware, avoiding proprietary per-token cost and rate-limit constraints encountered during development (Section 4.9) |
+| Scheduling | node-cron | Lightweight in-process scheduling without external job-queue infrastructure |
+| Frontend | React 19, Vite 8, Tailwind CSS 4 | Component-based presentation layer with fast development iteration |
 
-Node.js and Express were selected for their non-blocking I/O model, well-suited to a pipeline dominated by network-bound operations (RSS fetches, LLM API calls, webhook dispatches) rather than CPU-bound computation. MongoDB's document model was chosen over a relational schema because event records vary in structure depending on corroboration count and evolving metadata (stance analysis, reflection logs), which would otherwise require frequent schema migration in a relational system.
-
-### 4.3 System Architecture
-The backend is organized into four layers:
+### 4.3 Software Architecture
 
 ```
-RSS Wire Feeds
-      ↓
-Job Orchestration Layer (newsEngine.js, eventEngine.js, recirculateEngine.js)
-      ↓
-Algorithmic Utility Layer (textSimilarity.js, efsaEngine.js, dpcsEngine.js, jsonRepair.js)
-      ↓
-Data Layer (Article.js, Event.js — Mongoose schemas, MongoDB Atlas)
-      ↓
-API Layer (articleRoutes.js, eventRoutes.js, socialRoutes.js, healthRoutes.js)
-      ↓
-Frontend Presentation Layer (React dashboard, Social Studio operator console)
+        ┌─────────────────────────────┐
+        │   Presentation Layer        │  React dashboard, operator console
+        └──────────────┬──────────────┘
+                        │ REST (JSON)
+        ┌──────────────▼──────────────┐
+        │   API Layer                 │  articleRoutes, eventRoutes, socialRoutes, healthRoutes
+        └──────────────┬──────────────┘
+                        │
+        ┌──────────────▼──────────────┐
+        │   Job Orchestration Layer   │  Ingestion, clustering, recirculation jobs
+        └──────────────┬──────────────┘
+                        │
+        ┌──────────────▼──────────────┐
+        │   Algorithmic Utility Layer │  Similarity, EFSA, DPCS, JSON repair
+        └──────────────┬──────────────┘
+                        │
+        ┌──────────────▼──────────────┐
+        │   Data Layer                │  Mongoose schemas, MongoDB Atlas
+        └─────────────────────────────┘
 ```
+*Figure 2: Five-Layer Backend Software Subsystem Architecture.*
 
-The algorithmic utility layer was deliberately extracted into a shared module (`textSimilarity.js`) after an internal circular-dependency issue was identified between the clustering and fusion-scoring modules (Section 4.9), ensuring both the production gate and the offline evaluation harness invoke identical similarity functions.
+This layered separation was adopted specifically after an internal circular-dependency defect was identified between the clustering and fusion-scoring modules (Section 4.9), motivating extraction of shared similarity functions into an independent utility layer consumed identically by both the production gate and the offline evaluation harness.
 
 ### 4.4 Module Implementation
 
@@ -356,13 +360,33 @@ The algorithmic utility layer was deliberately extracted into a shared module (`
 - *Output:* A recirculated event marked to prevent future duplicate re-queuing.
 
 ### 4.5 Database Design
-Two primary Mongoose schemas govern persistence: `Article` (raw ingested items, storing title, URL, title hash, synthesized summary, social metadata, and broadcast status) and `Event` (clustered nodes, storing source article references, fused summary, confidence score, stance/divergence data, and reflection logs). Events reference their contributing articles via MongoDB ObjectId arrays rather than duplicating article content, avoiding data redundancy while preserving full source traceability. Compound indexes are maintained on frequently-queried fields (timestamp, sector) to support the 48-hour candidacy window lookup at low latency.
+
+```
+   Article                      Event
+ ┌─────────────┐          ┌──────────────────┐
+ │ _id         │◄────┐    │ _id               │
+ │ title       │     │    │ event_title       │
+ │ url         │     │    │ sector            │
+ │ title_hash  │     │    │ source_articles[] │──┐
+ │ summary     │     │    │ fused_summary     │  │
+ │ sector      │     │    │ confidence_score  │  │
+ │ broadcast_* │     │    │ stance_analysis   │  │
+ └─────────────┘     └────┤ reflection_logs[] │  │
+                           └───────────────────┘  │
+                                    ▲              │
+                                    └──────────────┘
+                        (references, not duplicated content)
+```
+*Figure 3: Database Entity Relationship Diagram (ERD).*
+
+Events reference contributing articles via ObjectId arrays rather than duplicating content, preserving full source traceability while avoiding redundant storage. Compound indexes on `timestamp` and `sector` support low-latency lookup within the 48-hour candidacy window central to Section 3.5's gating logic.
 
 ### 4.6 Interface Design
 The frontend presents synthesized events through a categorized dashboard with sector filtering and search, alongside an operator-facing console for monitoring the distribution queue and manually triggering ingestion or broadcast actions. Interface visual design is not further detailed here, as it is not the subject of this paper's evaluation.
 
-### 4.7 API and Communication Design
+### 4.7 REST API Design
 
+**TABLE V: SYSTEM REST API ENDPOINT SPECIFICATIONS**
 | Endpoint | Method | Description |
 |---|---|---|
 | `/api/articles` | GET | Retrieve articles, optional sector filter |
@@ -376,8 +400,8 @@ The frontend presents synthesized events through a categorized dashboard with se
 
 Communication between backend and external distribution channels uses standardized HTTP POST payloads to a configurable webhook URL, rather than direct platform-specific API integration — a deliberate architectural choice allowing the operator to route output to any Make.com, Zapier, or n8n-compatible destination without code changes.
 
-### 4.8 Deployment
-Ingestion runs on a weekly `node-cron` schedule (`0 8 * * 1`), and the recirculation engine on a daily schedule (`0 12 * * *`), both wrapped in try/catch handlers that log failures without terminating the server process. A `/ping` endpoint supports external uptime monitoring on free-tier cloud hosts. Environment configuration (database URI, API keys) is validated at process startup, with the server refusing to start if required variables are absent.
+### 4.8 Deployment Architecture
+Ingestion runs on a weekly `node-cron` schedule (`0 8 * * 1`), and the recirculation engine on a daily schedule (`0 12 * * *`), both wrapped in error-isolating handlers that log failures without terminating the server process. A `/ping` endpoint supports external uptime monitoring on free-tier cloud hosts. Environment configuration (database URI, API keys) is validated at process startup, refusing to start if required variables are absent.
 
 ### 4.9 Engineering Challenges
 
@@ -387,12 +411,29 @@ Ingestion runs on a weekly `node-cron` schedule (`0 8 * * 1`), and the recircula
 
 **Challenge 3 — Server-Side Bot Protection:** Server-side image retrieval began returning `403 Forbidden` responses due to Cloudflare bot-detection rules. *Solution:* shifted image loading responsibility to the client browser, which is not subject to the same automated-traffic filtering. *Outcome:* restored reliable image display without violating the provider's intended usage pattern.
 
-**Challenge 4 — LLM Provider Rate Limits:** The initial LLM provider's free-tier daily quota (20 requests/day) was insufficient for iterative development and evaluation. *Solution:* migrated text synthesis and event verification to an open-weight model served on dedicated inference hardware. *Outcome:* eliminated the daily quota constraint, at the cost of a documented recall regression requiring subsequent prompt re-tuning (Section 3.3, and the empirical case study in Section 5.x).
+**Challenge 4 — LLM Provider Rate Limits:** The initial LLM provider's free-tier daily quota (20 requests/day) was insufficient for iterative development and evaluation. *Solution:* migrated text synthesis and event verification to an open-weight model served on dedicated inference hardware. *Outcome:* eliminated the daily quota constraint, at the cost of a documented recall regression requiring subsequent prompt re-tuning (Section 3.3, and the empirical case study in Section 5.5).
 
 **Challenge 5 — Latent Runtime Defects:** A module-scope variable and a required standard-library import were both omitted from the ingestion engine, causing every batch run to fail silently until surfaced through direct code inspection. *Solution:* the missing import and variable declaration were added and independently verified via static syntax checking. *Outcome:* restored correct pipeline execution; this incident directly motivated the verification discipline applied throughout this paper's empirical claims.
 
-### 4.10 Summary
-The implemented system realizes the methodology of Section III as a modular, independently-deployable pipeline, with each engineering challenge encountered during development addressed through a documented, verifiable resolution rather than a workaround left unexamined.
+### 4.10 Implementation Validation
+
+**TABLE VI: SUBSYSTEM VALIDATION METRICS & METHODOLOGY**
+| Module | Validation Method |
+|---|---|
+| Event clustering gate | Verified against the 45-pair labeled benchmark via an ablation harness reusing the exact production similarity functions |
+| EFSA / DPCS | Verified via dedicated evaluation scripts computing real confusion matrices, not simulated or estimated |
+| Hybrid image pipeline | Verified via a dedicated test script confirming both native-photo extraction and generative fallback paths execute correctly |
+| API layer | Verified via an automated integration test suite covering five endpoints (`/ping`, `/api/health`, `/api/articles`, `/api/events`, `/api/social/queue`) using native HTTP assertions |
+| Synthesis latency | Verified via 20 timed, real inference calls rather than vendor-published throughput figures |
+
+### 4.11 Security Considerations
+Request-level protection is implemented via a zero-dependency, in-memory sliding-window rate limiter, which also manually sets standard HTTP security headers (`X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`, `Referrer-Policy`) rather than relying on a third-party middleware package. Environment configuration is validated at startup, and API keys are never persisted in version control. We state plainly that no authentication or authorization layer is currently implemented on any API endpoint — an accepted limitation appropriate to the system's current evaluation-focused deployment scale, discussed further below.
+
+### 4.12 Limitations of the Current Implementation
+This implementation carries several explicit limitations. No authentication or per-operator access control exists on any endpoint, including manual ingestion and broadcast triggers — acceptable for a research prototype but not for a multi-tenant production deployment. The system operates as a single Node.js process without distributed job queuing, limiting horizontal scalability under substantially higher ingestion volume. Ingestion cadence (weekly, plus daily recirculation) was deliberately chosen to remain within LLM provider rate limits rather than to maximize freshness. DPCS's trust-scaling gating multiplier remains validated only in offline evaluation and is not integrated into the live production gate (Section 3.7). Stance detection and the hallucination reflection loop are functionally implemented but have not been independently validated against external benchmarks (e.g., BASIL for stance, FACTS Grounding for factuality). All processing assumes English-language wire content; multilingual support is not currently implemented.
+
+### 4.13 Implementation Summary
+The proposed architecture was implemented and deployed as a modular, independently-verifiable pipeline, with each module validated against real test data or automated integration checks rather than assumed correct by design. Computational complexity of the core clustering and fusion algorithms is analyzed in Section 5.4. The following section evaluates the implemented system through quantitative experiments and empirical benchmarking.
 
 ---
 
