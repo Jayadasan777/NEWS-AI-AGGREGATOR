@@ -290,173 +290,109 @@ To maintain feed engagement during low wire activity, `recirculateEvergreenArtic
 
 ---
 
-## IV. SYSTEM IMPLEMENTATION & ENGINEERING REALIZATION
+## IV. IMPLEMENTATION
 
 ### 4.1 Implementation Overview
-The proposed NISE framework was implemented as a production-grade software prototype integrating asynchronous backend microservices, document database clusters, neural hardware acceleration endpoints, and modern WebGL interactive dashboards. The implementation operationalizes the 5-layer pipeline presented in Section III (Figure 1) and demonstrates the practical software realization of multi-evidence event clustering, factuality verification, and autonomous social distribution under continuous operational conditions.
+NISE is implemented as a decoupled client-server system following a MERN-derived architecture: an Express-based backend handling ingestion, clustering, synthesis, and distribution; a MongoDB Atlas persistence layer; and a React-based frontend for presentation and operator control. The backend is organized into four functional layers — job orchestration, algorithmic utilities, data models, and API routes — each independently testable and independently deployable within the same process.
 
-### 4.2 Development Environment & System Hardware
-Table IV-A details the complete software stack, development frameworks, and server hardware specifications utilized to build, deploy, and benchmark NISE. Frame technologies were selected to maximize operational concurrency and high-frequency UI state updates:
-* **Node.js & Express.js:** Selected for non-blocking asynchronous I/O handling across concurrent RSS wire streams.
-* **MongoDB Atlas Cloud:** Selected for schema-flexible document persistence supporting dynamic source arrays and reflection audit logs.
-* **React & Three.js:** Selected for component-based state rendering and GPU-accelerated 3D spatial telemetry visualization.
+### 4.2 Development Environment
 
-**TABLE IV-A: DEVELOPMENT ENVIRONMENT & HARDWARE SPECIFICATIONS**
-| Component Layer | Technology / Tool | Specification / Model | Engineering Rationale in NISE |
-| :--- | :--- | :--- | :--- |
-| **Operating System** | Windows 11 / Linux (Ubuntu 22.04 LTS) | 64-Bit x86_64 Architecture | Primary host runtime OS |
-| **Backend Language** | Node.js | v20.11.0 LTS (JavaScript ES2023) | Asynchronous non-blocking I/O event loop |
-| **Web Framework** | Express.js | v4.18.2 | RESTful API middleware & endpoint routing |
-| **Database** | MongoDB Atlas Cloud | v7.0 Enterprise Community | Document persistence store with B-tree indexes |
-| **Neural LLM Hardware** | Groq LPU (Language Processing Unit) | Groq LPU Card Architecture | High-throughput low-latency AI inference |
-| **Neural Model** | Meta Llama 3 | `llama-3.1-8b-instant` (8B Open Weight) | Zero-shot verification & multi-source synthesis |
-| **Image Generation AI** | Pollinations.ai FLUX | FLUX Realism Engine | Keyless prompt-encoded photo generator |
-| **Frontend Framework** | React / Vite | React v19.0.0, Vite v8.1.0 | Component-based state-driven UI framework |
-| **3D Graphics Engine** | Three.js / `@react-three/fiber` | Three.js r160, R3F v8.15.0 | WebGL 3D spatial visualization scene |
-| **Styling System** | Vanilla CSS / TailwindCSS | TailwindCSS v4.0.0 | Utility-first responsive design tokens |
-| **Distribution Webhook** | Custom Automation Webhook | HTTP POST Receiver Endpoint | Automated social channel wall syndication |
-| **Host Hardware** | Intel Core i7-13700H CPU, 16 GB DDR5 | 14 Cores / 20 Threads @ 5.0 GHz | Benchmark host server hardware |
+| Component | Technology | Purpose |
+|---|---|---|
+| Runtime | Node.js, Express 5 | Backend application server and HTTP routing |
+| Persistence | MongoDB Atlas, Mongoose 9 | Document storage and object-data modeling |
+| LLM Inference | Groq SDK (`llama-3.1-8b-instant`) | Multi-modal synthesis and event verification |
+| Scheduling | node-cron | Background job orchestration |
+| Ingestion | rss-parser, axios | Wire feed retrieval and parsing |
+| Frontend | React 19, Vite 8, Tailwind CSS 4 | Client presentation layer |
+| 3D Visualization | Three.js, React Three Fiber | Interactive dashboard rendering |
+| Client Routing | React Router 7 | Frontend navigation |
 
-### 4.3 Software Subsystem Architecture
-The software architecture is modularized into four decoupled functional subsystems:
+Node.js and Express were selected for their non-blocking I/O model, well-suited to a pipeline dominated by network-bound operations (RSS fetches, LLM API calls, webhook dispatches) rather than CPU-bound computation. MongoDB's document model was chosen over a relational schema because event records vary in structure depending on corroboration count and evolving metadata (stance analysis, reflection logs), which would otherwise require frequent schema migration in a relational system.
 
-```text
-+-----------------------------------------------------------------------------------+
-|                            NISE SOFTWARE ARCHITECTURE                             |
-+-----------------------------------------------------------------------------------+
-| 1. DATA INGESTION & DEDUPLICATION SUBSYSTEM                                       |
-|    - Wire Stream Poller & RSS XML Parser (15-Minute Cron)                         |
-|    - Pre-LLM MD5 Title Hash & URL Deduplication Lock (Eq. 1)                      |
-+-----------------------------------------------------------------------------------+
-| 2. ANALYTICAL GATING & NEURAL SYNTHESIS ENGINE                                    |
-|    - Algorithmic Candidate Gating (Canonical 2-Stage & EFSA 5-Evidence Fusion)    |
-|    - Dynamic Publisher Credibility Model (DPCS EMA Trust Tracker, Eq. 6-8)        |
-|    - Groq LPU Neural Verification & Multi-Source Editorial Synthesizer            |
-|    - 2-Pass Factuality Reflection Guardrail Loop                                  |
-+-----------------------------------------------------------------------------------+
-| 3. PERSISTENCE, CACHING & REST API SERVICE LAYER                                  |
-|    - MongoDB Atlas Storage (Articles & Clustered Events Collections)              |
-|    - 30-Second In-Memory LRU Query Cache                                          |
-|    - Express REST API Controllers & Middleware                                    |
-+-----------------------------------------------------------------------------------+
-| 4. VISUALIZATION & AUTONOMOUS DISTRIBUTION LAYER                                  |
-|    - React / Three.js 3D WebGL Glassmorphism Interface                            |
-|    - Autonomous Smart-Queue Drip Feed & Self-Healing Webhook Syndication          |
-+-----------------------------------------------------------------------------------+
+### 4.3 System Architecture
+The backend is organized into four layers:
+
+```
+RSS Wire Feeds
+      ↓
+Job Orchestration Layer (newsEngine.js, eventEngine.js, recirculateEngine.js)
+      ↓
+Algorithmic Utility Layer (textSimilarity.js, efsaEngine.js, dpcsEngine.js, jsonRepair.js)
+      ↓
+Data Layer (Article.js, Event.js — Mongoose schemas, MongoDB Atlas)
+      ↓
+API Layer (articleRoutes.js, eventRoutes.js, socialRoutes.js, healthRoutes.js)
+      ↓
+Frontend Presentation Layer (React dashboard, Social Studio operator console)
 ```
 
-### 4.4 Module-by-Module Technical Realization
+The algorithmic utility layer was deliberately extracted into a shared module (`textSimilarity.js`) after an internal circular-dependency issue was identified between the clustering and fusion-scoring modules (Section 4.9), ensuring both the production gate and the offline evaluation harness invoke identical similarity functions.
 
-#### 1. Data Ingestion Subsystem
-* **Purpose:** Regularly ingests dispatches from 21 RSS wire feeds across 14 news sectors while eliminating duplicate entries prior to storage.
-* **Input:** Raw XML feeds from external news providers (Reuters, AP, BBC, CNN, TechCrunch, Bloomberg).
-* **Processing:** Parses XML nodes. Extracts `title`, `link`, `content`, `pubDate`, and `category`. Computes `title_hash = MD5(title)` and enforces the pre-LLM match condition formalized in Equation (1).
-* **Output:** Saved clean `Article` document or immediate duplicate discard.
+### 4.4 Module Implementation
 
-#### 2. Algorithmic Candidate Gating Subsystem
-* **Purpose:** Performs fast-path pre-filtering in $<0.20\text{ ms}$ per candidate pair to reduce expensive LLM API invocations.
-* **Input:** Incoming `Article` document and active candidate `Event` nodes created within the 48-hour temporal window.
-* **Processing:** Implements Algorithm 1 (EFSA) and Algorithm 2 (DPCS) formalized in Section III. Computes unigram Jaccard IoU ($S_{\text{key}}$), character 3-gram cosine ($S_{\text{head}}$), named entity overlap ($S_{\text{ent}}$), time decay ($S_{\text{temp}}$), and sector match ($S_{\text{sec}}$).
-* **Output:** Boolean gate decision (`true` to advance candidate to Stage 2 LLM verification, `false` to reject and spawn a new event node).
+**Event Clustering Engine (`eventEngine.js`)**
+- *Purpose:* Determines whether an incoming article corresponds to an existing event cluster or should seed a new one.
+- *Input:* A newly ingested article and the set of candidate events within a 48-hour temporal window.
+- *Processing:* Executes the Stage 1 lexical/fusion gate (Section 3.5–3.6), escalates qualifying candidates to LLM verification (Section 3.5), and on a positive match, invokes evidence fusion, stance detection, and the hallucination reflection loop.
+- *Output:* Either an updated event cluster with an appended source article, or a newly created event record.
 
-#### 3. Neural AI Synthesis Engine
-* **Purpose:** Verifies event equivalence and synthesizes 150-word editorial dispatches, captions, hashtags, and photo prompts.
-* **Input:** Candidate headline pairs or merged source article texts.
-* **Processing:** Issues zero-shot JSON-mode prompt calls to `llama-3.1-8b-instant` via the Groq LPU SDK under temperature $T=0.1$.
-* **Output:** Structured JSON object containing `same_event` verdict, 150-word neutral summary, social media caption, viral hashtags, and photo prompt.
+**Publisher Credibility Engine (`dpcsEngine.js`)**
+- *Purpose:* Maintains an evolving trust record per publisher domain.
+- *Input:* A verification outcome (stance classification, time offset from first report) for a given publisher.
+- *Processing:* Computes the four-component composite score and applies EMA smoothing (Eqs. 6–8).
+- *Output:* An updated scalar credibility score, persisted for future gating evaluation.
 
-#### 4. Factuality Reflection Guardrail
-* **Purpose:** Audits synthesized summaries against raw source text to detect and eliminate AI hallucinations.
-* **Input:** Fused summary string and raw source article snippets.
-* **Processing:** Implements the two-pass audit-then-regenerate feedback paradigm (Shinn et al. [12]). Pass 1 audits text for fabricated stats, unsupported entities, or speculative claims. Pass 2 injects corrective feedback into a self-critique prompt if Pass 1 fails.
-* **Output:** Verified summary string with `factuality_verified = true` flag and audit logs.
+**Autonomous Distribution Engine (`socialBroadcast.js`)**
+- *Purpose:* Dispatches synthesized events to external distribution channels.
+- *Input:* A verified, synthesized event record with `broadcast_status = 'pending'`.
+- *Processing:* Constructs a standardized JSON payload, applies staggered scheduling, and dispatches via HTTP POST to a configurable webhook endpoint.
+- *Output:* An updated broadcast status (`broadcasted` or `failed`, with retry tracking).
 
-#### 5. Hybrid Photojournalism Subsystem
-* **Purpose:** Acquires a high-resolution visual header for every synthesized event dispatch.
-* **Input:** RSS XML enclosure metadata or Groq-generated 35mm photo prompt string.
-* **Processing:** Parses native RSS `<enclosure>` or `<media:content>` tags first. If absent, constructs a keyless, prompt-encoded URL pointing to the FLUX Realism engine.
-* **Output:** Image URL attached to event record with client-side browser fetch delegation and Unsplash fail-safe fallbacks.
+**Evergreen Recirculation Engine (`recirculateEngine.js`)**
+- *Purpose:* Re-surfaces high-confidence events during periods of low wire activity.
+- *Input:* Events with corroboration confidence $\ge 90\%$, created more than 48 hours prior.
+- *Processing:* Applies an "ICYMI:" caption prefix and re-queues a single instance through the distribution engine.
+- *Output:* A recirculated event marked to prevent future duplicate re-queuing.
 
-#### 6. Autonomous Webhook Syndication Subsystem
-* **Purpose:** Formats and broadcasts breaking news stories to live social channels with zero human intervention.
-* **Input:** Persisted `Event` document with summary, image URL, and hashtags.
-* **Processing:** Formats dual-structure JSON payload. Assigns 1-hour staggered timestamp. Checks idempotency lock (`broadcast_status === 'pending'`). Issues HTTP POST request to Make.com Webhook receiver. Applies exponential backoff retry logic (up to 3 retries at 15-minute intervals).
-* **Output:** Live published story on Facebook Page wall and updated `broadcast_status = 'broadcasted'`.
+### 4.5 Database Design
+Two primary Mongoose schemas govern persistence: `Article` (raw ingested items, storing title, URL, title hash, synthesized summary, social metadata, and broadcast status) and `Event` (clustered nodes, storing source article references, fused summary, confidence score, stance/divergence data, and reflection logs). Events reference their contributing articles via MongoDB ObjectId arrays rather than duplicating article content, avoiding data redundancy while preserving full source traceability. Compound indexes are maintained on frequently-queried fields (timestamp, sector) to support the 48-hour candidacy window lookup at low latency.
 
-### 4.5 Database Design & Entity Attribute Formalization
+### 4.6 Interface Design
+The frontend presents synthesized events through a categorized dashboard with sector filtering and search, alongside an operator-facing console for monitoring the distribution queue and manually triggering ingestion or broadcast actions. Interface visual design is not further detailed here, as it is not the subject of this paper's evaluation.
 
-NISE utilizes MongoDB Atlas with two primary document collections. Table IV-B formalizes the entity attributes, data types, indexing strategies, and database constraints.
+### 4.7 API and Communication Design
 
-**TABLE IV-B: DATABASE ENTITY ATTRIBUTE FORMALIZATION**
-| Collection Entity | Attribute Name | Data Type | Index / Constraint | Functional Description |
-| :--- | :--- | :--- | :--- | :--- |
-| **Article** | `_id` | ObjectId | Primary Key | Unique document identifier |
-| | `title` | String | Required | Headline text extracted from RSS feed |
-| | `link` | String | Unique Index | Canonical URL link to raw source article |
-| | `url_hash` | String | B-Tree Index | 32-char hexadecimal MD5 title digest (Eq. 1) |
-| | `source` | String | Indexed | Publisher domain name (e.g., reuters.com) |
-| | `pubDate` | Date | B-Tree Index | Publication timestamp |
-| | `category` | String | Indexed | Monitored sector taxonomy label (1 of 14) |
-| **Event** | `_id` | ObjectId | Primary Key | Unique event cluster node identifier |
-| | `title` | String | Required | Canonical fused event title headline |
-| | `summary` | String | Required | Fused 150-word objective editorial summary |
-| | `source_articles` | Array[ObjectId] | Foreign Keys | Array of linked source `Article` IDs |
-| | `stances` | Array[Object] | Structured | Array of publisher stances & framing labels |
-| | `divergence_score` | Number (Float) | Range $[0, 100]$ | Quantitative publisher divergence $D$ (Eq. 10) |
-| | `confidence_score` | Number (Float) | Range $[35, 90]$ | Corroboration confidence metric $C(N)$ (Eq. 9) |
-| | `factuality_verified`| Boolean | Flag | Verification status from reflection loop |
-| | `broadcast_status` | String (Enum) | Index | State (`pending`, `broadcasted`, `failed`) |
-| | `scheduled_time` | Date | Scheduled | Staggered broadcast dispatch timestamp |
-| | `retry_count` | Number (Int) | Counter | Webhook retry attempt counter ($\le 3$) |
-| | `first_reported` | Date | B-Tree Index | Initial event detection timestamp |
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/articles` | GET | Retrieve articles, optional sector filter |
+| `/api/events` | GET | Retrieve clustered events, optional sector filter |
+| `/api/events/:id` | GET | Retrieve a single event with populated source articles |
+| `/api/social/queue` | GET | Retrieve distribution queue with status filtering |
+| `/api/social/trigger-scrape` | POST | Manually trigger ingestion outside the scheduled cron |
+| `/api/social/broadcast/:id` | POST | Manually dispatch a specific queued event |
+| `/api/health` | GET | Basic connectivity check |
+| `/api/health/metrics` | GET | Memory, uptime, and cache telemetry |
 
-### 4.6 User Interface & Interactive Telemetry Dashboard
+Communication between backend and external distribution channels uses standardized HTTP POST payloads to a configurable webhook URL, rather than direct platform-specific API integration — a deliberate architectural choice allowing the operator to route output to any Make.com, Zapier, or n8n-compatible destination without code changes.
 
-The frontend provides an interactive situational awareness dashboard enabling human operators to inspect clustered events, analyze corroboration confidence metrics $C(N)$ as defined in Equation (9), examine publisher stances and stance divergence $D$ as defined in Equation (10), and monitor automated syndication workflows in real time:
+### 4.8 Deployment
+Ingestion runs on a weekly `node-cron` schedule (`0 8 * * 1`), and the recirculation engine on a daily schedule (`0 12 * * *`), both wrapped in try/catch handlers that log failures without terminating the server process. A `/ping` endpoint supports external uptime monitoring on free-tier cloud hosts. Environment configuration (database URI, API keys) is validated at process startup, with the server refusing to start if required variables are absent.
 
-1. **3D Spatial Visualization Scene:** Employs WebGL-based 3D particle rendering with custom post-processing shaders (`Bloom`, `Glitch`) to project active global news clusters into an interactive 3D spatial space, enhancing situational awareness for monitoring operator teams.
-2. **Modular Dashboard Telemetry Visualizers:** Displays clustered dispatch cards with key takeaways, dynamic radar scanning meters illustrating confidence metrics ($35\%, 65\%, 90\%$), stance distribution pills (`Supporting`, `Contradicting`, `Neutral`), and factuality audit badges.
-3. **Autonomous Command Dashboard:** Provides an interactive post preview mockup, dispatch queue status filters (`All`, `Pending`, `Broadcasted`, `Failed`), manual broadcast overrides, and sector trigger controls.
+### 4.9 Engineering Challenges
 
-### 4.7 REST API Service Interface Design
+**Challenge 1 — Database Connectivity:** SRV-based MongoDB connection strings failed with `ECONNREFUSED` under a restrictive local network configuration, despite correct Atlas network-access settings. *Solution:* switched to a non-SRV connection string listing replica set members directly. *Outcome:* reliable connectivity independent of DNS SRV record resolution.
 
-The backend exposes a structured RESTful API interface for client telemetry and external automation integration, detailed in Table IV-C.
+**Challenge 2 — Third-Party Inference API Instability:** The initial image-generation provider (Hugging Face's hosted inference API) underwent undocumented routing changes, returning inconsistent model-availability errors. *Solution:* migrated to a keyless, URL-based generation service (Pollinations.ai) requiring no API key management. *Outcome:* eliminated a recurring source of pipeline failure with no loss of functionality.
 
-**TABLE IV-C: SYSTEM REST API ENDPOINTS**
-| HTTP Method | Route Endpoint | Primary Parameters | Operational Function |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/events` | `category`, `limit` | Returns paginated list of clustered news events |
-| `GET` | `/api/events/:id` | `id` (Event ObjectId) | Returns full event details, stance breakdown, and reflection logs |
-| `POST` | `/api/social/broadcast` | `eventId`, `force` (Boolean) | Triggers immediate webhook broadcast override |
-| `GET` | `/api/social/test` | None | Dispatches a diagnostic test payload to Make.com webhook |
-| `POST` | `/api/social/toggle-auto` | `enabled` (Boolean) | Toggles autonomous social broadcast engine state |
-| `POST` | `/api/social/trigger-scrape` | `sector` | Triggers manual ingestion cycle for specified sector |
-| `GET` | `/api/health` | None | Exposes system uptime, DB connection, memory, and queue status |
+**Challenge 3 — Server-Side Bot Protection:** Server-side image retrieval began returning `403 Forbidden` responses due to Cloudflare bot-detection rules. *Solution:* shifted image loading responsibility to the client browser, which is not subject to the same automated-traffic filtering. *Outcome:* restored reliable image display without violating the provider's intended usage pattern.
 
-### 4.8 Deployment Considerations & Operational Stability
+**Challenge 4 — LLM Provider Rate Limits:** The initial LLM provider's free-tier daily quota (20 requests/day) was insufficient for iterative development and evaluation. *Solution:* migrated text synthesis and event verification to an open-weight model served on dedicated inference hardware. *Outcome:* eliminated the daily quota constraint, at the cost of a documented recall regression requiring subsequent prompt re-tuning (Section 3.3, and the empirical case study in Section 5.x).
 
-NISE is hardened for continuous production operations:
-* **Graceful Server Shutdown:** Intercepts `SIGTERM` and `SIGINT` signals, closing active MongoDB pool connections and background cron workers cleanly without data corruption.
-* **In-Memory LRU Query Cache:** Wraps read-heavy endpoints (`GET /api/events`) with a 30-second TTL LRU in-memory cache, reducing MongoDB query pressure under heavy concurrent client traffic.
-* **Sliding-Window Rate Limiting:** Limits client API requests to 100 calls per 15-minute window per IP to prevent denial-of-service vectors.
-* **Health & Telemetry Endpoint:** Exposes system uptime, database connection status, memory consumption, active job health, and queue depth metrics (`GET /api/health`).
+**Challenge 5 — Latent Runtime Defects:** A module-scope variable and a required standard-library import were both omitted from the ingestion engine, causing every batch run to fail silently until surfaced through direct code inspection. *Solution:* the missing import and variable declaration were added and independently verified via static syntax checking. *Outcome:* restored correct pipeline execution; this incident directly motivated the verification discipline applied throughout this paper's empirical claims.
 
-### 4.9 Practical Implementation Challenges & Engineering Solutions
-
-#### Challenge 1: LLM API Rate Limits & Financial Overhead
-* *Issue:* Exhaustive pairwise LLM calls across continuously ingested RSS feeds cause rate-limit bottlenecks and high API billing.
-* *Solution:* Implemented Stage 1 fast-path pre-filtering (Jaccard + 3-gram Cosine + EFSA), reducing LLM API calls by **75.56% to 77.78%** in production while maintaining clustering accuracy.
-
-#### Challenge 2: Journalist Periphrasis & Brand Metonymy
-* *Issue:* Lexical filters fail on headline pairs with zero token overlap (e.g. *"Spanish giants"* for Real Madrid, *"Musk's EV giant"* for Tesla).
-* *Solution:* Conducted an empirical error breakdown on failing pairs and evaluated a local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`), recovering recall from **35.29% to 76.47%**.
-
-#### Challenge 3: AI Hallucinations in Fused Summaries
-* *Issue:* Single-pass LLM summaries occasionally hallucinated unverified numbers or entity names.
-* *Solution:* Built a 2-pass self-reflecting factuality reflection loop (`verifyFactualityAndReflect`), auditing summaries against raw source text and executing automatic self-correcting passes prior to database storage.
-
-### 4.10 Implementation Summary
-The implemented system operationalizes the proposed methodology and demonstrates its feasibility under real-world deployment conditions. The following section evaluates the effectiveness of the proposed framework through quantitative experiments, ablation studies, and computational cost analysis.
+### 4.10 Summary
+The implemented system realizes the methodology of Section III as a modular, independently-deployable pipeline, with each engineering challenge encountered during development addressed through a documented, verifiable resolution rather than a workaround left unexamined.
 
 ---
 
