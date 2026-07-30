@@ -290,26 +290,173 @@ To maintain feed engagement during low wire activity, `recirculateEvergreenArtic
 
 ---
 
-## IV. FRONTEND INTERFACE & 3D GRAPHICS ARCHITECTURE
+## IV. SYSTEM IMPLEMENTATION & ENGINEERING REALIZATION
 
-### 4.1 3D Cosmic Glassmorphism Hero Scene
-The frontend is built on React 19, Vite 8, and TailwindCSS v4. The main entry screen features a WebGL 3D hero scene powered by `@react-three/fiber` (R3F) and `@react-three/drei`.
+### 4.1 Implementation Overview
+The proposed NISE framework was implemented as a production-grade prototype system integrating Node.js microservices, cloud database clusters, neural hardware acceleration endpoints, and modern WebGL interactive dashboards. The implementation follows the 5-layer architecture presented in Section III and demonstrates the practical software realization of the proposed multi-evidence event clustering, factuality verification, and autonomous social distribution pipeline.
 
-* **3D Geometry & Materials:** Features floating glass monolith panels, iridescent double rings, and TorusKnots rendered with `MeshReflectorMaterial` for realistic ground reflections and dynamic mouse parallax tracking.
-* **Post-Processing Shaders:** `@react-three/postprocessing` pipeline applies `Bloom` (threshold = 0.8, intensity = 1.2), `Glitch` (controlled glitch modes during data triggers), `ChromaticAberration`, and subtle film `Noise`.
+### 4.2 Development Environment & System Hardware
+Table IV-A details the complete software stack, development framework, and server hardware specifications utilized to build, deploy, and benchmark NISE.
 
-### 4.2 Bento Grid & Interactive Telemetry Components
-The UI incorporates a Bento-grid dashboard layout:
-* `BentoCard.jsx`: Displays editorial dispatches with interactive takeaway parsers and sector color tokens.
-* `SignalMeter.jsx` & `OrbitSignal.jsx`: Visual radar scanning animations displaying confidence metrics ($35\%, 65\%, 90\%$).
-* `StanceBreakdown.jsx`: Displays publisher stance distribution pills (`Supporting`, `Contradicting`, `Neutral`), framing labels, and factuality verification badges.
-* `CustomCursor.jsx`: Lagging dual-ring Framer Motion custom cursor tracking mouse coordinates.
+**TABLE IV-A: DEVELOPMENT ENVIRONMENT & HARDWARE SPECIFICATIONS**
+| Component Layer | Technology / Tool | Version / Model Specification | Purpose in NISE |
+| :--- | :--- | :--- | :--- |
+| **Operating System** | Windows 11 / Linux (Ubuntu 22.04 LTS) | 64-Bit x86_64 Architecture | Primary host runtime OS |
+| **Backend Language** | Node.js | v20.11.0 LTS (JavaScript ES2023) | Asynchronous I/O event loop |
+| **Web Framework** | Express.js | v4.18.2 | RESTful API routing middleware |
+| **Database** | MongoDB Atlas Cloud | v7.0 Enterprise Community | Document persistence store |
+| **Neural LLM Hardware** | Groq LPU (Language Processing Unit) | Groq LPU Card Architecture | High-throughput AI inference |
+| **Neural Model** | Meta Llama 3 | `llama-3.1-8b-instant` (8B Open Weight) | Zero-shot verification & synthesis |
+| **Image Generation AI** | Pollinations.ai FLUX | FLUX Realism (`&model=flux-realism`) | Keyless prompt-encoded photo generator |
+| **Frontend Framework** | React 19 / Vite 8 | React v19.0.0, Vite v8.1.0 | Single-page application UI |
+| **3D Graphics Engine** | Three.js / `@react-three/fiber` | Three.js r160, R3F v8.15.0 | WebGL glassmorphism hero scene |
+| **Styling System** | Vanilla CSS / TailwindCSS | TailwindCSS v4.0.0 | Responsive design system |
+| **Distribution Webhook** | Make.com Custom Webhook | HTTP POST Receiver Endpoint | Automated Facebook Page publishing |
+| **Host Hardware** | Intel Core i7-13700H CPU, 16 GB DDR5 | 14 Cores / 20 Threads @ 5.0 GHz | Local server & benchmark hardware |
 
-### 4.3 Social Studio Command Center (`/studio`)
-The Social Studio provides a command dashboard for operators:
-* **Interactive 3D iPhone 15 Pro Mockup:** Renders live mobile post previews with interactive like toggles, full captions, and hashtag pills.
-* **Queue Telemetry:** Filters dispatch queue items by status (`All`, `Pending`, `Broadcasted`, `Failed`), showing dispatch timestamps and failure logs.
-* **Manual Override Controls:** Enables one-click manual broadcasts (`🚀 BROADCAST TO FACEBOOK NOW`) passing `{ force: true }`, instant webhook tests (`GET /api/social/test`), auto-robot mode toggles (`/api/social/toggle-auto`), and 14-sector manual scrapes (`/api/social/trigger-scrape`).
+### 4.3 Software Architecture & Module Organization
+The software architecture is modularized into three decoupled layers: backend cron jobs, analytical engine utilities, and frontend telemetry visualizers:
+
+```text
+e:\ai-news-aggregator/
+├── backend/
+│   ├── jobs/               # Background Cron & Orchestration Jobs
+│   │   ├── rssFetcher.js   # 15-Minute RSS Poller & Feed Parser
+│   │   ├── eventEngine.js  # Main Event Matching & LLM Verification
+│   │   └── recirculateEngine.js # Daily ICYMI Evergreen Recirculation
+│   ├── utils/              # Algorithmic & Mathematical Modules
+│   │   ├── textSimilarity.js# Canonical Jaccard IoU & 3-Gram Cosine
+│   │   ├── efsaEngine.js   # Algorithm 1: EFSA Multi-Evidence Fusion
+│   │   ├── dpcsEngine.js   # Algorithm 2: DPCS Online Credibility Model
+│   │   ├── imageGenerator.js# Hybrid Press Photo & FLUX AI Pipeline
+│   │   ├── socialPublisher.js# Webhook Formatting & Drip Queueing
+│   │   └── cache.js        # 30-Second In-Memory LRU Query Cache
+│   ├── models/             # Database Document Schemas
+│   │   ├── Article.js      # Raw Article Document Schema (with url_hash)
+│   │   └── Event.js        # Clustered Event Node Document Schema
+│   └── server.js           # Server Initialization & Graceful Shutdown
+└── frontend/               # Single-Page Application Interface
+    ├── src/components/
+    │   ├── Hero3D/         # Three.js 3D WebGL Particle Glass Scene
+    │   ├── BentoCard.jsx   # Interactive Dispatch Cards
+    │   ├── SignalMeter.jsx # Confidence Scanning Radar Animation
+    │   └── StanceBreakdown.jsx # Publisher Stance Distribution Pills
+    └── src/pages/SocialStudio.jsx # Autonomous Command Dashboard
+```
+
+### 4.4 Module-by-Module Technical Realization
+
+#### 1. Data Ingestion & Deduplication Module (`rssFetcher.js`, `rssParser.js`)
+* **Purpose:** Regularly ingests dispatches from 21 RSS wire feeds across 14 news sectors while eliminating duplicate entries prior to storage.
+* **Input:** Raw XML feeds from external news providers (Reuters, AP, BBC, CNN, TechCrunch, Bloomberg).
+* **Processing:** Uses `rss-parser` to parse XML nodes. Extracts `title`, `link`, `content`, `pubDate`, and `category`. Computes `title_hash = MD5(title)`. Executes MongoDB lookup `Article.findOne({ url_hash })`.
+* **Output:** Saved clean `Article` MongoDB document or immediate duplicate discard.
+
+#### 2. Algorithmic Candidate Gating Module (`efsaEngine.js`, `dpcsEngine.js`, `textSimilarity.js`)
+* **Purpose:** Performs fast-path pre-filtering in $<0.20\text{ ms}$ per candidate pair to reduce expensive LLM API invocations.
+* **Input:** Incoming `Article` document and active candidate `Event` nodes created within the last 48 hours.
+* **Processing:** Computes unigram Jaccard IoU ($S_{\text{key}}$), character 3-gram cosine ($S_{\text{head}}$), named entity overlap ($S_{\text{ent}}$), time decay ($S_{\text{temp}}$), and sector match ($S_{\text{sec}}$) via `computeEfsaScore()`. Fetches publisher trust $C_{\text{pub}}$ via `getPublisherCredibilityScore()`.
+* **Output:** Boolean gate decision (`true` to advance candidate to Stage 2 LLM verification, `false` to reject and spawn a new event node).
+
+#### 3. Neural AI Synthesis Module (`eventEngine.js`, Groq SDK)
+* **Purpose:** Verifies event equivalence and synthesizes 150-word editorial dispatches, captions, hashtags, and photo prompts.
+* **Input:** Candidate headline pairs or merged source article texts.
+* **Processing:** Issues zero-shot JSON-mode prompt calls to `llama-3.1-8b-instant` via the Groq SDK (`groq.chat.completions.create()`) under temperature $T=0.1$.
+* **Output:** Structured JSON object containing `same_event` verdict, 150-word neutral summary, social media caption, viral hashtags, and Reuters-style photo prompt.
+
+#### 4. Factuality Guardrail Module (`verifyFactualityAndReflect`)
+* **Purpose:** Audits synthesized summaries against raw source text to detect and eliminate AI hallucinations.
+* **Input:** Fused summary string and raw source article snippets.
+* **Processing:** Executes a two-pass audit-then-regenerate loop. Pass 1 audits text for fabricated stats, unsupported entities, or speculative claims. Pass 2 injects corrective feedback into a self-critique prompt if Pass 1 fails.
+* **Output:** Verified summary string with `factuality_verified = true` badge and audit logs saved in `reflection_logs`.
+
+#### 5. Hybrid Photojournalism Module (`imageGenerator.js`)
+* **Purpose:** Acquires a high-resolution visual header for every synthesized event dispatch.
+* **Input:** RSS XML enclosure metadata or Groq-generated 35mm photo prompt string.
+* **Processing:** Parses native RSS `<enclosure>` or `<media:content>` tags first. If absent, constructs a keyless, prompt-encoded URL pointing to `pollinations.ai` with model parameter `flux-realism`.
+* **Output:** Image URL attached to `event.image_url` with client-side browser fetch delegation and Unsplash `onError` fallback handlers.
+
+#### 6. Autonomous Webhook Syndication Module (`socialPublisher.js`, `socialBroadcast.js`)
+* **Purpose:** Formats and broadcasts breaking news stories to live social channels with zero human intervention.
+* **Input:** Persisted `Event` document with summary, image URL, and hashtags.
+* **Processing:** Formats dual-structure JSON payload. Assigns 1-hour staggered timestamp. Checks idempotency lock (`broadcast_status === 'pending'`). Issues HTTP POST request to Make.com Webhook endpoint. Applies exponential backoff retry logic (up to 3 retries at 15-minute intervals).
+* **Output:** Live published story on Facebook Page wall and updated `broadcast_status = 'broadcasted'`.
+
+### 4.5 Database Design & Schema Formalization
+
+NISE utilizes MongoDB Atlas with two primary document collections:
+
+#### Collection 1: `articles` Schema
+```javascript
+const ArticleSchema = new Schema({
+  title: { type: String, required: true },
+  link: { type: String, required: true, unique: true },
+  url_hash: { type: String, required: true, index: true },
+  source: { type: String, required: true },
+  pubDate: { type: Date, default: Date.now },
+  category: { type: String, default: 'General' },
+  content: { type: String },
+  processed: { type: Boolean, default: false }
+});
+```
+
+#### Collection 2: `events` Schema
+```javascript
+const EventSchema = new Schema({
+  title: { type: String, required: true },
+  summary: { type: String, required: true },
+  category: { type: String, required: true },
+  source_articles: [{ type: Schema.Types.ObjectId, ref: 'Article' }],
+  stances: [{
+    publisher: String,
+    stance: { type: String, enum: ['Supporting', 'Contradicting', 'Neutral'] },
+    framing: String
+  }],
+  divergence_score: { type: Number, default: 0.0 },
+  confidence_score: { type: Number, default: 35.0 },
+  image_url: { type: String },
+  factuality_verified: { type: Boolean, default: false },
+  reflection_logs: [Schema.Types.Mixed],
+  broadcast_status: { type: String, enum: ['pending', 'broadcasted', 'failed'], default: 'pending' },
+  scheduled_broadcast_time: { type: Date },
+  retry_count: { type: Number, default: 0 },
+  is_recirculated: { type: Boolean, default: false },
+  first_reported: { type: Date, default: Date.now }
+});
+```
+
+### 4.6 User Interface & Interactive Dashboard Architecture
+
+The system features a dual-interface frontend built on React 19 and Three.js:
+
+1. **3D Cosmic Glassmorphism Hero Scene (`Hero3DCanvas.jsx`):** Renders a WebGL 3D particle hero scene powered by `@react-three/fiber` (R3F) and `@react-three/drei`. Employs `MeshReflectorMaterial` for realistic ground reflections, dynamic mouse parallax tracking, and post-processing shaders (`Bloom`, `Glitch`, `ChromaticAberration`, `Noise`).
+2. **Bento Grid Telemetry Components:** Includes `BentoCard.jsx` (dispatch view with takeaway parsers), `SignalMeter.jsx` / `OrbitSignal.jsx` (radar confidence scanning animations for $35\%, 65\%, 90\%$), and `StanceBreakdown.jsx` (publisher stance distribution pills).
+3. **Social Studio Command Center (`/studio`):** Renders an interactive 3D iPhone 15 Pro mobile post preview mockup, dispatch queue status filters (`All`, `Pending`, `Broadcasted`, `Failed`), and manual override trigger buttons (`🚀 BROADCAST TO FACEBOOK NOW`, `/api/social/test`).
+
+### 4.7 Deployment Architecture & Production Hardening
+
+NISE is hardened for continuous server operations:
+* **Graceful Server Shutdown (`server.js`):** Intercepts `SIGTERM` and `SIGINT` signals, closing active MongoDB pool connections and background cron workers cleanly without data corruption.
+* **In-Memory LRU Cache (`cache.js`):** Wraps read-heavy endpoints (`GET /api/events`) with a 30-second TTL LRU in-memory cache, reducing MongoDB query pressure under heavy concurrent client traffic.
+* **Sliding-Window Rate Limiting (`express-rate-limit`):** Limits client API requests to 100 calls per 15-minute window per IP to prevent denial-of-service vectors.
+* **Health & Telemetry Endpoint (`GET /api/health`):** Exposes system uptime, database connection status, memory consumption, active job health, and queue depth metrics for monitoring tools.
+
+### 4.8 Practical Implementation Challenges & Engineering Solutions
+
+#### Challenge 1: LLM API Rate Limits & Financial Overhead
+* *Issue:* Exhaustive pairwise LLM calls across continuously ingested RSS feeds cause rate-limit bottlenecks and high API billing.
+* *Solution:* Implemented Stage 1 fast-path pre-filtering (Jaccard + 3-gram Cosine + EFSA), reducing LLM API calls by **75.56% to 77.78%** in production while maintaining clustering accuracy.
+
+#### Challenge 2: Journalist Periphrasis & Brand Metonymy
+* *Issue:* Lexical filters fail on headline pairs with zero token overlap (e.g. *"Spanish giants"* for Real Madrid, *"Musk's EV giant"* for Tesla).
+* *Solution:* Conducted an empirical error breakdown on failing pairs and evaluated a local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`), recovering recall from **35.29% to 76.47%**.
+
+#### Challenge 3: AI Hallucinations in Fused Summaries
+* *Issue:* Single-pass LLM summaries occasionally hallucinated unverified numbers or entity names.
+* *Solution:* Built a 2-pass self-reflecting factuality reflection loop (`verifyFactualityAndReflect`), auditing summaries against raw source text and executing automatic self-correcting passes prior to database storage.
+
+### 4.9 Implementation Summary
+The implementation successfully realizes the proposed NISE methodology using modern software microservices, cloud databases, LPU hardware acceleration, and 3D WebGL interfaces. The completed system provides the production basis for the comprehensive empirical evaluation presented in Section V.
 
 ---
 
