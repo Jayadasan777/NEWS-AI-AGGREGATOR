@@ -383,7 +383,7 @@ To quantify the individual contribution of each evidence dimension in EFSA, we e
 
 ---
 
-### 5.4 Complexity Analysis & Computational Overhead
+### 5.4 Algorithmic Complexity & Measured Latency
 
 **TABLE IV: ALGORITHMIC COMPLEXITY COMPARISON**
 | Algorithm / System | Time Complexity | Space Complexity | Incremental Update Cost |
@@ -395,25 +395,7 @@ To quantify the individual contribution of each evidence dimension in EFSA, we e
 
 *where $N$ is total articles, $K \ll N$ is candidate articles in 48h temporal window, $W$ is token set size, $E$ is entity set size, and $P$ is active wire publisher count ($P \approx 21$).*
 
----
-
-## VI. THREATS TO VALIDITY & NOVELTY DEFENSE
-
-### 6.1 Threats to Validity
-1. **Internal Validity:** Potential bias in manual ground-truth annotation was mitigated by evaluating objective real-world wire pairs from independent news agencies (Reuters, AP, Bloomberg, BBC).
-2. **External Validity:** Wire headlines outside the 14 monitored sectors (e.g. hyper-local niche blogging) may exhibit different lexical distributions. However, coverage spans major global journalistic domains.
-3. **Construct Validity:** Benchmark metrics evaluate pairwise clustering decisions against ground truth. Full event graph topologies depend on temporal windowing ($48$ hours).
-
-### 6.2 Novelty Defense & Scientific Contribution
-Unlike prior systems relying either on static lexical heuristics (Jaccard/TF-IDF) or brute-force LLM inference, **EFSA** formalizes a multi-dimensional evidence fusion space combining sub-word n-gram cosine, named entity extraction, exponential time decay, and domain matching. Concurrently, **DPCS** introduces an online self-learning publisher trust model using EMA smoothing. Together, EFSA and DPCS deliver a publication-grade, mathematically rigorous, low-latency, and cost-effective news intelligence pipeline suitable for IEEE publication.
-
----
-
-## VII. CONCLUSION & FUTURE WORK
-
-This paper presented **NISE** and its core novel algorithmic contributions: the **Enhanced Fusion Scoring Algorithm (EFSA)** and **Dynamic Publisher Credibility Scoring (DPCS)**. Experimental evaluation on $N=45$ real-world wire headlines demonstrates that EFSA + DPCS achieves **73.33% Accuracy** and **50.00% F1-Score** while saving **77.78% of LLM API calls** (reducing LLM invocations to 10 of 45 pairs). Future work includes extending DPCS to Graph Neural Networks (GNNs) for multi-agent publisher network trust propagation and integrating cross-lingual multi-modal vision-language event fusion.
-
-### 5.4 Measured Latency & Throughput Benchmark
+#### Measured Latency & Throughput Benchmark
 To replace unverified estimations, execution latency was empirically measured across **20 real synthesis calls** to `synthesizeWithGroq()` using actual wire headlines (`backend/jobs/evaluation/latency-benchmark-results.json`):
 
 * **Minimum Latency:** $1,017.17\text{ ms}$ ($1.02\text{ s}$)
@@ -428,9 +410,9 @@ To replace unverified estimations, execution latency was empirically measured ac
 ### 5.5 Gate Failure Diagnosis and Recovery
 
 #### Empirical Failure Diagnosis (All 11 Failing `SAME` Pairs)
-To investigate the root cause of the $35.29\%$ recall baseline in the production system, we executed a full diagnostic audit (`diagnoseGateFailures.js`). Out of 17 `SAME`-labeled ground-truth pairs, 11 failed the Stage 1 pre-filter ($(J < 0.12) \land (\cos < 0.25)$). Table III presents the complete breakdown.
+To investigate the root cause of the $35.29\%$ recall baseline in the production system, we executed a full diagnostic audit (`diagnoseGateFailures.js`). Out of 17 `SAME`-labeled ground-truth pairs, 11 failed the Stage 1 pre-filter ($(J < 0.12) \land (\cos < 0.25)$). Table V presents the complete breakdown.
 
-**TABLE III: STAGE 1 GATE FAILURE DIAGNOSIS (11 FAILING `SAME` PAIRS)**
+**TABLE V: STAGE 1 GATE FAILURE DIAGNOSIS (11 FAILING `SAME` PAIRS)**
 
 | # | Headline A | Headline B | Jaccard Score (vs 0.12) | Char Cosine (vs 0.25) | Diagnostic Failure Category |
 | :--- | :--- | :--- | :---: | :---: | :--- |
@@ -464,7 +446,7 @@ As detailed in Table II, setting $T_{\text{sem}} = 0.40$ recovers recall from **
 
 ## VI. THREATS TO VALIDITY
 
-Before concluding, we explicitly document five methodological and operational threats to validity:
+Before concluding, we explicitly document six methodological and operational threats to validity:
 
 1. **Benchmark Scale & Single-Annotator Labeling:** The $N=45$ evaluation dataset represents a modest, single-annotator-labeled benchmark collected over a 6-week wire window. Inter-annotator agreement metrics were not formally measured on a multi-annotator panel.
 2. **Evaluation Scale vs. Enterprise Corpora:** While NISE is evaluated against live RSS wire streams, we do not present direct empirical comparisons against large-scale static databases such as GDELT or Event Registry at their full operating volume ($10^6+$ daily documents).
