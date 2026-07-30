@@ -72,7 +72,7 @@ This paper presents the formal mathematical design, implementation, and empirica
 ## II. RELATED WORK & SYSTEM COMPARISON
 
 ### 2.1 Lexical & Vector-Based Text Clustering
-Early news deduplication and event detection relied on TF-IDF vector space representations (Salton & Buckley [1]), unigram Jaccard Indexing [2], Twitter event discovery surveys (Atefeh & Khreich [13]), and MinHash N-gram Jaccard techniques (Nantasenamat et al. [18]). While computationally lightweight ($\mathcal{O}(N)$ token set intersection), these approaches fail when headline phrasing diverges.
+Early news deduplication and event detection relied on TF-IDF vector space representations (Salton & Buckley [1]), unigram Jaccard Indexing [2], Twitter event discovery surveys (Atefeh & Khreich [13]), and MinHash N-gram Jaccard techniques. While computationally lightweight ($\mathcal{O}(N)$ token set intersection), these approaches fail when headline phrasing diverges.
 
 Modern semantic frameworks (Reimers & Gurevych's Sentence-BERT [3]) map text to 768-dimensional dense vectors. Recent studies employ UMAP dimensionality reduction [4] and HDBSCAN density clustering [5]. However, HDBSCAN requires substantial memory and GPU compute, creating deployment barriers for standard production environments.
 
@@ -83,7 +83,7 @@ LLM-assisted news event discovery and clustering represents an active research d
 - **Nakshatri et al. (EMNLP 2023) [7]** proposed temporal-guided news stream clustering with LLM summaries, demonstrating a near-identical temporal clustering and LLM summarization framework for key event discovery. Our system extends this methodology by evaluating how a lightweight two-stage lexical pre-filter reduces LLM call overhead by 75.56% prior to LLM verification.
 - **ACL 2025 Event-Centric Summarization [8]** explored multilingual event-cluster summarization. Our work explores deployment feasibility using a lightweight 8B-parameter open-weight model (`llama-3.1-8b-instant`) rather than larger proprietary LLMs.
 - **Fan et al. (2019) [9]** introduced BASIL (Bias Annotation Spans on the Informational Level) for media bias and stance analysis. Our stance-detection component utilizes zero-shot LLM classification rather than a trained or validated classifier benchmarked on BASIL, which we explicitly note as a system limitation.
-- **Saha et al. (2025) [19]** presented an AI chatbot for real-time news delivery. While effective for conversational Q&A, NISE differs by focusing on automated multi-source event clustering, stance quantification, and automated multi-channel social media distribution rather than an interactive chatbot interface.
+- **Sufi (2025) [18]** presented an AI chatbot for real-time news delivery. While effective for conversational Q&A, NISE differs by focusing on automated multi-source event clustering, stance quantification, and automated multi-channel social media distribution rather than an interactive chatbot interface.
 
 **System Differentiation:**
 While prior works explore individual components of neural clustering or summarization, NISE adds three distinct operational contributions: (a) a lightweight two-stage lexical pre-filter cutting LLM calls by 75.56% before verification; (b) complete deployment feasibility on an 8B open-weight model running on low-power LPU hardware; and (c) a fully deployed end-to-end pipeline including autonomous multi-channel distribution via configurable webhooks, which none of the cited works implement or evaluate.
@@ -252,7 +252,7 @@ This two-pass audit-then-regenerate feedback design draws on the Reflexion parad
 ---
 
 ### 3.8 Autonomous Webhook Broadcasting & Self-Healing Engine
-`socialBroadcast.js` dispatches standardized JSON payloads (`event: 'NEW_ARTICLE_BROADCAST'`) to external automation receivers (Make.com, Zapier, n8n, Discord, Telegram), implementing a production-grade webhook syndication pattern (Kumar et al. [21]).
+`socialBroadcast.js` dispatches standardized JSON payloads (`event: 'NEW_ARTICLE_BROADCAST'`) to external automation receivers (Make.com, Zapier, n8n, Discord, Telegram), implementing a production-grade webhook syndication pattern for automated content delivery.
 
 **Payload Structure:** Contains both top-level flat fields (`photo_url`, `formatted_post`, `message`, `title`, `summary`, `caption`) and nested `article` objects to guarantee compatibility across all webhook modules.
 
@@ -488,7 +488,5 @@ This paper presented **NISE** alongside two novel algorithmic contributions: the
 15. Meta AI Research, "Llama 3 Model Card," Meta AI, 2024.
 16. Groq Inc., "Groq LPU Inference Engine Architecture Overview," Groq Technical Whitepaper, 2024.
 17. Pollinations.ai, "FLUX Realism Image Generation API Documentation," 2024.
-18. C. Nantasenamat et al., "Near-Duplicate Text Detection using N-gram Jaccard with MinHashing," *IEEE Access*, vol. 11, pp. 45120–45132, 2023.
-19. A. Saha et al., "Just-in-Time News: An AI Chatbot for the Modern Information Age," *MDPI Information*, vol. 16, no. 3, p. 209, 2025.
-20. C. D. Manning, P. Raghavan, and H. Schütze, *Introduction to Information Retrieval*, Cambridge University Press, 2008.
-21. R. Kumar et al., "Webhook-Based Automated Content Distribution for Digital Newsrooms," in *Proc. IEEE CCCI*, 2023, pp. 1–7.
+18. F. Sufi, "Just-in-Time News: An AI Chatbot for the Modern Information Age," *AI (MDPI)*, vol. 6, no. 2, article 22, 2025.
+19. C. D. Manning, P. Raghavan, and H. Schütze, *Introduction to Information Retrieval*, Cambridge University Press, 2008.
