@@ -62,10 +62,10 @@ This paper presents the formal mathematical design, implementation, and empirica
 3. **Lightweight Hybrid Two-Stage Pipeline:** Integrates EFSA as an intelligent multi-evidence gate preceding Stage 2 zero-shot neural verification (Llama 3 via Groq LPUs), reducing LLM API calls by **75.56%** in production while eliminating false positives.
 4. **Multi-Source Evidence Fusion & Stance Analysis:** Automatically synthesizes consolidated executive dispatches, calculates quantitative publisher stance divergence ($0\text{--}100\%$), and applies a two-pass factuality reflection guardrail loop (`verifyFactualityAndReflect`).
 5. **Production Hardening & Autonomous Syndication Engine:** Fully hardened architecture featuring graceful server shutdown, 30s TTL query caching, sliding-window rate limiting, health telemetry APIs, and automated Facebook Page wall webhooks.
-2. **Empirical Gate Failure Diagnosis & Local Semantic Extension:** We conduct a comprehensive error breakdown on the $N=45$ benchmark dataset, identifying that journalist periphrasis, brand metonymy, acronyms, and agency aliases account for 8 out of 11 gate misses (72.73%, Rows 4–11 of Table III), while the remaining 3 rows (1–3) involve high vocabulary divergence or numerical phrasing variation rather than naming/aliasing patterns. We evaluate an experimental local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`) that recovers recall from $35.29\%$ to $76.47\%$ ($88.89\%$ accuracy) at $53.33\%$ LLM call savings.
-3. **Dynamic Source Stance Detection & Divergence Quantification:** Evaluates multi-source article clusters, classifying each publisher's stance as `Supporting`, `Contradicting`, or `Neutral`, and computes a quantitative **Publisher Divergence Score** ($0\text{--}100\%$).
-4. **Iterative Hallucination Guardrail Reflection Loop (`verifyFactualityAndReflect`):** Cross-checks LLM fused summaries against raw wire snippets for fabricated statistics, unsupported entities, or ungrounded claims, executing automatic self-correcting passes prior to database storage.
-5. **Autonomous Smart-Queue & Self-Healing Webhook Syndication (`socialBroadcast.js`):** Formats universal dual-structure JSON payloads, enforces 1-hour staggered drip-feeding, and implements self-healing retry logic (up to 3 retries at 15-minute intervals) for zero-duplicate automated social broadcasting to configurable webhooks (e.g., Make.com), which can relay posts to social platforms such as Facebook or Instagram.
+6. **Empirical Gate Failure Diagnosis & Local Semantic Extension:** We conduct a comprehensive error breakdown on the $N=45$ benchmark dataset, identifying that journalist periphrasis, brand metonymy, acronyms, and agency aliases account for 8 out of 11 gate misses (72.73%, Rows 4–11 of Table III), while the remaining 3 rows (1–3) involve high vocabulary divergence or numerical phrasing variation rather than naming/aliasing patterns. We evaluate an experimental local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`) that recovers recall from $35.29\%$ to $76.47\%$ ($88.89\%$ accuracy) at $53.33\%$ LLM call savings.
+7. **Dynamic Source Stance Detection & Divergence Quantification:** Evaluates multi-source article clusters, classifying each publisher's stance as `Supporting`, `Contradicting`, or `Neutral`, and computes a quantitative **Publisher Divergence Score** ($0\text{--}100\%$).
+8. **Iterative Hallucination Guardrail Reflection Loop (`verifyFactualityAndReflect`):** Cross-checks LLM fused summaries against raw wire snippets for fabricated statistics, unsupported entities, or ungrounded claims, executing automatic self-correcting passes prior to database storage.
+9. **Autonomous Smart-Queue & Self-Healing Webhook Syndication (`socialBroadcast.js`):** Formats universal dual-structure JSON payloads, enforces 1-hour staggered drip-feeding, and implements self-healing retry logic (up to 3 retries at 15-minute intervals) for zero-duplicate automated social broadcasting to configurable webhooks (e.g., Make.com), which can relay posts to social platforms such as Facebook or Instagram.
 
 ---
 
@@ -78,7 +78,7 @@ Automated text deduplication has its roots in classical information retrieval. S
 To address the vocabulary-divergence limitation, subsequent work moved toward dense vector representations. Reimers and Gurevych's Sentence-BERT [3] fine-tunes BERT using a siamese/triplet network architecture to produce semantically meaningful sentence embeddings that can be compared via cosine similarity in linear time, a substantial improvement over BERT's original cross-encoder architecture, which scales quadratically with corpus size for pairwise comparison tasks. Clustering these embeddings typically employs dimensionality reduction — McInnes et al.'s UMAP [4] — followed by density-based clustering such as HDBSCAN [5], which does not require a pre-specified cluster count and handles clusters of varying density, both attractive properties for an open-ended stream of breaking news events. The strength of this approach is clear: it directly resolves the synonym-blindness of lexical methods. Its documented weakness, however, is infrastructural — embedding inference and the associated dimensionality-reduction/clustering pipeline typically assume batch or GPU-accelerated execution, an assumption incompatible with a lightweight, continuously-ingesting production system of the kind this paper targets. Our own experimental semantic gate (Section 5.5) partially bridges this gap by using a CPU-only, locally-executed compact embedding model rather than a full Sentence-BERT deployment, and we explicitly measure the resulting latency and accuracy trade-off rather than assuming GPU availability.
 
 ### 2.3 LLM-Enhanced Event Detection and Clustering
-The most direct antecedents to this work apply large language models to event-level clustering rather than sentence-level similarity alone. Tarekegn, Rabbi, and Tessem [6] presented an LLM-enhanced clustering pipeline evaluated over the GDELT news corpus, demonstrating that LLM-based semantic judgment improves cluster coherence over purely statistical baselines. However, GDELT is a pre-built, static, offline database of structured event codes — their evaluation does not address the challenges of a continuously-ingesting live RSS pipeline, nor does it characterize the computational cost of invoking an LLM at scale. Nakshatri et al. (EMNLP Findings 2023) [7] is the closest work to our own: they propose a temporal-guided news stream clustering framework that pairs candidate-window filtering with LLM-generated event summaries, a structure nearly identical to our own Stage 1 temporal windowing plus Stage 2 LLM verification. Critically, however, their work does not report or optimize for the number of LLM inference calls required — a central concern of this paper, which we address by measuring an explicit call-reduction percentage (Table II) and characterizing the full cost/accuracy Pareto frontier across five distinct pre-filtering strategies (Table II-B). A 2025 ACL study on event-centric cluster summarization [8] extends this line of work to multilingual settings using larger, typically proprietary LLMs; our work instead demonstrates feasibility using a smaller, open-weight 8-billion-parameter model (`llama-3.1-8b-instant`) served on dedicated LPU hardware, trading some accuracy ceiling for deployment cost and openness — a trade-off we characterize explicitly rather than assume.
+The most direct antecedents to this work apply large language models to event-level clustering rather than sentence-level similarity alone. Tarekegn, Rabbi, and Tessem [6] presented an LLM-enhanced clustering pipeline evaluated over the GDELT news corpus, demonstrating that LLM-based semantic judgment improves cluster coherence over purely statistical baselines. However, GDELT is a pre-built, static, offline database of structured event codes — their evaluation does not address the challenges of a continuously-ingesting live RSS pipeline, nor does it characterize the computational cost of invoking an LLM at scale. Nakshatri et al. (EMNLP Findings 2023) [7] is the closest work to our own: they propose a temporal-guided news stream clustering framework that pairs candidate-window filtering with LLM-generated event summaries, a structure nearly identical to our own Stage 1 temporal windowing plus Stage 2 LLM verification. Critically, however, their work does not report or optimize for the number of LLM inference calls required — a central concern of this paper, which we address by measuring an explicit call-reduction percentage (Table VI) and characterizing the full cost/accuracy Pareto frontier across five distinct pre-filtering strategies (Table VII). A 2025 ACL study on event-centric cluster summarization [8] extends this line of work to multilingual settings using larger, typically proprietary LLMs; our work instead demonstrates feasibility using a smaller, open-weight 8-billion-parameter model (`llama-3.1-8b-instant`) served on dedicated LPU hardware, trading some accuracy ceiling for deployment cost and openness — a trade-off we characterize explicitly rather than assume.
 
 ### 2.4 Multi-Evidence Fusion for Entity Resolution
 Our Enhanced Fusion Scoring Algorithm (EFSA), which combines five independent similarity signals into a single weighted score, draws on a longer tradition in the entity resolution and record linkage literature, where combining multiple similarity features to determine whether two records describe the same real-world entity is a well-studied problem (Christophides et al. [20]). That survey documents that weighted or learned fusion of multiple similarity signals routinely outperforms any single similarity metric in isolation — precisely the motivation for EFSA's five-signal design (lexical overlap, character n-gram similarity, named-entity overlap, temporal decay, and sector match) rather than relying on Jaccard or cosine similarity alone. Unlike the learned fusion weights common in that literature (typically fit via logistic regression or a trained classifier over labeled record pairs), EFSA uses fixed, empirically-tuned weights — a deliberate choice favoring interpretability and zero training-data dependency, at the cost of not adapting to distributional shift the way a learned model might. We characterize this trade-off directly through our threshold sensitivity sweep (Section 5.x), which shows performance varies substantially across operating points, consistent with the general finding in the entity-resolution literature that fusion weight selection materially affects outcome quality.
@@ -292,7 +292,7 @@ NISE is implemented as a decoupled client-server system realizing the methodolog
 
 ### 4.2 Development Environment
 
-**TABLE IV: DEVELOPMENT ENVIRONMENT & TECHNOLOGY STACK**
+**TABLE II: DEVELOPMENT ENVIRONMENT & TECHNOLOGY STACK**
 
 | Component | Technology | Justification |
 |---|---|---|
@@ -382,7 +382,7 @@ The frontend presents synthesized events through a categorized dashboard with se
 
 ### 4.7 REST API Design
 
-**TABLE V: SYSTEM REST API ENDPOINT SPECIFICATIONS**
+**TABLE III: SYSTEM REST API ENDPOINT SPECIFICATIONS**
 
 | Endpoint | Method | Description |
 |---|---|---|
@@ -416,7 +416,7 @@ Ingestion runs on a weekly node-cron schedule, and the recirculation engine on a
 
 ### 4.10 Implementation Validation
 
-**TABLE VI: SUBSYSTEM VALIDATION METRICS & METHODOLOGY**
+**TABLE IV: SUBSYSTEM VALIDATION METRICS & METHODOLOGY**
 
 | Module | Validation Method |
 |---|---|
@@ -442,9 +442,9 @@ To evaluate the event clustering engine's accuracy, a ground-truth dataset (`tes
 * **DIFFERENT Event Pairs:** 28 pairs describing distinct incidents within the same domain or involving the same entity.
 
 ### 5.2 Primary Evaluation Results: Production Baseline vs. EFSA & DPCS vs. LLM Ceiling
-Table I presents the notation table for mathematical formalizations in EFSA and DPCS. Table II presents the comparative evaluation across production baseline, EFSA multi-evidence gating, DPCS credibility alignment, and the LLM ceiling.
+Table V presents the notation table for mathematical formalizations in EFSA and DPCS. Table VI presents the comparative evaluation across production baseline, EFSA multi-evidence gating, DPCS credibility alignment, and the LLM ceiling.
 
-**TABLE I: MATHEMATICAL NOTATION REFERENCE**
+**TABLE V: MATHEMATICAL NOTATION REFERENCE**
 | Symbol | Definition | Domain / Constraint |
 | :--- | :--- | :--- |
 | $S_{\text{EFSA}}$ | Unified Event Fusion Score | $[0, 1]$, Threshold $\tau = 0.22$ |
@@ -459,7 +459,7 @@ Table I presents the notation table for mathematical formalizations in EFSA and 
 
 ---
 
-**TABLE II: BASELINE COMPARISON INCLUDING EFSA & DPCS ($N=45$)**
+**TABLE VI: BASELINE COMPARISON INCLUDING EFSA & DPCS ($N=45$)**
 | Strategy / System Configuration | Accuracy | Precision | Recall | F1-Score | MCC | LLM Calls | LLM Call Savings |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Traditional Lexical Jaccard** ($\tau_J = 0.12$) | 68.89% | 75.00% | 17.65% | 28.57% | 0.214 | 0 | 100.00% |
@@ -473,7 +473,7 @@ Table I presents the notation table for mathematical formalizations in EFSA and 
 
 ---
 
-**TABLE II-B: FULL COST/ACCURACY PARETO COMPARISON ACROSS ALL PROPOSED STRATEGIES**
+**TABLE VII: FULL COST/ACCURACY PARETO COMPARISON ACROSS ALL PROPOSED STRATEGIES**
 | Strategy | Accuracy | Recall | F1-Score | LLM Calls | Savings |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Production 2-Stage Baseline** | 73.33% | 35.29% | 50.00% | 11 | 75.56% |
@@ -484,14 +484,14 @@ Table I presents the notation table for mathematical formalizations in EFSA and 
 | **Semantic Gate** (`Xenova/all-MiniLM-L6-v2`, $T_{\text{sem}}=0.40$) | 88.89% | 76.47% | 83.87% | 21 | 53.33% |
 | **LLM-Only Ceiling** (upper bound, not deployed) | 97.78% | 100.00% | 97.14% | 45 | 0.00% |
 
-*Empirical Strategy Comparison:* As demonstrated in Table II-B, the experimental local semantic embedding gate (`Xenova/all-MiniLM-L6-v2` at $T_{\text{sem}}=0.40$) strictly dominates every EFSA operating point tested ($\tau = 0.15$ through $0.35$) across accuracy (88.89%), recall (76.47%), F1-score (83.87%), and LLM call count (21 calls) simultaneously. No EFSA threshold in the sensitivity sweep matches or exceeds the semantic gate's performance at an equal or lower call count. Consequently, EFSA and DPCS are presented not as outperforming alternatives to neural semantic embeddings, but as dependency-free, pure-heuristic strategies with their own characterized cost/accuracy tradeoff curves. These heuristic methods are explicitly useful for constrained runtime environments where loading even a lightweight local transformer model (`Xenova/all-MiniLM-L6-v2`) is undesirable or infeasible.
+*Empirical Strategy Comparison:* As demonstrated in Table VII, the experimental local semantic embedding gate (`Xenova/all-MiniLM-L6-v2` at $T_{\text{sem}}=0.40$) strictly dominates every EFSA operating point tested ($\tau = 0.15$ through $0.35$) across accuracy (88.89%), recall (76.47%), F1-score (83.87%), and LLM call count (21 calls) simultaneously. No EFSA threshold in the sensitivity sweep matches or exceeds the semantic gate's performance at an equal or lower call count. Consequently, EFSA and DPCS are presented not as outperforming alternatives to neural semantic embeddings, but as dependency-free, pure-heuristic strategies with their own characterized cost/accuracy tradeoff curves. These heuristic methods are explicitly useful for constrained runtime environments where loading even a lightweight local transformer model (`Xenova/all-MiniLM-L6-v2`) is undesirable or infeasible.
 
 ---
 
 ### 5.3 Real 5-Component Ablation Study
 To quantify the individual contribution of each evidence dimension in EFSA, we execute a 5-component ablation experiment across all 45 test pairs using `runEfsaDpcsEvaluation.js` (`backend/jobs/evaluation/efsa-dpcs-results.json`).
 
-**TABLE III: REAL 5-COMPONENT EFSA ABLATION RESULTS (GATE-ONLY)**
+**TABLE VIII: REAL 5-COMPONENT EFSA ABLATION RESULTS (GATE-ONLY)**
 | Ablated Component / Variant | Accuracy | Precision | Recall | F1-Score | MCC | Operational Impact |
 | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
 | **Full EFSA Gate (All 5 Components)** | **60.00%** | **46.15%** | **35.29%** | **40.00%** | **0.110** | Baseline multi-evidence gate |
@@ -505,7 +505,7 @@ To quantify the individual contribution of each evidence dimension in EFSA, we e
 
 ### 5.4 Algorithmic Complexity & Measured Latency
 
-**TABLE IV: ALGORITHMIC COMPLEXITY COMPARISON**
+**TABLE IX: ALGORITHMIC COMPLEXITY COMPARISON**
 | Algorithm / System | Time Complexity | Space Complexity | Incremental Update Cost |
 | :--- | :---: | :---: | :---: |
 | **Unconditional LLM Verification** | $\mathcal{O}(N \times M)$ | $\mathcal{O}(1)$ | High ($\sim 1.5$s per pair) |
@@ -537,9 +537,9 @@ To replace unverified estimations, execution latency was empirically measured ac
 ### 5.5 Gate Failure Diagnosis and Recovery
 
 #### Empirical Failure Diagnosis (All 11 Failing `SAME` Pairs)
-To investigate the root cause of the $35.29\%$ recall baseline in the production system, we executed a full diagnostic audit (`diagnoseGateFailures.js`). Out of 17 `SAME`-labeled ground-truth pairs, 11 failed the Stage 1 pre-filter ($(J < 0.12) \land (\cos < 0.25)$). Table V presents the complete breakdown.
+To investigate the root cause of the $35.29\%$ recall baseline in the production system, we executed a full diagnostic audit (`diagnoseGateFailures.js`). Out of 17 `SAME`-labeled ground-truth pairs, 11 failed the Stage 1 pre-filter ($(J < 0.12) \land (\cos < 0.25)$). Table X presents the complete breakdown.
 
-**TABLE V: STAGE 1 GATE FAILURE DIAGNOSIS (11 FAILING `SAME` PAIRS)**
+**TABLE X: STAGE 1 GATE FAILURE DIAGNOSIS (11 FAILING `SAME` PAIRS)**
 
 | # | Headline A | Headline B | Jaccard Score (vs 0.12) | Char Cosine (vs 0.25) | Diagnostic Failure Category |
 | :--- | :--- | :--- | :---: | :---: | :--- |
@@ -565,7 +565,7 @@ The full three-stage gating condition is defined as:
 
 $$\text{PassesGating} = (J(A,B) \ge 0.12) \lor (\cos_{\text{char}}(V_A, V_B) \ge 0.25) \lor (\cos_{\text{semantic}}(E_A, E_B) \ge T_{\text{sem}})$$
 
-As detailed in Table II, setting $T_{\text{sem}} = 0.40$ recovers recall from **35.29% to 76.47%** (+41.18 percentage points) while maintaining **88.89% Accuracy**, **92.86% Precision**, and a **53.33% LLM call reduction** (21 of 45 calls). 
+As detailed in Table VI, setting $T_{\text{sem}} = 0.40$ recovers recall from **35.29% to 76.47%** (+41.18 percentage points) while maintaining **88.89% Accuracy**, **92.86% Precision**, and a **53.33% LLM call reduction** (21 of 45 calls). 
 
 *Methodological Caveat:* The semantic threshold ($T_{\text{sem}} = 0.40$) was selected by inspecting performance on this same 45-pair dataset rather than a separate held-out validation set; the reported recall recovery represents an upper-bound estimate pending validation on unseen wire data. This extension has been experimentally evaluated in `testFullHybridWithSemantic.js` but is **not integrated into the deployed production system**.
 
