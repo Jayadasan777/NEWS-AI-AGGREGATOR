@@ -98,26 +98,22 @@ Sufi (2025) [18] presented an AI-powered chatbot for personalized, real-time new
 ### 2.9 Comprehensive System Capability Comparison
 Table I summarizes NISE against the paradigms reviewed above.
 
+**TABLE I: COMPREHENSIVE SYSTEM CAPABILITY COMPARISON**
+
+| Capability | GDELT | Event Registry | Tarekegn et al. [6] | Nakshatri et al. [7] | NISE (This Work) |
+|---|---|---|---|---|---|
+| Live continuous RSS ingestion | No (static offline DB) | Yes (commercial, 300K+ sources) | No (evaluated on static GDELT) | Stream-based, live status unspecified | Yes |
+| LLM-based event verification | No | Unspecified/proprietary | Yes | Yes | Yes |
+| Cost-aware pre-filter with characterized call reduction | N/A | Unspecified | No (not characterized) | No (not characterized) | Yes (75.56% reduction, measured) |
+| Open-weight, self-hostable LLM | N/A | No | Unspecified | Unspecified | Yes (Llama 3.1-8B) |
+| Publisher credibility modeling | No | Static, proprietary ratings | No | No | Yes (DPCS, EMA-based, offline-validated) |
+| End-to-end deployed distribution layer | No | No (aggregation only) | No | No | Yes (verified live deployment) |
+| Hallucination/factuality verification | N/A | N/A | No | No | Yes (two-pass reflection loop) |
+| Open, reproducible labeled benchmark | Partial (public data, no labeled pair benchmark) | No (proprietary) | Yes (public GDELT) | Yes (public dataset) | Yes (45-pair benchmark, public repo) |
+| Cost/accuracy trade-off characterization | No | No | No | No | Yes (5-strategy Pareto comparison) |
+
 ### 2.10 Synthesis: Positioning NISE Relative to Prior Work
 Across the eight areas reviewed, a consistent gap emerges. Lexical methods (2.1) are cheap but vocabulary-brittle. Dense embeddings (2.2) resolve this but assume infrastructure this work explicitly avoids. LLM-assisted clustering (2.3) — our closest prior art — demonstrates the general feasibility of the approach but does not characterize its computational cost or evaluate a fully deployed distribution layer. Multi-signal fusion (2.4) is well-established in entity resolution but under-explored specifically for news event matching. Credibility modeling (2.5) carries documented risks that most systems, including commercial ones, do not transparently report. Stance detection (2.6) and hallucination mitigation (2.7) are each individually mature research areas that this system integrates but does not individually advance. No reviewed work combines cost-aware multi-stage pre-filtering, an empirically characterized accuracy/efficiency trade-off across multiple candidate strategies, and a verified, deployed end-to-end pipeline inclusive of distribution — this is precisely the space NISE occupies, and precisely the gap identified in Section I.C.
-
-### 2.3 Comprehensive System Capability Comparison
-Table I summarizes NISE against existing academic and commercial news processing paradigms.
-
-**TABLE I: SYSTEM CAPABILITY MATRIX**
-
-| Capability / Feature | Traditional TF-IDF | UMAP + HDBSCAN | Direct GPT-4 Pipeline | **NISE (Ours)** |
-| :--- | :---: | :---: | :---: | :---: |
-| **Ingestion Scope** | Single Feed | Static DB (GDELT) | RSS / Web Scrape | **21 RSS Feeds / 14 Sectors** |
-| **Pre-LLM Dedup Lock** | ❌ No | ❌ No | ❌ No | **✅ URL + MD5 Title Hash + Title** |
-| **Clustering Latency** | Low | High (GPU load) | Very High ($\mathcal{O}(N^2)$ LLM) | **Minimal (Stage 1 Algorithmic Gate)** |
-| **Synonym Pair Resolution**| ❌ Failed | ✅ High | ✅ High | **✅ High (3-Gram Cosine + Llama 3)** |
-| **LLM Call Reduction** | N/A | N/A | $0\%$ | **$75.56\%$ Deployed API Savings** |
-| **Stance Detection** | ❌ No | ❌ No | ❌ No | **✅ Supporting / Contradicting / Neutral** |
-| **Hallucination Guard** | ❌ No | ❌ No | ❌ No | **✅ Two-Pass Reflection Loop** |
-| **Self-Healing Webhooks**| ❌ No | ❌ No | ❌ No | **✅ 3 Retries @ 15-Min Intervals** |
-| **Hardware Requirement** | CPU | High-End GPU | Cloud API | **Standard Commodity Server** |
-| **Empirical Evaluation** | Unrated | Unrated | Unrated | **✅ $N=45$ Dataset (73.33% Deployed / 97.78% LLM-Only Ceiling)** |
 
 ---
 
