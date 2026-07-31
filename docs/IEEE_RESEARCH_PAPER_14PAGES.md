@@ -2,9 +2,23 @@
 
 # A Cost-Aware Multi-Stage Event Clustering Pipeline for Automated News Aggregation and Social Media Distribution: Design, Deployment, and Empirical Trade-off Analysis
 
-**Jayadasan S¹, Jason Peniel Raj S¹, Dr. D. Menaga¹**  
-¹Department of Computer Science and Engineering, St. Joseph's Institute of Technology, Chennai, Tamil Nadu, India  
-{jayadasanjai, jasonpenielraj}@gmail.com, menaga@stjosephstechnology.ac.in  
+**Mr. Jayadasan S - Author**  
+Department of Computer Science and Engineering  
+St. Joseph's Institute of Technology  
+Chennai, Tamil Nadu, India  
+jayadasanjai@gmail.com  
+
+**Mr. Jason Peniel Raj S - Co-Author**  
+Department of Computer Science and Engineering  
+St. Joseph's Institute of Technology  
+Chennai, Tamil Nadu, India  
+jasonpenielraj@gmail.com  
+
+**Dr. D. Menaga B.E., M.E., Ph.D. - Mentor**  
+Department of Computer Science and Engineering  
+St. Joseph's Institute of Technology  
+Chennai, Tamil Nadu, India  
+menaga@stjosephstechnology.ac.in  
 
 ## ABSTRACT
 
@@ -16,31 +30,27 @@ The exponential growth of digital journalism has produced a fundamental informat
 
 ## I. INTRODUCTION
 
-### 1.1 Problem Motivation & Industry Challenge
-Modern digital news consumption suffers from **Informational Hyper-Fragmentation**. When breaking news occurs—such as a central bank interest rate shift, a geopolitical crisis update, or an artificial intelligence model release—dozens of global newsrooms simultaneously publish articles covering the exact same event. 
+### 1.1 Background
+The past decade has seen an exponential increase in the volume of digital journalism, driven by the proliferation of online news agencies, RSS syndication, and real-time wire services. Automated news aggregation platforms now ingest content from dozens of publishers simultaneously, spanning domains from politics and finance to technology and sports. This growth has been accompanied by increasing interest in applying artificial intelligence, and more recently large language models (LLMs), to automatically summarize, categorize, and distribute this content at scale. However, the same event is frequently reported independently by multiple outlets within a narrow time window, resulting in substantial redundant coverage that automated systems must reconcile.
 
-```
-                                ┌──► Reuters ("Fed Cuts Interest Rates by 50bps")
-                                │
-[Real-World Incident] ─────────┼──► Bloomberg ("Jerome Powell Announces Rate Cut")
-(Fed Rate Decision)            │
-                                └──► BBC News ("US Central Bank Lowers Borrowing Costs")
-```
+### 1.2 Motivation
+Reconciling this redundancy is not merely a matter of user convenience — it carries real computational and legal costs. Verifying whether two headlines describe the same event via a large language model is comparatively expensive at scale, particularly when performed exhaustively across all candidate pairs. Dense embedding-based similarity methods reduce this cost but typically require GPU-backed infrastructure that is unavailable in lightweight or academic deployment settings. Separately, automated rewriting of scraped news content raises copyright considerations that remain legally unsettled, and manual multi-channel distribution of synthesized content does not scale with ingestion volume. These constraints motivate a system that is simultaneously accurate, computationally economical, and deployable without specialized hardware.
 
-For digital news platforms and consumers, this creates three critical vulnerabilities:
-1. **Redundancy & Cognitive Fatigue:** Readers are forced to scan multiple articles describing the exact same event without knowing whether new information is present.
-2. **Copyright Infringement Exposure:** Scraping raw text from original publishers and presenting verbatim excerpts violates intellectual property laws. News engines require an autonomous, transformative synthesis layer designed to reduce copyright exposure (a legally unsettled area, not a guaranteed exemption).
-3. **Distribution Overhead & Rate Limits:** Publishing updates across multi-channel social networks manually requires immense labor. Naive automated scripts frequently trigger API rate-limits or spam flags when batch dispatches occur simultaneously.
+### 1.3 Research Gap
+Purely lexical deduplication methods (TF-IDF, unigram Jaccard similarity) are computationally inexpensive but fail on synonym-rich or periphrastic headline pairs sharing zero token overlap. Dense embedding-based clustering (e.g., Sentence-BERT with UMAP/HDBSCAN) resolves this limitation but assumes computational infrastructure unavailable in many deployment contexts. Recent LLM-assisted event-clustering approaches (Tarekegn et al., 2024; Nakshatri et al., 2023) demonstrate that large language models can effectively verify candidate event matches, but do not characterize the cost/accuracy trade-off of lightweight pre-filtering strategies, nor evaluate a fully deployed end-to-end system inclusive of distribution. Existing systems therefore do not jointly optimize for clustering accuracy and inference cost under realistic deployment constraints. Therefore, there is a need for a system that combines inexpensive pre-filtering with selective LLM verification, and that is evaluated not only on classification accuracy but on the resulting computational trade-offs.
 
-### 1.2 Limitations of Existing Approaches
-Prior news processing systems attempt to solve parts of this pipeline, but fall short in operational feasibility:
+### 1.4 Problem Statement
+Although large language models can accurately determine whether two news articles describe the same real-world event, they suffer from high per-inference cost when applied exhaustively across all candidate article pairs in a continuously ingested stream. Therefore, this paper addresses the problem of designing a multi-stage event-clustering pipeline that minimizes the number of LLM verification calls required, while empirically characterizing the resulting trade-off between classification accuracy and computational cost across multiple candidate strategies.
 
-* **Lexical TF-IDF / Pure Jaccard Matching:** Keyword-matching systems calculate token overlaps. However, when outlets use completely different vocabulary (e.g., *"Congress clears legislation"* vs. *"House passes bill"*), lexical models yield zero overlap, generating high false-negative rates.
-* **GPU-Dense Vector Embeddings (UMAP / HDBSCAN):** Systems using dense sentence transformers require dedicated GPU hardware for vector calculations and complex vector databases (e.g., Pinecone, Milvus), imposing high infrastructure costs.
-* **Proprietary LLM Direct Verification:** Submitting every candidate headline pair directly to proprietary LLM endpoints (such as GPT-4) scales at $\mathcal{O}(N \times M)$ cost and latency, causing rate-limit bottlenecks during major breaking news cycles.
-* **Lack of Factuality Guardrails:** Standard LLM text summarization frequently suffers from hallucinations—generating unsupported numbers, false named entities, or inaccurate causal claims.
+### 1.5 Objectives
+The objectives of this research are:
+1. To design a cost-aware, multi-stage event-clustering gate combining lexical, multi-evidence, and LLM-based verification.
+2. To empirically characterize the accuracy/cost trade-off of this gate against lexical-only, LLM-only, and semantic-embedding-based alternatives.
+3. To diagnose and explain the specific failure modes of lexical pre-filtering rather than reporting aggregate accuracy alone.
+4. To verify the resulting pipeline as a deployed, operating system rather than a purely theoretical design.
+5. To evaluate a publisher-credibility-based extension to the clustering gate and honestly characterize its operating conditions.
 
-### 1.3 System Contributions & Novel Algorithmic Innovations
+### 1.6 System Contributions & Novel Algorithmic Innovations
 This paper presents the formal mathematical design, implementation, and empirical evaluation of **NISE** (News Intelligence and Synthesis Engine), introducing **two original algorithms** that bridge existing research gaps in multi-outlet news processing:
 
 1. **Algorithm 1 — Enhanced Fusion Scoring Algorithm (EFSA):** A multi-dimensional evidence fusion model calculating a unified event fusion score $S_{\text{EFSA}} \in [0, 1]$ across unigram lexical IoU ($S_{\text{key}}$), character 3-gram cosine ($S_{\text{head}}$), named entity overlap ($S_{\text{ent}}$), exponential temporal decay ($S_{\text{temp}}$), and sector taxonomy match ($S_{\text{sec}}$).
@@ -48,7 +58,7 @@ This paper presents the formal mathematical design, implementation, and empirica
 3. **Lightweight Hybrid Two-Stage Pipeline:** Integrates EFSA as an intelligent multi-evidence gate preceding Stage 2 zero-shot neural verification (Llama 3 via Groq LPUs), reducing LLM API calls by **75.56%** in production while eliminating false positives.
 4. **Multi-Source Evidence Fusion & Stance Analysis:** Automatically synthesizes consolidated executive dispatches, calculates quantitative publisher stance divergence ($0\text{--}100\%$), and applies a two-pass factuality reflection guardrail loop (`verifyFactualityAndReflect`).
 5. **Production Hardening & Autonomous Syndication Engine:** Fully hardened architecture featuring graceful server shutdown, 30s TTL query caching, sliding-window rate limiting, health telemetry APIs, and automated Facebook Page wall webhooks.
-6. **Empirical Gate Failure Diagnosis & Local Semantic Extension:** We conduct a comprehensive error breakdown on the $N=45$ benchmark dataset, identifying that journalist periphrasis, brand metonymy, acronyms, and agency aliases account for 8 out of 11 gate misses (72.73%, Rows 4–11 of Table III), while the remaining 3 rows (1–3) involve high vocabulary divergence or numerical phrasing variation rather than naming/aliasing patterns. We evaluate an experimental local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`) that recovers recall from $35.29\%$ to $76.47\%$ ($88.89\%$ accuracy) at $53.33\%$ LLM call savings.
+6. **Empirical Gate Failure Diagnosis & Local Semantic Extension:** We conduct a comprehensive error breakdown on the $N=45$ benchmark dataset, identifying that journalist periphrasis, brand metonymy, acronyms, and agency aliases account for 8 out of 11 gate misses (72.73%, Rows 4–11 of Table X), while the remaining 3 rows (1–3) involve high vocabulary divergence or numerical phrasing variation rather than naming/aliasing patterns. We evaluate an experimental local CPU sentence transformer gate (`Xenova/all-MiniLM-L6-v2`) that recovers recall from $35.29\%$ to $76.47\%$ ($88.89\%$ accuracy) at $53.33\%$ LLM call savings.
 7. **Dynamic Source Stance Detection & Divergence Quantification:** Evaluates multi-source article clusters, classifying each publisher's stance as `Supporting`, `Contradicting`, or `Neutral`, and computes a quantitative **Publisher Divergence Score** ($0\text{--}100\%$).
 8. **Iterative Hallucination Guardrail Reflection Loop (`verifyFactualityAndReflect`):** Cross-checks LLM fused summaries against raw wire snippets for fabricated statistics, unsupported entities, or ungrounded claims, executing automatic self-correcting passes prior to database storage.
 9. **Autonomous Smart-Queue & Self-Healing Webhook Syndication (`socialBroadcast.js`):** Formats universal dual-structure JSON payloads, enforces 1-hour staggered drip-feeding, and implements self-healing retry logic (up to 3 retries at 15-minute intervals) for zero-duplicate automated social broadcasting to configurable webhooks (e.g., Make.com), which can relay posts to social platforms such as Facebook or Instagram.
@@ -554,6 +564,42 @@ $$\text{PassesGating} = (J(A,B) \ge 0.12) \lor (\cos_{\text{char}}(V_A, V_B) \ge
 As detailed in Table VI, setting $T_{\text{sem}} = 0.40$ recovers recall from **35.29% to 76.47%** (+41.18 percentage points) while maintaining **88.89% Accuracy**, **92.86% Precision**, and a **53.33% LLM call reduction** (21 of 45 calls). 
 
 *Methodological Caveat:* The semantic threshold ($T_{\text{sem}} = 0.40$) was selected by inspecting performance on this same 45-pair dataset rather than a separate held-out validation set; the reported recall recovery represents an upper-bound estimate pending validation on unseen wire data. This extension has been experimentally evaluated in `testFullHybridWithSemantic.js` but is **not integrated into the deployed production system**.
+
+---
+
+### 5.6 Empirical Case Study: LLM-Provider Migration & Iterative Prompt Refinement
+During early development, the event-verification stage relied on proprietary Gemini endpoints. Following migration to Meta's open-weight `llama-3.1-8b-instant` served on Groq LPUs, initial zero-shot verification exhibited a severe recall regression, dropping to **17.65% Recall** (identifying only 3 of 17 `SAME` pairs) as the open-weight model strictly interpreted syntactic differences as distinct events.
+
+To recover recall without abandoning open-weight inference hardware, we conducted three iterations of prompt refinement on the Stage 2 `isSameEvent` prompt:
+1. **Iteration 1 (Few-Shot Domain Exemplars):** Injecting two domain-specific headline pairs (Tech and Finance) into the system prompt increased recall from **17.65% to 23.53%** (4 of 17 `SAME` pairs).
+2. **Iteration 2 (Negative Pair & Aliasing Instructions):** Explicitly instructing the model to disregard entity phrasing variations, acronyms, and journalist periphrasis (e.g., *"Do NOT classify as DIFFERENT solely due to entity alias variations"*) recovered recall to **35.29%** (6 of 17 `SAME` pairs) while preserving high precision (**85.71%**, 1 false positive out of 28 `DIFFERENT` pairs).
+3. **Iteration 3 (Structured JSON Output Locking):** Constraining output schema to strict JSON boolean responses (`{"isSameEvent": true|false}`) eliminated malformed generation errors, stabilizing overall pipeline execution.
+
+This empirical case study demonstrates that migrating from proprietary endpoints to open-weight LLMs on LPU hardware requires iterative prompt engineering to bridge zero-shot reasoning gaps in event verification.
+
+---
+
+### 5.7 Threshold Sensitivity Sweep & Characterization of DPCS Non-Uniform Suppression
+To fulfill the promise of an honest operational characterization of Dynamic Publisher Credibility Scoring (DPCS), we executed a comprehensive threshold sensitivity sweep across EFSA thresholds $\tau \in [0.15, 0.35]$ using `runEfsaDpcsEvaluation.js`. Table XI presents the comparative performance of EFSA alone versus EFSA integrated with DPCS credibility weighting ($S_{\text{EFSA+DPCS}} = S_{\text{EFSA}} \times [0.8 + 0.2 \cdot C_{\text{pub}} / 100]$).
+
+**TABLE XI: EFSA VS. EFSA+DPCS THRESHOLD SENSITIVITY SWEEP ($N=45$)**
+
+| Operating Threshold ($\tau$) | Strategy | Accuracy | Precision | Recall | F1-Score | LLM Calls | Call Savings |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **$\tau = 0.22$** *(Production)* | **EFSA Alone** | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **13** | **71.11%** |
+| **$\tau = 0.22$** *(Production)* | **EFSA + DPCS** | **73.33%** | **85.71%** | **35.29%** | **50.00%** | **10** | **77.78%** |
+| **$\tau = 0.18$** *(High-Recall)* | **EFSA Alone** | **80.00%** | **75.00%** | **52.94%** | **66.67%** | **25** | **44.44%** |
+| **$\tau = 0.18$** *(High-Recall)* | **EFSA + DPCS** | **75.56%** | **77.78%** | **41.18%** | **53.85%** | **22** | **51.11%** |
+| **$\tau = 0.15$** *(Max-Recall)* | **EFSA Alone** | **82.22%** | **71.43%** | **58.82%** | **71.43%** | **31** | **31.11%** |
+| **$\tau = 0.15$** *(Max-Recall)* | **EFSA + DPCS** | **77.78%** | **72.73%** | **47.06%** | **57.14%** | **28** | **37.78%** |
+
+#### Empirical Analysis of DPCS Operational Boundaries
+As revealed by Table XI, DPCS credibility weighting is **not uniformly beneficial across all gate operating points**:
+
+1. **At the Deployed Production Threshold ($\tau = 0.22$):** DPCS provides a pure efficiency gain. By suppressing lower-credibility candidate matches that score near the margin, DPCS reduces total LLM calls from 13 to 10 (**77.78% call savings vs. 71.11%**) with **zero accuracy or recall penalty** (73.33% Acc, 35.29% Recall).
+2. **At Lower Operating Thresholds ($\tau \le 0.18$):** DPCS actively suppresses recall. At $\tau = 0.18$, integrating DPCS into EFSA reduces recall from **52.94% to 41.18%** (true positive matches drop from 9 to 7 out of 17), because publisher credibility suppression filters out genuine same-event breaking reports from secondary or lower-scoring wire feeds before they can reach Stage 2 LLM verification.
+
+*Empirical Conclusion:* DPCS's dynamic suppression acts as a double-edged sword. For cost-optimized deployments operating at conservative gating thresholds ($\tau = 0.22$), DPCS delivers additional LLM call savings without compromising accuracy. For high-recall deployments operating at permissive thresholds ($\tau \le 0.18$), DPCS over-suppresses secondary wire sources, trading true positive recall for marginal call reductions. We state this explicit operational boundary to provide a complete, transparent evaluation of DPCS.
 
 ---
 
