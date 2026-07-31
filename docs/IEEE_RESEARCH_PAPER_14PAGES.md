@@ -494,17 +494,17 @@ To quantify the individual contribution of each evidence dimension in EFSA, we e
 **TABLE IX: ALGORITHMIC COMPLEXITY COMPARISON**
 | Algorithm / System | Time Complexity | Space Complexity | Incremental Update Cost |
 | :--- | :---: | :---: | :---: |
-| **Unconditional LLM Verification** | $\mathcal{O}(N \times M)$ | $\mathcal{O}(1)$ | High ($\sim 1.5$s per pair) |
-| **Stage 1 Lexical Jaccard** | $\mathcal{O}(K)$ | $\mathcal{O}(W)$ | Negligible ($<0.05$ms) |
-| **Algorithm 1: EFSA Multi-Evidence** | $\mathcal{O}(K \cdot E)$ | $\mathcal{O}(E)$ | Fast Path ($<0.20$ms) |
-| **Algorithm 2: DPCS Online Credibility** | $\mathcal{O}(1)$ | $\mathcal{O}(P)$ | Constant ($<0.01$ms) |
+| **Unconditional LLM Verification** | $\mathcal{O}(N \times M)$ | $\mathcal{O}(1)$ | High ($\approx 2.99$s mean measured, Section 5.4) |
+| **Stage 1 Lexical Jaccard** | $\mathcal{O}(K)$ | $\mathcal{O}(W)$ | Negligible relative to LLM cost (no GPU/network dependency) |
+| **Algorithm 1: EFSA Multi-Evidence** | $\mathcal{O}(K \cdot E)$ | $\mathcal{O}(E)$ | Negligible relative to LLM cost (no GPU/network dependency) |
+| **Algorithm 2: DPCS Online Credibility** | $\mathcal{O}(1)$ | $\mathcal{O}(P)$ | Negligible relative to LLM cost ($\mathcal{O}(1)$ scalar update) |
 
 *where $N$ is total ingested articles, $K \ll N$ is candidate events within the 48-hour temporal window ($K \approx 15\text{--}30$), $W$ is token set size, $E$ is extracted entity set size, and $P$ is active wire publisher count ($P \approx 21$).*
 
 #### Mathematical Asymptotic Analysis
 1. **Ingestion & Anti-Duplication Lock:** Querying MongoDB B-tree indexes for `url` and `title_hash` (MD5 digest) runs in $\mathcal{O}(1)$ time. If matched, processing terminates immediately with zero computational overhead.
 2. **Temporal Windowing ($K \ll N$):** Rather than performing brute-force pairwise comparisons across all historical articles ($N \ge 10^4$), candidate selection is restricted to active event clusters created within a 48-hour sliding window ($K \approx 15\text{--}30$).
-3. **Stage 1 Fast-Path Gate & Algorithm 1 (EFSA):** Computing unigram IoU ($S_{\text{key}}$), character 3-gram cosine ($S_{\text{head}}$), named entity set overlap ($S_{\text{ent}}$), time decay ($S_{\text{temp}}$), and sector match ($S_{\text{sec}}$) requires $\mathcal{O}(K \cdot |V|)$ token/n-gram operations, executing in $< 0.20\text{ ms}$ per candidate pair on standard CPU hardware.
+3. **Stage 1 Fast-Path Gate & Algorithm 1 (EFSA):** Computing unigram IoU ($S_{\text{key}}$), character 3-gram cosine ($S_{\text{head}}$), named entity set overlap ($S_{\text{ent}}$), time decay ($S_{\text{temp}}$), and sector match ($S_{\text{sec}}$) requires $\mathcal{O}(K \cdot |V|)$ token/n-gram operations — several orders of magnitude cheaper than the $\approx 2.99$-second mean LLM verification latency measured in this section, though the exact per-operation cost was not independently benchmarked and is not reported as a specific figure here.
 4. **Algorithm 2 (DPCS Online Credibility):** Updating publisher records via `updatePublisherCredibility()` performs Map lookups and scalar EMA calculations in $\mathcal{O}(1)$ time and $\mathcal{O}(P)$ space.
 5. **Stage 2 LLM Verification Savings:** By filtering out $75\text{--}80\%$ of candidate pairs in Stage 1, total LLM inference invocations scale at $\mathcal{O}(C_{\text{surviving}})$ rather than $\mathcal{O}(N \times M)$ pairwise brute force, reducing total system latency and financial API costs substantially.
 
