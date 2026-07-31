@@ -1,30 +1,16 @@
-# MASTER IEEE RESEARCH PAPER MANUSCRIPT
-## NewsAI / NISE: Autonomous News Intelligence, Event Clustering, and Social Syndication Engine
-
 ---
 
-# NISE: A Hybrid Two-Stage Autonomous News Intelligence and Event Clustering Platform with LLM-Driven Multi-Channel Social Syndication
+# A Cost-Aware Multi-Stage Event Clustering Pipeline for Automated News Aggregation and Social Media Distribution: Design, Deployment, and Empirical Trade-off Analysis
 
-**Jayadasan R**  
-Department of Computer Science and Engineering  
-Jayadasan777 / NEWS-AI-AGGREGATOR Project  
-Email: jayadasan777@github.com  
-
----
+**Jayadasan S¹, Jason Peniel Raj S¹, Dr. D. Menaga¹**  
+¹Department of Computer Science and Engineering, St. Joseph's Institute of Technology, Chennai, Tamil Nadu, India  
+{jayadasanjai, jasonpenielraj}@gmail.com, menaga@stjosephstechnology.ac.in  
 
 ## ABSTRACT
 
-The exponential growth of digital journalism has created a fundamental information processing challenge: while global news volume expands continuously, information density per reader declines due to widespread multi-outlet redundancy. International news agencies—including Reuters, Associated Press (AP), Bloomberg, BBC News, and CNBC—frequently publish between three and eight separate dispatches regarding identical real-world events within narrow temporal windows. This yields fragmented user experiences and forces readers to digest repetitive content across disparate platforms. Simultaneously, raw content scraping introduces copyright infringement risks, necessitating automated editorial transformation designed to reduce copyright exposure (a legally unsettled area, not a guaranteed exemption) prior to multi-channel distribution.
+The exponential growth of digital journalism has produced a fundamental information-processing challenge: international wire agencies routinely publish three to eight independent dispatches describing the same real-world event within narrow temporal windows, causing redundant coverage while raw content scraping introduces copyright exposure. Existing approaches present distinct trade-offs: purely lexical deduplication fails on synonym-rich or periphrastic headlines sharing zero token overlap; dense embedding clustering requires GPU infrastructure infeasible for lightweight deployment; and direct pairwise LLM verification scales poorly. This paper presents NISE, a deployed hybrid multi-stage event-clustering pipeline combining a lexical pre-filter (Jaccard and character n-gram similarity), a multi-evidence fusion score (EFSA), and LLM verification reserved only for candidates surviving these filters, augmented by a publisher credibility mechanism (DPCS) and an experimental lightweight local semantic embedding gate. On a curated 45-pair, 12-domain benchmark, the deployed two-stage baseline achieves 73.33% accuracy and 50.00% F1-score while reducing LLM inference calls by 75.56%; EFSA+DPCS matches this accuracy at a further efficiency gain (77.78% call reduction), while an experimental semantic gate achieves the strongest overall performance (88.89% accuracy, 76.47% recall, 83.87% F1-score). We report a full cost/accuracy Pareto comparison across five strategies, an empirical LLM-provider migration case study demonstrating recall recovery through iterative prompt refinement, and an honest characterization of DPCS's non-uniform benefit across operating points. The complete pipeline, including autonomous multi-channel social media distribution, was verified operating end-to-end in a live deployment.
 
-Existing news aggregation solutions present severe operational trade-offs. Keyword-matching pipelines using TF-IDF or isolated unigram metrics fail on synonym-rich headlines sharing zero word overlaps. Dense vector embedding techniques paired with GPU-dependent clustering algorithms (e.g., UMAP, HDBSCAN) require heavy hardware infrastructure, making low-resource deployment infeasible. Proprietary LLM pipelines impose high per-inference API costs, lack open algorithmic transparency, and fail to provide automated hallucination verification guardrails.
-
-This paper presents the design, implementation, and empirical evaluation of **NISE** (News Intelligence and Synthesis Engine), a deployed hybrid clustering and distribution pipeline combining established lexical pre-filtering and LLM verification techniques. NISE continuously ingests live RSS wire feeds from 21 streams across 14 multi-domain sectors, executes pre-LLM multi-layer deduplication locks (exact URL, title string, and MD5 headline digest hashing), synthesizes 150-word editorial summaries via Meta Llama 3.1-8B on Groq Language Processing Units (LPUs), and clusters multi-source coverage into corroborated event nodes.
-
-Event clustering is driven by a two-stage hybrid pipeline: Stage 1a evaluates local unigram Jaccard similarity ($\tau_J = 0.12$), while Stage 1b computes character 3-gram TF-IDF vector cosine similarity ($\tau_C = 0.25$) to capture synonym-rich headline pairs that share zero unigrams. Pairs passing Stage 1 advance to Stage 2 zero-shot neural verification via Llama 3 (`isSameEvent`). On a curated $N=45$ ground-truth benchmark dataset across 12 domains, the deployed two-stage production system achieves **73.33% Accuracy**, **85.71% Precision**, **35.29% Recall**, and **50.00% F1-Score**, while reducing LLM API calls by **75.56%** (making 11 of 45 LLM invocations).
-
-To address the diagnosed recall gap caused by journalist periphrasis, brand metonymy, and acronym variations, we present an experimental, tested-but-not-deployed 3-stage enhancement adding a local CPU sentence transformer embedding gate (`Xenova/all-MiniLM-L6-v2`, running in ~1.8 seconds for all 45 pairs). At semantic threshold $T_{\text{sem}} = 0.40$, this 3-stage pipeline recovers recall to **76.47%** (+41.18 percentage points over production baseline) with **88.89% Accuracy** and **83.87% F1-Score** while preserving a **53.33% LLM call reduction** (21 of 45 LLM calls). We separately report the **LLM-only ceiling (unconditional Llama 3 on all 45 pairs, an upper bound rather than the deployed system)** at **97.78% Accuracy**, **94.44% Precision**, **100.00% Recall**, and **97.14% F1-Score**. NISE incorporates a Dynamic Source Stance Detection Agent, an Iterative Hallucination Reflection Guardrail, an Evergreen Content Recirculation Engine, and a Webhook Self-Healing Retry Engine with 1-hour staggered drip-feeding scheduling. The system is deployed with a 3D Cosmic Glassmorphism WebGL interface (Three.js / React Three Fiber) and an interactive Social Studio dashboard (`/studio`).
-
-**Index Terms** — Autonomous News Aggregation, Event Clustering, Large Language Models, Jaccard Similarity, Character N-Gram Cosine Similarity, Factuality Reflection Loop, Webhook Self-Healing, React Three Fiber, Groq LPUs, MERN Stack.
+**Index Terms —** Event Clustering, Hybrid Lexical-Semantic Gating, LLM Verification, Publisher Credibility Scoring, News Deduplication, Cost-Accuracy Trade-off Analysis, Multi-Source Evidence Fusion, Automated News Aggregation
 
 ---
 
