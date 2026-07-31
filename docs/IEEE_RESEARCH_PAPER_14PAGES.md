@@ -603,26 +603,26 @@ As revealed by Table XI, DPCS credibility weighting is **not uniformly beneficia
 
 ---
 
-## VI. THREATS TO VALIDITY
+### 5.8 Threats to Validity
 
-Before concluding, we explicitly document six methodological and operational threats to validity:
+Before concluding the experimental evaluation, we explicitly document six methodological, construct, and operational threats to validity affecting our empirical findings:
 
-1. **Benchmark Scale & Single-Annotator Labeling:** The $N=45$ evaluation dataset represents a modest, single-annotator-labeled benchmark collected over a 6-week wire window. Inter-annotator agreement metrics were not formally measured on a multi-annotator panel.
-2. **Evaluation Scale vs. Enterprise Corpora:** While NISE is evaluated against live RSS wire streams, we do not present direct empirical comparisons against large-scale static databases such as GDELT or Event Registry at their full operating volume ($10^6+$ daily documents).
-3. **Unvalidated Sub-Components:** The stance-detection agent and factuality reflection loop are fully implemented and operational in code, but their isolated classification accuracy has not been benchmarked against dedicated domain datasets (e.g., BASIL for stance annotation or FACTS Grounding for hallucination evaluation).
-4. **Legal Status of Transformative Rewriting:** The copyright reduction strategy is a software design goal intended to minimize exposure through transformative rewriting. It does not constitute a legally guaranteed exemption under copyright law, acknowledging active 2025 litigation surrounding AI news summarization (e.g., *Advance Local Media LLC v. Cohere Inc.*).
-5. **Experimental Threshold Selection on Evaluation Set:** The semantic gate threshold ($T_{\text{sem}} = 0.40$) evaluated in Section 5.5 was selected via inspection of performance on the same $N=45$ evaluation dataset rather than a separate held-out validation set; the reported recall recovery should be treated as an upper estimate pending validation on unseen data.
-6. **Non-Uniform Credibility Suppression in DPCS:** Dynamic publisher credibility weighting is not uniformly beneficial across all operating points. For example, at threshold $\tau = 0.18$, integrating DPCS into EFSA reduces recall from 52.94% to 41.18% (true positives drop from 9 to 7 out of 17), because credibility suppression filters out genuine same-event pairs from lower-scoring publisher feeds before they reach LLM verification, trading real recall for a modest reduction in LLM calls (25 to 22 calls). This represents an explicit, acknowledged limitation of the current static-factor DPCS weighting scheme under lower gate operating thresholds.
+1. **Internal Validity (Benchmark Scale & Single-Annotator Labeling):** The $N=45$ evaluation dataset represents a modest, single-annotator-labeled benchmark collected over a 6-week wire window. Inter-annotator agreement metrics ($\kappa$) were not formally measured on a multi-annotator panel.
+2. **External Validity (Evaluation Scale vs. Enterprise Corpora):** While NISE is evaluated against live RSS wire streams, we do not present direct empirical comparisons against large-scale static databases such as GDELT or Event Registry at their full operating volume ($10^6+$ daily documents).
+3. **Construct Validity (Unvalidated Sub-Components):** The stance-detection agent and factuality reflection loop are fully implemented and operational in code, but their isolated classification accuracy has not been benchmarked against dedicated domain datasets (e.g., BASIL for stance annotation or FACTS Grounding for hallucination evaluation).
+4. **Operational & Legal Validity (Transformative Rewriting Legal Status):** The copyright reduction strategy is a software design goal intended to minimize exposure through transformative rewriting. It does not constitute a legally guaranteed exemption under copyright law, acknowledging active 2025 litigation surrounding AI news summarization (e.g., *Advance Local Media LLC v. Cohere Inc.*).
+5. **Methodological Validity (Experimental Threshold Selection on Evaluation Set):** The semantic gate threshold ($T_{\text{sem}} = 0.40$) evaluated in Section 5.5 was selected via inspection of performance on the same $N=45$ evaluation dataset rather than a separate held-out validation set; the reported recall recovery should be treated as an upper estimate pending validation on unseen data.
+6. **Operational Validity (Non-Uniform Credibility Suppression in DPCS):** Dynamic publisher credibility weighting is not uniformly beneficial across all operating points. For example, at threshold $\tau = 0.18$, integrating DPCS into EFSA reduces recall from 52.94% to 41.18% (true positives drop from 9 to 7 out of 17), because credibility suppression filters out genuine same-event pairs from lower-scoring publisher feeds before they reach LLM verification, trading real recall for a modest reduction in LLM calls (25 to 22 calls). This represents an explicit, acknowledged limitation of the current static-factor DPCS weighting scheme under lower gate operating thresholds.
 
 ---
 
-## VII. CONCLUSION & FUTURE WORK
+## VI. CONCLUSION & FUTURE WORK
 
 This paper presented **NISE** alongside two novel algorithmic contributions: the **Enhanced Fusion Scoring Algorithm (EFSA)** and **Dynamic Publisher Credibility Scoring (DPCS)**. EFSA and DPCS provide a dependency-free, pure-heuristic strategy with a fully characterized cost/accuracy tradeoff curve, achieving **73.33% Accuracy**, **50.00% F1-Score**, and **77.78% LLM Call Savings** (10 calls of 45 pairs) at the current production threshold ($\tau=0.22$). Experimental benchmark comparisons demonstrate that while the local semantic embedding extension (`Xenova/all-MiniLM-L6-v2` at $T_{\text{sem}}=0.40$) delivers the strongest overall performance (88.89% Accuracy, 76.47% Recall, 83.87% F1-Score at 21 calls), EFSA and DPCS offer an effective zero-dependency alternative for resource-constrained deployments where loading neural transformer models is undesirable or infeasible. Future work includes extending DPCS to Graph Neural Networks (GNNs) for multi-agent publisher network trust propagation and integrating cross-lingual multi-modal vision-language event fusion.
 
 ---
 
-## VIII. REFERENCES
+## VII. REFERENCES
 
 1. G. Salton and C. Buckley, "Term-weighting approaches in automatic text retrieval," *Information Processing & Management*, vol. 24, no. 5, pp. 513–523, 1988.
 2. P. Jaccard, "Étude comparative de la distribution florale dans une portion des Alpes et du Jura," *Bulletin de la Société Vaudoise des Sciences Naturelles*, vol. 37, pp. 547–579, 1901.
