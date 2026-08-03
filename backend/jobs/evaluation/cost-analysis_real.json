@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-08-03T03:49:00.946Z",
+  "dataset": "testCases_v2_real.json",
+  "dataset_source": "real_rss_ingested_v2",
+  "pricing_source": "Groq Official Pricing (Llama-3.1-8B-Instant)",
+  "cost_breakdown": [
+    {
+      "track": "LLM-Only (No Gate)",
+      "llm_call_ratio": 1,
+      "llm_calls_per_1M": 1000000,
+      "llm_cost_usd": 11.5,
+      "db_cost_usd": 0.1,
+      "cpu_cost_usd": 0,
+      "total_cost_per_1M_usd": 11.6,
+      "llm_call_reduction_percent": "0.0%"
+    },
+    {
+      "track": "Jaccard Gate + LLM",
+      "llm_call_ratio": 0.4915,
+      "llm_calls_per_1M": 491500,
+      "llm_cost_usd": 5.6523,
+      "db_cost_usd": 0.1,
+      "cpu_cost_usd": 0.0244,
+      "total_cost_per_1M_usd": 5.78,
+      "llm_call_reduction_percent": "50.8%"
+    },
+    {
+      "track": "Production EFSA Gate + LLM",
+      "llm_call_ratio": 0.6441,
+      "llm_calls_per_1M": 644100,
+      "llm_cost_usd": 7.4072,
+      "db_cost_usd": 0.1,
+      "cpu_cost_usd": 0.0171,
+      "total_cost_per_1M_usd": 7.52,
+      "llm_call_reduction_percent": "35.6%"
+    },
+    {
+      "track": "EFSA + DPCS Gate + LLM",
+      "llm_call_ratio": 0.5593,
+      "llm_calls_per_1M": 559300,
+      "llm_cost_usd": 6.432,
+      "db_cost_usd": 0.1,
+      "cpu_cost_usd": 0.0212,
+      "total_cost_per_1M_usd": 6.55,
+      "llm_call_reduction_percent": "44.1%"
+    },
+    {
+      "track": "EFSA + SBERT Hybrid Gate + LLM",
+      "llm_call_ratio": 0.4407,
+      "llm_calls_per_1M": 440700,
+      "llm_cost_usd": 5.0681,
+      "db_cost_usd": 0.1,
+      "cpu_cost_usd": 0.0268,
+      "total_cost_per_1M_usd": 5.19,
+      "llm_call_reduction_percent": "55.9%"
+    }
+  ]
+}

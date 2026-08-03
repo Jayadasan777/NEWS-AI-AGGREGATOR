@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-08-03T03:46:30.964Z",
+  "dataset": "testCases_v2_real.json",
+  "source_files": [
+    "labels_annotator_A.json",
+    "labels_annotator_B.json"
+  ],
+  "cohen_kappa": {
+    "kappa": 0.8454,
+    "SE": 0.0402,
+    "z": 21.06,
+    "observed_agreement_Po": 0.944,
+    "expected_agreement_Pe": 0.6378,
+    "interpretation": "Almost Perfect (0.81–1.00)",
+    "total_pairs": 250,
+    "agreements": 236,
+    "disagreements": 14,
+    "confusion_matrix": {
+      "SAME_SAME": 52,
+      "SAME_DIFF": 0,
+      "DIFF_SAME": 14,
+      "DIFF_DIFF": 184
+    }
+  },
+  "meets_reviewer_threshold": true
+}

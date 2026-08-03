@@ -1,214 +1,157 @@
 /**
- * SBERT + HDBSCAN Baseline Implementation
- * 
- * Reviewer Requirement (Tier 1 Critical):
- * "Implement and benchmark SBERT+HDBSCAN clustering as a baseline;
- *  provide head-to-head F1-score comparison in main results table."
- *
- * Implementation:
- * - Uses @xenova/transformers (Xenova/all-MiniLM-L6-v2) — CPU, no GPU required
- * - Pairwise SBERT cosine similarity evaluated on validation split (threshold tuning)
- *   and test split (final paper-reported results)
- * - HDBSCAN-style clustering via greedy single-linkage approximation over embedded headlines
- * - Threshold sweep on validation split; best threshold applied to test split
- * - Reports head-to-head metrics vs. production pipeline, EFSA, EFSA+DPCS
+ * SBERT Baseline Evaluation on Real Dataset (Xenova/all-MiniLM-L6-v2)
+ * Reads from splits_real/val.json and splits_real/test.json
+ * Outputs: sbert-baseline-results_real.json
  */
 
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 const fs = require('fs');
+const path = require('path');
 
-// ── Cosine similarity helper ──────────────────────────────────────────────────
-const cosine = (a, b) => {
-  let dot = 0, na = 0, nb = 0;
-  for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    na  += a[i] * a[i];
-    nb  += b[i] * b[i];
-  }
-  return (na === 0 || nb === 0) ? 0 : dot / (Math.sqrt(na) * Math.sqrt(nb));
-};
+let pipeline;
 
-// ── Metrics helper ────────────────────────────────────────────────────────────
-const computeMetrics = (tp, fp, tn, fn) => {
-  const total     = tp + fp + tn + fn;
-  const accuracy  = total > 0 ? (tp + tn) / total : 0;
-  const precision = (tp + fp) > 0 ? tp / (tp + fp) : 0;
-  const recall    = (tp + fn) > 0 ? tp / (tp + fn) : 0;
-  const f1        = (precision + recall) > 0 ? 2 * precision * recall / (precision + recall) : 0;
-  const denom     = Math.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn));
-  const mcc       = denom > 0 ? (tp*tn - fp*fn) / denom : 0;
-
-  return {
-    accuracy:  Number((accuracy * 100).toFixed(2)),
-    precision: Number((precision * 100).toFixed(2)),
-    recall:    Number((recall * 100).toFixed(2)),
-    f1:        Number((f1 * 100).toFixed(2)),
-    mcc:       Number(mcc.toFixed(3)),
-    tp, fp, tn, fn, total
-  };
-};
-
-// ── Evaluate pairwise SBERT similarity at a given threshold ──────────────────
-const evaluateAtThreshold = (pairs, threshold) => {
-  let tp = 0, fp = 0, tn = 0, fn = 0;
-  for (const p of pairs) {
-    const predicted = p.sbert_cosine >= threshold ? 'SAME' : 'DIFFERENT';
-    if (p.expected === 'SAME'      && predicted === 'SAME')      tp++;
-    else if (p.expected === 'DIFFERENT' && predicted === 'DIFFERENT') tn++;
-    else if (p.expected === 'DIFFERENT' && predicted === 'SAME')      fp++;
-    else if (p.expected === 'SAME'      && predicted === 'DIFFERENT') fn++;
-  }
-  return { threshold, ...computeMetrics(tp, fp, tn, fn) };
-};
-
-// ── HDBSCAN-style greedy cluster evaluation ───────────────────────────────────
-// For each pair: embed both headlines; if cosine(h_a, h_b) >= threshold → SAME
-// This is functionally equivalent to SBERT pairwise for binary event detection.
-// Full HDBSCAN cluster evaluation requires a corpus (not pairs), so we report:
-// (1) pairwise SBERT as primary comparator and
-// (2) cluster purity metric approximation over test pairs.
-const clusterPurityApproximation = (pairs) => {
-  const clusters = { SAME: [], DIFFERENT: [] };
-  for (const p of pairs) {
-    // Assign each pair to predicted cluster
-    const key = p.predicted_label;
-    if (!clusters[key]) clusters[key] = [];
-    clusters[key].push(p.expected);
-  }
-  let purity = 0;
-  let totalAssigned = 0;
-  for (const [, members] of Object.entries(clusters)) {
-    if (members.length === 0) continue;
-    const counts = {};
-    members.forEach(m => { counts[m] = (counts[m] || 0) + 1; });
-    const maxCount = Math.max(...Object.values(counts));
-    purity += maxCount;
-    totalAssigned += members.length;
-  }
-  return totalAssigned > 0 ? Number((purity / totalAssigned).toFixed(4)) : 0;
-};
-
-// ── Main evaluation ───────────────────────────────────────────────────────────
-const runSBERTBaseline = async () => {
-  console.log('═══════════════════════════════════════════════════════════');
-  console.log('🤗 SBERT BASELINE EVALUATION (Xenova/all-MiniLM-L6-v2)');
-  console.log('═══════════════════════════════════════════════════════════\n');
-
-  // Load transformer
-  let pipeline;
-  try {
-    const transformers = require('@xenova/transformers');
-    pipeline = transformers.pipeline;
-    console.log('✅ @xenova/transformers loaded.');
-  } catch (err) {
-    console.error('❌ @xenova/transformers not installed. Run: npm install @xenova/transformers');
-    process.exit(1);
-  }
-
-  console.log('⏳ Loading Xenova/all-MiniLM-L6-v2 model (first run downloads ~25MB)...');
-  const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-  console.log('✅ Model loaded.\n');
-
-  const splitsDir = path.join(__dirname, 'splits');
-  const validationData = JSON.parse(fs.readFileSync(path.join(splitsDir, 'validation.json'), 'utf8'));
-  const testData       = JSON.parse(fs.readFileSync(path.join(splitsDir, 'test.json'), 'utf8'));
-
-  // Embed all headlines with timing
-  const embedAll = async (pairs, label) => {
-    console.log(`⏳ Embedding ${pairs.length} pairs (${label})...`);
-    const t0 = Date.now();
-    const results = [];
-    for (const p of pairs) {
-      const outA = await extractor(p.headline_a, { pooling: 'mean', normalize: true });
-      const outB = await extractor(p.headline_b, { pooling: 'mean', normalize: true });
-      const sim  = cosine(Array.from(outA.data), Array.from(outB.data));
-      results.push({ ...p, sbert_cosine: Number(sim.toFixed(4)) });
-    }
-    const elapsed = Date.now() - t0;
-    const msPerPair = (elapsed / pairs.length).toFixed(1);
-    console.log(`   Done in ${elapsed}ms (${msPerPair}ms/pair)\n`);
-    return { results, totalMs: elapsed, msPerPair: parseFloat(msPerPair) };
-  };
-
-  const { results: valPairs, msPerPair: valLatency } = await embedAll(validationData, 'VALIDATION');
-  const { results: testPairs, msPerPair: testLatency } = await embedAll(testData, 'TEST');
-
-  // Threshold sweep on VALIDATION set (no leakage — test never touched here)
-  const THRESHOLDS = [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85];
-  console.log('🔍 Threshold sweep on VALIDATION set (for threshold selection):');
-  console.log('─────────────────────────────────────────────────────────────────');
-  console.log('Threshold |  Acc   |  Prec  |  Recall|   F1   |  MCC   |');
-  console.log('──────────|────────|────────|────────|────────|────────|');
-
-  const valSweep = THRESHOLDS.map(t => evaluateAtThreshold(valPairs, t));
-  for (const r of valSweep) {
-    console.log(
-      `  ${String(r.threshold.toFixed(2)).padStart(4)}    |` +
-      ` ${String(r.accuracy).padStart(5)}% |` +
-      ` ${String(r.precision).padStart(5)}% |` +
-      ` ${String(r.recall).padStart(5)}% |` +
-      ` ${String(r.f1).padStart(5)}% |` +
-      ` ${String(r.mcc).padStart(5)}  |`
-    );
-  }
-
-  // Best threshold: maximise F1 on validation set
-  const bestVal = valSweep.reduce((best, r) => r.f1 > best.f1 ? r : best, valSweep[0]);
-  console.log(`\n✅ Best threshold on VALIDATION: τ = ${bestVal.threshold}  (F1 = ${bestVal.f1}%)\n`);
-
-  // Apply best threshold to TEST set (final paper-reported results)
-  const testResult = evaluateAtThreshold(testPairs, bestVal.threshold);
-  testPairs.forEach(p => { p.predicted_label = p.sbert_cosine >= bestVal.threshold ? 'SAME' : 'DIFFERENT'; });
-  const purity = clusterPurityApproximation(testPairs);
-
-  console.log('📊 FINAL TEST SET RESULTS (τ = ' + bestVal.threshold + '):');
-  console.log('─────────────────────────────────────────────────────────────────');
-  console.log(`Accuracy:   ${testResult.accuracy}%`);
-  console.log(`Precision:  ${testResult.precision}%`);
-  console.log(`Recall:     ${testResult.recall}%`);
-  console.log(`F1-Score:   ${testResult.f1}%`);
-  console.log(`MCC:        ${testResult.mcc}`);
-  console.log(`Cluster Purity: ${(purity * 100).toFixed(2)}%`);
-  console.log(`Confusion Matrix: TP=${testResult.tp} FP=${testResult.fp} TN=${testResult.tn} FN=${testResult.fn}`);
-
-  // Latency stats
-  const avgLatencyMs = (valLatency + testLatency) / 2;
-  const costPer1MPairs = avgLatencyMs * 1_000_000 / 1000; // seconds for 1M pairs
-  console.log(`\nLatency:    ~${avgLatencyMs.toFixed(1)}ms/pair  (CPU-only ONNX inference)`);
-  console.log(`Cost/1M pairs: ~${(costPer1MPairs/3600).toFixed(1)} CPU-hours`);
-
-  // Output
-  const output = {
-    model: 'Xenova/all-MiniLM-L6-v2',
-    hardware: 'CPU-only (ONNX Runtime)',
-    validation: { sweep: valSweep, best_threshold: bestVal },
-    test: { threshold: bestVal.threshold, ...testResult, cluster_purity: purity },
-    latency: { ms_per_pair_validation: valLatency, ms_per_pair_test: testLatency },
-    cost_estimate: { cpu_hours_per_1M_pairs: Number((costPer1MPairs/3600).toFixed(2)) },
-    pair_results: testPairs.map(p => ({
-      id: p.id,
-      headline_a: p.headline_a,
-      headline_b: p.headline_b,
-      expected: p.expected,
-      predicted: p.predicted_label,
-      sbert_cosine: p.sbert_cosine,
-      correct: p.expected === p.predicted_label
-    }))
-  };
-
-  const outPath = path.join(__dirname, 'sbert-baseline-results.json');
-  fs.writeFileSync(outPath, JSON.stringify(output, null, 2));
-  console.log(`\n✅ Results saved to: ${outPath}`);
-  console.log('═══════════════════════════════════════════════════════════');
-
-  return output;
-};
-
-if (require.main === module) {
-  runSBERTBaseline()
-    .then(() => process.exit(0))
-    .catch(err => { console.error('❌ SBERT Baseline failed:', err); process.exit(1); });
+async function initPipeline() {
+  const transformers = await import('@xenova/transformers');
+  pipeline = transformers.pipeline;
 }
 
-module.exports = { runSBERTBaseline };
+function cosineSimilarity(vecA, vecB) {
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < vecA.length; i++) {
+    dotProduct += vecA[i] * vecB[i];
+    normA += vecA[i] * vecA[i];
+    normB += vecB[i] * vecB[i];
+  }
+  if (normA === 0 || normB === 0) return 0;
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+function evaluatePredictions(predictions, groundTruths) {
+  let tp = 0, fp = 0, tn = 0, fn = 0;
+  for (let i = 0; i < predictions.length; i++) {
+    const pred = predictions[i] ? 'SAME' : 'DIFFERENT';
+    const actual = groundTruths[i];
+    if (pred === 'SAME' && actual === 'SAME') tp++;
+    else if (pred === 'SAME' && actual === 'DIFFERENT') fp++;
+    else if (pred === 'DIFFERENT' && actual === 'DIFFERENT') tn++;
+    else if (pred === 'DIFFERENT' && actual === 'SAME') fn++;
+  }
+
+  const accuracy = (tp + tn) / predictions.length;
+  const precision = (tp + fp) === 0 ? 0 : tp / (tp + fp);
+  const recall = (tp + fn) === 0 ? 0 : tp / (tp + fn);
+  const f1 = (precision + recall) === 0 ? 0 : 2 * (precision * recall) / (precision + recall);
+  
+  // Matthews Correlation Coefficient (MCC)
+  const mccDenom = Math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn));
+  const mcc = mccDenom === 0 ? 0 : ((tp * tn) - (fp * fn)) / mccDenom;
+
+  return {
+    accuracy: Number(accuracy.toFixed(4)),
+    precision: Number(precision.toFixed(4)),
+    recall: Number(recall.toFixed(4)),
+    f1: Number(f1.toFixed(4)),
+    mcc: Number(mcc.toFixed(4)),
+    tp, fp, tn, fn
+  };
+}
+
+async function runSbertEvaluation() {
+  await initPipeline();
+  console.log('═══════════════════════════════════════════════════════════');
+  console.log('🤗 SBERT BASELINE EVALUATION ON REAL DATASET (all-MiniLM-L6-v2)');
+  console.log('═══════════════════════════════════════════════════════════');
+
+  const extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+
+  const valPath = path.join(__dirname, 'splits_real', 'val.json');
+  const testPath = path.join(__dirname, 'splits_real', 'test.json');
+
+  if (!fs.existsSync(valPath) || !fs.existsSync(testPath)) {
+    console.error('❌ Error: splits_real/ files not found. Run datasetSplitter.js first.');
+    return;
+  }
+
+  const valPairs = JSON.parse(fs.readFileSync(valPath, 'utf8'));
+  const testPairs = JSON.parse(fs.readFileSync(testPath, 'utf8'));
+
+  // Embed Validation set for threshold tuning
+  console.log(`\n⏳ Embedding ${valPairs.length} VALIDATION pairs...`);
+  const valSims = [];
+  const valTruth = valPairs.map(p => p.expected);
+
+  for (const pair of valPairs) {
+    const outA = await extractor(pair.headline_a, { pooling: 'mean', normalize: true });
+    const outB = await extractor(pair.headline_b, { pooling: 'mean', normalize: true });
+    const sim = cosineSimilarity(Array.from(outA.data), Array.from(outB.data));
+    valSims.push(sim);
+  }
+
+  // Threshold sweep on VALIDATION set
+  const thresholds = [0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70];
+  let bestTau = 0.35;
+  let bestValF1 = -1;
+
+  thresholds.forEach(tau => {
+    const preds = valSims.map(s => s >= tau);
+    const metrics = evaluatePredictions(preds, valTruth);
+    if (metrics.f1 > bestValF1) {
+      bestValF1 = metrics.f1;
+      bestTau = tau;
+    }
+  });
+
+  console.log(`✅ Optimal threshold selected on VALIDATION split: τ = ${bestTau} (Val F1 = ${(bestValF1 * 100).toFixed(2)}%)`);
+
+  // Evaluate on held-out TEST split
+  console.log(`\n⏳ Embedding ${testPairs.length} HELD-OUT TEST pairs...`);
+  const testSims = [];
+  const testTruth = testPairs.map(p => p.expected);
+  const startTime = Date.now();
+
+  for (const pair of testPairs) {
+    const outA = await extractor(pair.headline_a, { pooling: 'mean', normalize: true });
+    const outB = await extractor(pair.headline_b, { pooling: 'mean', normalize: true });
+    const sim = cosineSimilarity(Array.from(outA.data), Array.from(outB.data));
+    testSims.push(sim);
+  }
+
+  const elapsedMs = Date.now() - startTime;
+  const msPerPair = Number((elapsedMs / testPairs.length).toFixed(2));
+
+  const testPreds = testSims.map(s => s >= bestTau);
+  const testMetrics = evaluatePredictions(testPreds, testTruth);
+
+  console.log('\n📊 FINAL HELD-OUT TEST SPLIT RESULTS (τ = ' + bestTau + '):');
+  console.log('─────────────────────────────────────────────────────────');
+  console.log(`  Accuracy:    ${(testMetrics.accuracy * 100).toFixed(2)}%`);
+  console.log(`  Precision:   ${(testMetrics.precision * 100).toFixed(2)}%`);
+  console.log(`  Recall:      ${(testMetrics.recall * 100).toFixed(2)}%`);
+  console.log(`  F1-Score:    ${(testMetrics.f1 * 100).toFixed(2)}%`);
+  console.log(`  MCC:         ${testMetrics.mcc}`);
+  console.log(`  Latency:     ${msPerPair} ms/pair (CPU ONNX runtime)`);
+  console.log(`  Confusion:   TP=${testMetrics.tp} FP=${testMetrics.fp} TN=${testMetrics.tn} FN=${testMetrics.fn}`);
+  console.log('═══════════════════════════════════════════════════════════');
+
+  const output = {
+    timestamp: new Date().toISOString(),
+    dataset: 'testCases_v2_real.json',
+    dataset_source: 'real_rss_ingested_v2',
+    split: 'held_out_test_split',
+    optimal_threshold_from_val: bestTau,
+    test_metrics: testMetrics,
+    latency_ms_per_pair: msPerPair,
+    test_sample_count: testPairs.length
+  };
+
+  const outPath = path.join(__dirname, 'sbert-baseline-results_real.json');
+  fs.writeFileSync(outPath, JSON.stringify(output, null, 2));
+  console.log(`\n✅ Results saved to: ${outPath}`);
+}
+
+if (require.main === module) {
+  runSbertEvaluation().catch(console.error);
+}
+
+module.exports = { runSbertEvaluation };

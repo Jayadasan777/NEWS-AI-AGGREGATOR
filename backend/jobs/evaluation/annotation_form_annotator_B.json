@@ -1,0 +1,1752 @@
+[
+  {
+    "id": "pair_001",
+    "headline_a": "India is starting to pay for apps, not just download them",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_002",
+    "headline_a": "Passenger on British Airways mayday flight describes fear and shout of 'I don't want to die'",
+    "headline_b": "British Airways flight called mayday on approach to Heathrow",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_003",
+    "headline_a": "UK petrol prices hit highest level since Iran war began",
+    "headline_b": "Shell profits double as oil prices rise due to Iran war",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_004",
+    "headline_a": "Bank holds interest rates but says it is ready to raise them if Iran war escalates",
+    "headline_b": "Divided Fed holds interest rates steady, but three members voted to hike",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_005",
+    "headline_a": "India wants to join the strawberry superpowers",
+    "headline_b": "The U.S. wants Asia to use its AI — but China dominates cheaper models",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_006",
+    "headline_a": "Stocks making the biggest moves midday: Apple, Amazon, Reddit, GoDaddy, IES Holdings & more",
+    "headline_b": "Stocks making the biggest moves premarket: Replimune, Chevron, Apple, Amazon, Moderna & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_007",
+    "headline_a": "Stocks making the biggest moves midday: Apple, Amazon, Reddit, GoDaddy, IES Holdings & more",
+    "headline_b": "Stocks making the biggest moves after hours: Apple, Amazon, Rivian, Reddit & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_008",
+    "headline_a": "Stocks making the biggest moves midday: Apple, Amazon, Reddit, GoDaddy, IES Holdings & more",
+    "headline_b": "Stocks making the biggest moves midday: Meta, Microsoft, MarketAxess, Crocs & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_009",
+    "headline_a": "Stocks making the biggest moves midday: Apple, Amazon, Reddit, GoDaddy, IES Holdings & more",
+    "headline_b": "Stocks making the biggest moves premarket: Meta, Microsoft, Teladoc, Norwegian Cruise Line & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_010",
+    "headline_a": "Stocks making the biggest moves midday: Apple, Amazon, Reddit, GoDaddy, IES Holdings & more",
+    "headline_b": "Stocks making the biggest moves after hours: Microsoft, Meta, Starbucks, Carvana and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_011",
+    "headline_a": "Why Situational Awareness hedge fund imploded, even in a tame stock market",
+    "headline_b": "How Leopold Aschenbrenner built a $45 billion AI hedge fund — and lost most of it in days",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_012",
+    "headline_a": "Fed officials who voted to hike rates say action is needed now against inflation",
+    "headline_b": "Jeffrey Gundlach says the bond market is telling Warsh the Fed has to start acting on inflation",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_013",
+    "headline_a": "Fed officials who voted to hike rates say action is needed now against inflation",
+    "headline_b": "Divided Fed holds interest rates steady, but three members voted to hike",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_014",
+    "headline_a": "Stocks making the biggest moves premarket: Replimune, Chevron, Apple, Amazon, Moderna & more",
+    "headline_b": "Stocks making the biggest moves after hours: Apple, Amazon, Rivian, Reddit & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_015",
+    "headline_a": "Stocks making the biggest moves premarket: Replimune, Chevron, Apple, Amazon, Moderna & more",
+    "headline_b": "Stocks making the biggest moves midday: Meta, Microsoft, MarketAxess, Crocs & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_016",
+    "headline_a": "Stocks making the biggest moves premarket: Replimune, Chevron, Apple, Amazon, Moderna & more",
+    "headline_b": "Stocks making the biggest moves premarket: Meta, Microsoft, Teladoc, Norwegian Cruise Line & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_017",
+    "headline_a": "Stocks making the biggest moves premarket: Replimune, Chevron, Apple, Amazon, Moderna & more",
+    "headline_b": "Stocks making the biggest moves after hours: Microsoft, Meta, Starbucks, Carvana and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_018",
+    "headline_a": "Stocks making the biggest moves premarket: Replimune, Chevron, Apple, Amazon, Moderna & more",
+    "headline_b": "Stocks making the biggest moves premarket: Biogen, Vertiv, GE HealthCare, Generac & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_019",
+    "headline_a": "Stocks making the biggest moves after hours: Apple, Amazon, Rivian, Reddit & more",
+    "headline_b": "Stocks making the biggest moves midday: Meta, Microsoft, MarketAxess, Crocs & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_020",
+    "headline_a": "Stocks making the biggest moves after hours: Apple, Amazon, Rivian, Reddit & more",
+    "headline_b": "Stocks making the biggest moves premarket: Meta, Microsoft, Teladoc, Norwegian Cruise Line & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_021",
+    "headline_a": "Stocks making the biggest moves after hours: Apple, Amazon, Rivian, Reddit & more",
+    "headline_b": "Stocks making the biggest moves after hours: Microsoft, Meta, Starbucks, Carvana and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_022",
+    "headline_a": "Stocks making the biggest moves after hours: Apple, Amazon, Rivian, Reddit & more",
+    "headline_b": "Stocks making the biggest moves premarket: Biogen, Vertiv, GE HealthCare, Generac & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_023",
+    "headline_a": "Stocks making the biggest moves after hours: Apple, Amazon, Rivian, Reddit & more",
+    "headline_b": "Stocks making the biggest moves after hours: Ford, Teradyne, Visa, KLA Corp and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_024",
+    "headline_a": "Stocks making the biggest moves midday: Meta, Microsoft, MarketAxess, Crocs & more",
+    "headline_b": "Stocks making the biggest moves premarket: Meta, Microsoft, Teladoc, Norwegian Cruise Line & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_025",
+    "headline_a": "Stocks making the biggest moves midday: Meta, Microsoft, MarketAxess, Crocs & more",
+    "headline_b": "Stocks making the biggest moves after hours: Microsoft, Meta, Starbucks, Carvana and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_026",
+    "headline_a": "Stocks making the biggest moves midday: Meta, Microsoft, MarketAxess, Crocs & more",
+    "headline_b": "Stocks making the biggest moves premarket: Biogen, Vertiv, GE HealthCare, Generac & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_027",
+    "headline_a": "Stocks making the biggest moves midday: Meta, Microsoft, MarketAxess, Crocs & more",
+    "headline_b": "Stocks making the biggest moves after hours: Ford, Teradyne, Visa, KLA Corp and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_028",
+    "headline_a": "Stocks making the biggest moves premarket: Meta, Microsoft, Teladoc, Norwegian Cruise Line & more",
+    "headline_b": "Stocks making the biggest moves after hours: Microsoft, Meta, Starbucks, Carvana and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_029",
+    "headline_a": "Stocks making the biggest moves premarket: Meta, Microsoft, Teladoc, Norwegian Cruise Line & more",
+    "headline_b": "Stocks making the biggest moves premarket: Biogen, Vertiv, GE HealthCare, Generac & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_030",
+    "headline_a": "Stocks making the biggest moves premarket: Meta, Microsoft, Teladoc, Norwegian Cruise Line & more",
+    "headline_b": "Stocks making the biggest moves after hours: Ford, Teradyne, Visa, KLA Corp and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_031",
+    "headline_a": "Stocks making the biggest moves after hours: Microsoft, Meta, Starbucks, Carvana and more",
+    "headline_b": "Stocks making the biggest moves premarket: Biogen, Vertiv, GE HealthCare, Generac & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_032",
+    "headline_a": "Stocks making the biggest moves after hours: Microsoft, Meta, Starbucks, Carvana and more",
+    "headline_b": "Stocks making the biggest moves after hours: Ford, Teradyne, Visa, KLA Corp and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_033",
+    "headline_a": "Stocks making the biggest moves after hours: Microsoft, Meta, Starbucks, Carvana and more",
+    "headline_b": "Stocks making the biggest moves premarket: Coca-Cola, Sherwin-Williams, Johnson & Johnson & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_034",
+    "headline_a": "Here are the five big takeaways from this week's Fed meeting",
+    "headline_b": "Here's what changed in the second Fed statement under Warsh",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_035",
+    "headline_a": "Stocks making the biggest moves premarket: Biogen, Vertiv, GE HealthCare, Generac & more",
+    "headline_b": "Stocks making the biggest moves after hours: Ford, Teradyne, Visa, KLA Corp and more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_036",
+    "headline_a": "Stocks making the biggest moves premarket: Biogen, Vertiv, GE HealthCare, Generac & more",
+    "headline_b": "Stocks making the biggest moves premarket: Coca-Cola, Sherwin-Williams, Johnson & Johnson & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_037",
+    "headline_a": "Stocks making the biggest moves after hours: Ford, Teradyne, Visa, KLA Corp and more",
+    "headline_b": "Stocks making the biggest moves premarket: Coca-Cola, Sherwin-Williams, Johnson & Johnson & more",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_038",
+    "headline_a": "The future of Wall Street is here as startups and brokers build AI agents to trade 24/7",
+    "headline_b": "Visa is cutting 7% of employees in efficiency push as AI reshapes work",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_039",
+    "headline_a": "Two crew killed after firefighting helicopters collide in Greece, as British pilot survives",
+    "headline_b": "Two helicopters collide mid-air while tackling wildfires in Greece",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_040",
+    "headline_a": "Trump cancels Iran strikes subject to deal being made 'rapidly'",
+    "headline_b": "Trump pauses ‘massive attack’ on Iran, says new talks to begin",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_041",
+    "headline_a": "Trump cancels Iran strikes subject to deal being made 'rapidly'",
+    "headline_b": "Iran war live: Trump says talks to resume; Tehran urges US to honour MoU",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_042",
+    "headline_a": "Why Uganda is winning the battle against Ebola as virus spreads in DR Congo",
+    "headline_b": "Is Washington dictating the agenda for talks in Venezuela?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_043",
+    "headline_a": "Three killed after bomb detonated at Moscow restaurant, state media say",
+    "headline_b": "At the scene of deadly Moscow bomb blast",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_044",
+    "headline_a": "Body of mountaineer Nirmal Purja recovered after Pakistan avalanche",
+    "headline_b": "Body of climber Nirmal Purja, six others recovered after Pakistan avalanche",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_045",
+    "headline_a": "At the scene of deadly Moscow bomb blast",
+    "headline_b": "Fetus found among the ruins of a deadly Israeli strike on Gaza",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_046",
+    "headline_a": "Trump pauses ‘massive attack’ on Iran, says new talks to begin",
+    "headline_b": "Iran war live: Trump says talks to resume; Tehran urges US to honour MoU",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_047",
+    "headline_a": "Trump pauses ‘massive attack’ on Iran, says new talks to begin",
+    "headline_b": "Trump says new round of Iran talks will begin Monday",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_048",
+    "headline_a": "Trump pauses ‘massive attack’ on Iran, says new talks to begin",
+    "headline_b": "Sudan army drone attack on Darfur kills 35, rights group says",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_049",
+    "headline_a": "Brazil’s Lula launches reelection bid amid foreign interference concerns",
+    "headline_b": "Brazil’s Lula launches fourth-term bid, focuses on national sovereignty",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_050",
+    "headline_a": "Iran war live: Trump says talks to resume; Tehran urges US to honour MoU",
+    "headline_b": "Trump says new round of Iran talks will begin Monday",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_051",
+    "headline_a": "Trump says new round of Iran talks will begin Monday",
+    "headline_b": "Iran says negotiations with Oman over Strait of Hormuz in final stages",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_052",
+    "headline_a": "Kuwaki wins Women's Open after Henseleit's ball strikes marshal",
+    "headline_b": "Kuwaki wins tense play-off to lift Women's Open title",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_053",
+    "headline_a": "Kuwaki wins Women's Open after Henseleit's ball strikes marshal",
+    "headline_b": "'A touch of class' - Noh surges into Women's Open lead",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_054",
+    "headline_a": "Kuwaki wins tense play-off to lift Women's Open title",
+    "headline_b": "'A touch of class' - Noh surges into Women's Open lead",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_055",
+    "headline_a": "Kuwaki wins tense play-off to lift Women's Open title",
+    "headline_b": "Why Infantino's plans to sell off World Cup made no sense",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_056",
+    "headline_a": "Rashid takes five wickets as MI beat Super Giants",
+    "headline_b": "Five-star Rashid leads MI London to victory over Super Giants",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_057",
+    "headline_a": "Rashid takes five wickets as MI beat Super Giants",
+    "headline_b": "Super Giants cruise past bottom of the table MI London",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_058",
+    "headline_a": "Rashid takes five wickets as MI beat Super Giants",
+    "headline_b": "Super Giants win comfortably against lowly MI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_059",
+    "headline_a": "Game of the season in Premiership's opening weekend?",
+    "headline_b": "Perry leads Phoenix to first victory of the season",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_060",
+    "headline_a": "Five-star Rashid leads MI London to victory over Super Giants",
+    "headline_b": "Duckett inspires Rockets to victory over the Sunrisers",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_061",
+    "headline_a": "Five-star Rashid leads MI London to victory over Super Giants",
+    "headline_b": "Super Giants cruise past bottom of the table MI London",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_062",
+    "headline_a": "Five-star Rashid leads MI London to victory over Super Giants",
+    "headline_b": "Super Giants win comfortably against lowly MI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_063",
+    "headline_a": "Five-star Rashid leads MI London to victory over Super Giants",
+    "headline_b": "Perry leads Phoenix to first victory of the season",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_064",
+    "headline_a": "Duckett inspires Rockets to victory over the Sunrisers",
+    "headline_b": "Rockets see off late fightback to beat Sunrisers",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_065",
+    "headline_a": "Duckett inspires Rockets to victory over the Sunrisers",
+    "headline_b": "Perry leads Phoenix to first victory of the season",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_066",
+    "headline_a": "Super Giants cruise past bottom of the table MI London",
+    "headline_b": "Super Giants win comfortably against lowly MI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_067",
+    "headline_a": "Super Giants cruise past bottom of the table MI London",
+    "headline_b": "Brave see off Spirit to extend lead at top of the table",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_068",
+    "headline_a": "New boss Maresca is perfect for Man City - Gvardiol",
+    "headline_b": "Maresca loses first match as Inter beat Man City on penalties",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_069",
+    "headline_a": "GB win two more golds at European Aquatics Championships",
+    "headline_b": "GB's Henry and Pritchard win golds at European Championships",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_070",
+    "headline_a": "Rockets see off late fightback to beat Sunrisers",
+    "headline_b": "Brave see off Spirit to extend lead at top of the table",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_071",
+    "headline_a": "'Par of the week!' - Ko & Woad lead best shots of third round",
+    "headline_b": "Brave see off Spirit to extend lead at top of the table",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_072",
+    "headline_a": "'Par of the week!' - Ko & Woad lead best shots of third round",
+    "headline_b": "'Absolute dime' - best shots from second round of Women's Open",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_073",
+    "headline_a": "Brave chase down Spirit to move up to fourth",
+    "headline_b": "Brave see off Spirit to extend lead at top of the table",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_074",
+    "headline_a": "'A touch of class' - Noh surges into Women's Open lead",
+    "headline_b": "'Absolute dime' - best shots from second round of Women's Open",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_075",
+    "headline_a": "Brave see off Spirit to extend lead at top of the table",
+    "headline_b": "Perry leads Phoenix to first victory of the season",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_076",
+    "headline_a": "Korda produces 'special' second round to recover from day one woes",
+    "headline_b": "'Absolute dime' - best shots from second round of Women's Open",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_077",
+    "headline_a": "The five dramatic days that shook Infantino and world football",
+    "headline_b": "Courting controversy and befriending Trump - the story of Fifa boss Infantino",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_078",
+    "headline_a": "📈 Ranking MLB's top trade deadline candidates",
+    "headline_b": "Last-minute MLB trade deadline intel: What Buster Olney and Jeff Passan are hearing",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_079",
+    "headline_a": "📈 Ranking MLB's top trade deadline candidates",
+    "headline_b": "Reactions to MLB trade deadline deals",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_080",
+    "headline_a": "Last-minute MLB trade deadline intel: What Buster Olney and Jeff Passan are hearing",
+    "headline_b": "Reactions to MLB trade deadline deals",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_081",
+    "headline_a": "Why Infantino's plans to sell off World Cup made no sense",
+    "headline_b": "Could Infantino lose FIFA presidency after he lost the fight to sell off the World Cup?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_082",
+    "headline_a": "The new era of AI-powered search, which could 'change the web economy' - Le Monde.fr",
+    "headline_b": "Adopt AI or Die? - The New Republic",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_083",
+    "headline_a": "The new era of AI-powered search, which could 'change the web economy' - Le Monde.fr",
+    "headline_b": "'I don't let my AI talk to me like that' - Le Monde.fr",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_084",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "If Artificial Intelligence Is in a Bubble, These Are the Stocks That Could Benefit Most - fool.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_085",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "If Artificial Intelligence Is in a Bubble, These Are the Stocks That Could Benefit Most - AOL.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_086",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "How artificial intelligence can make the grade from elementary school to college - nwitimes.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_087",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "Microsoft vs. Apple: Comparing Revenue Trends and the Impact of Artificial Intelligence - fool.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_088",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "Here Are My 3 Top Artificial Intelligence (AI) Stocks to Buy in August - fool.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_089",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "IonQ vs. Alphabet: What Revenue Trends Reveal About the Quantum Computing Chipmaker and the Artificial Intelligence Giant - fool.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_090",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "3 Brilliant Artificial Intelligence (AI) Stocks Billionaire Bill Ackman Owns That You Should Too - fool.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_091",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "Prediction: This Top Artificial Intelligence (AI) Stock Will Double in 3 Years - fool.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_092",
+    "headline_a": "Prediction: The Historic Artificial Intelligence (AI) Infrastructure Build-Out Will Make This Stock a Multibagger - fool.com",
+    "headline_b": "China, U.S. in artificial intelligence race shaping the economy & security - thenationaldesk.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_093",
+    "headline_a": "Is A.I. ‘Scheming’ Against Us? - The New York Times",
+    "headline_b": "Larry Ellison Bet It All on the A.I. Boom. Will He Be the Face of the A.I. Bubble? - The New York Times",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_094",
+    "headline_a": "Is A.I. ‘Scheming’ Against Us? - The New York Times",
+    "headline_b": "Anthropic Says Its A.I. Systems Broke Into Computers at 3 Organizations - The New York Times",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_095",
+    "headline_a": "Is A.I. ‘Scheming’ Against Us? - The New York Times",
+    "headline_b": "Big Tech’s A.I. Spending Keeps Rising. So Do the Jitters. - The New York Times",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_096",
+    "headline_a": "Is A.I. ‘Scheming’ Against Us? - The New York Times",
+    "headline_b": "Inside the Meltdown of a Wunderkind’s A.I. Hedge Fund - The New York Times",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_097",
+    "headline_a": "Op-ed: The U.S. lead over China in AI is all but gone. We need a change in national strategy - CNBC",
+    "headline_b": "China, U.S. in artificial intelligence race shaping the economy & security - WSBT",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_098",
+    "headline_a": "Op-ed: The U.S. lead over China in AI is all but gone. We need a change in national strategy - CNBC",
+    "headline_b": "China, U.S. in artificial intelligence race shaping the economy & security - thenationaldesk.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_099",
+    "headline_a": "Op-ed: The U.S. lead over China in AI is all but gone. We need a change in national strategy - CNBC",
+    "headline_b": "China, U.S. in artificial intelligence race shaping the economy & security - KBAK",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_100",
+    "headline_a": "Israeli high school students to study English using artificial intelligence - The Jerusalem Post",
+    "headline_b": "How artificial intelligence can make the grade from elementary school to college - nwitimes.com",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_101",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Inside the London hacker house taking a stand against founder burnout",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_102",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Sam Altman is still making the case for parenting via ChatGPT",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_103",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "What’s the best handheld mini fan?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_104",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_105",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "These App Store hidden gems prove there’s still room for great software in the AI era",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_106",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_107",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "YouTuber Hank Green says his AI usage is ‘not healthy’",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_108",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Sam Altman is still making the case for parenting via ChatGPT",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_109",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_110",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Apps that help you break free from doomscrolling and get active",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_111",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "What’s the best handheld mini fan?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_112",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Rachika Nayar’s Heaven Come Crashing is an instrumental epic of desperate longing",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_113",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_114",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_115",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_116",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Pixel 11 specs and price leak with no surprises",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_117",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_118",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "YouTuber Hank Green says his AI usage is ‘not healthy’",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_119",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Sam Altman is still making the case for parenting via ChatGPT",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_120",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_121",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "What’s the best handheld mini fan?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_122",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "OpenAI reportedly finds evidence that more of its agents ran amok",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_123",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "India is starting to pay for apps, not just download them",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_124",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Rachika Nayar’s Heaven Come Crashing is an instrumental epic of desperate longing",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_125",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_126",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_127",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Angela Nissel faces down grief with a laugh",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_128",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_129",
+    "headline_a": "TechCrunch Mobility: Two roads diverged — for robotaxis",
+    "headline_b": "Sam Altman is still making the case for parenting via ChatGPT",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_130",
+    "headline_a": "TechCrunch Mobility: Two roads diverged — for robotaxis",
+    "headline_b": "India is starting to pay for apps, not just download them",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_131",
+    "headline_a": "TechCrunch Mobility: Two roads diverged — for robotaxis",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_132",
+    "headline_a": "These App Store hidden gems prove there’s still room for great software in the AI era",
+    "headline_b": "Sam Altman is still making the case for parenting via ChatGPT",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_133",
+    "headline_a": "These App Store hidden gems prove there’s still room for great software in the AI era",
+    "headline_b": "What’s the best handheld mini fan?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_134",
+    "headline_a": "These App Store hidden gems prove there’s still room for great software in the AI era",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_135",
+    "headline_a": "These App Store hidden gems prove there’s still room for great software in the AI era",
+    "headline_b": "HP’s HyperX Omen 15 isn’t quite the budget-friendly gaming laptop its predecessor was",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_136",
+    "headline_a": "These App Store hidden gems prove there’s still room for great software in the AI era",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_137",
+    "headline_a": "Inside the London hacker house taking a stand against founder burnout",
+    "headline_b": "What’s the best handheld mini fan?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_138",
+    "headline_a": "Inside the London hacker house taking a stand against founder burnout",
+    "headline_b": "Angela Nissel faces down grief with a laugh",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_139",
+    "headline_a": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "headline_b": "This $9 key physically locks your most addictive apps",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_140",
+    "headline_a": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "headline_b": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_141",
+    "headline_a": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "headline_b": "What’s the best handheld mini fan?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_142",
+    "headline_a": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "headline_b": "India is starting to pay for apps, not just download them",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_143",
+    "headline_a": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_144",
+    "headline_a": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "headline_b": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_145",
+    "headline_a": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_146",
+    "headline_a": "YouTuber Hank Green says his AI usage is ‘not healthy’",
+    "headline_b": "Sam Altman is still making the case for parenting via ChatGPT",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_147",
+    "headline_a": "YouTuber Hank Green says his AI usage is ‘not healthy’",
+    "headline_b": "India is starting to pay for apps, not just download them",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_148",
+    "headline_a": "YouTuber Hank Green says his AI usage is ‘not healthy’",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_149",
+    "headline_a": "YouTuber Hank Green says his AI usage is ‘not healthy’",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_150",
+    "headline_a": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "headline_b": "This $9 key physically locks your most addictive apps",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_151",
+    "headline_a": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "headline_b": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_152",
+    "headline_a": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "headline_b": "Silicon Valley loves young founders. Until it doesn’t.",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_153",
+    "headline_a": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_154",
+    "headline_a": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "headline_b": "Xbox prices are increasing by up to €200 or £170",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_155",
+    "headline_a": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_156",
+    "headline_a": "Sam Altman is still making the case for parenting via ChatGPT",
+    "headline_b": "What’s the best handheld mini fan?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_157",
+    "headline_a": "Sam Altman is still making the case for parenting via ChatGPT",
+    "headline_b": "India is starting to pay for apps, not just download them",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_158",
+    "headline_a": "Sam Altman is still making the case for parenting via ChatGPT",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_159",
+    "headline_a": "Sam Altman is still making the case for parenting via ChatGPT",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_160",
+    "headline_a": "This $9 key physically locks your most addictive apps",
+    "headline_b": "Apps that help you break free from doomscrolling and get active",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_161",
+    "headline_a": "This $9 key physically locks your most addictive apps",
+    "headline_b": "India is starting to pay for apps, not just download them",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_162",
+    "headline_a": "This $9 key physically locks your most addictive apps",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_163",
+    "headline_a": "This $9 key physically locks your most addictive apps",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_164",
+    "headline_a": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "headline_b": "India is starting to pay for apps, not just download them",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_165",
+    "headline_a": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "headline_b": "Rachika Nayar’s Heaven Come Crashing is an instrumental epic of desperate longing",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_166",
+    "headline_a": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_167",
+    "headline_a": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "headline_b": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_168",
+    "headline_a": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_169",
+    "headline_a": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_170",
+    "headline_a": "Apps that help you break free from doomscrolling and get active",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_171",
+    "headline_a": "Apps that help you break free from doomscrolling and get active",
+    "headline_b": "Pixel 11 specs and price leak with no surprises",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_172",
+    "headline_a": "What’s the best handheld mini fan?",
+    "headline_b": "Rachika Nayar’s Heaven Come Crashing is an instrumental epic of desperate longing",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_173",
+    "headline_a": "What’s the best handheld mini fan?",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_174",
+    "headline_a": "What’s the best handheld mini fan?",
+    "headline_b": "HP’s HyperX Omen 15 isn’t quite the budget-friendly gaming laptop its predecessor was",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_175",
+    "headline_a": "What’s the best handheld mini fan?",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_176",
+    "headline_a": "OpenAI reportedly finds evidence that more of its agents ran amok",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_177",
+    "headline_a": "Rivian spinoff Also to start delivering e-bikes after months of delays",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_178",
+    "headline_a": "India is starting to pay for apps, not just download them",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_179",
+    "headline_a": "India is starting to pay for apps, not just download them",
+    "headline_b": "Xbox prices are increasing by up to €200 or £170",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_180",
+    "headline_a": "India is starting to pay for apps, not just download them",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_181",
+    "headline_a": "Fresh off its Wiz payout, Index Ventures raises $2B across three funds",
+    "headline_b": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_182",
+    "headline_a": "Rachika Nayar’s Heaven Come Crashing is an instrumental epic of desperate longing",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_183",
+    "headline_a": "Rachika Nayar’s Heaven Come Crashing is an instrumental epic of desperate longing",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_184",
+    "headline_a": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "headline_b": "Xbox prices are increasing by up to €200 or £170",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_185",
+    "headline_a": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "headline_b": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_186",
+    "headline_a": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_187",
+    "headline_a": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_188",
+    "headline_a": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_189",
+    "headline_a": "Xbox prices are increasing by up to €200 or £170",
+    "headline_b": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_190",
+    "headline_a": "Xbox prices are increasing by up to €200 or £170",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_191",
+    "headline_a": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "headline_b": "HP’s HyperX Omen 15 isn’t quite the budget-friendly gaming laptop its predecessor was",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_192",
+    "headline_a": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_193",
+    "headline_a": "Is paying artists enough to convince them to embrace AI?",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_194",
+    "headline_a": "Pixel 11 specs and price leak with no surprises",
+    "headline_b": "Angela Nissel faces down grief with a laugh",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_195",
+    "headline_a": "US and Japan jointly intervene to prop up yen in rare move",
+    "headline_b": "Stick to spending limits, PM and chancellor tell ministers in joint memo",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_196",
+    "headline_a": "Faisal Islam: Four reasons why Fifa's World Cup plan never stacked up",
+    "headline_b": "Sainsbury's agrees to sell Argos for £120m",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_197",
+    "headline_a": "Faisal Islam: Four reasons why Fifa's World Cup plan never stacked up",
+    "headline_b": "BP puts North Sea business up for sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_198",
+    "headline_a": "Snapchat joins other popular platforms in fight against 'AI slop'",
+    "headline_b": "Anthropic's Claude AI escapes to hack into three organisations",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_199",
+    "headline_a": "Snapchat joins other popular platforms in fight against 'AI slop'",
+    "headline_b": "US economic growth sees surprise slowdown in second quarter",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_200",
+    "headline_a": "Snapchat joins other popular platforms in fight against 'AI slop'",
+    "headline_b": "How Leopold Aschenbrenner built a $45 billion AI hedge fund — and lost most of it in days",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_201",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Sam Altman and AI’s decel debate",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_202",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_203",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "TechCrunch Mobility: Two roads diverged — for robotaxis",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_204",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "These App Store hidden gems prove there’s still room for great software in the AI era",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_205",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_206",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "YouTuber Hank Green says his AI usage is ‘not healthy’",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_207",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_208",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "This $9 key physically locks your most addictive apps",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_209",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Uber is building an autonomous vehicle empire, and here’s every company it’s using to do it",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_210",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Apps that help you break free from doomscrolling and get active",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_211",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "OpenAI reportedly finds evidence that more of its agents ran amok",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_212",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Rivian spinoff Also to start delivering e-bikes after months of delays",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_213",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Silicon Valley loves young founders. Until it doesn’t.",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_214",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Rachika Nayar’s Heaven Come Crashing is an instrumental epic of desperate longing",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_215",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_216",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Xbox prices are increasing by up to €200 or £170",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_217",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_218",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "HP’s HyperX Omen 15 isn’t quite the budget-friendly gaming laptop its predecessor was",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_219",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Is paying artists enough to convince them to embrace AI?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_220",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_221",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Pixel 11 specs and price leak with no surprises",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_222",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Angela Nissel faces down grief with a laugh",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_223",
+    "headline_a": "The global memory shortage hits the MacBook Air",
+    "headline_b": "Is this Billboard Hot 100 hit AI slop?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_224",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "TechCrunch Mobility: Two roads diverged — for robotaxis",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_225",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Inside the London hacker house taking a stand against founder burnout",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_226",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_227",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "This $9 key physically locks your most addictive apps",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_228",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "OpenAI reportedly finds evidence that more of its agents ran amok",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_229",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Rivian spinoff Also to start delivering e-bikes after months of delays",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_230",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Silicon Valley loves young founders. Until it doesn’t.",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_231",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "India is starting to pay for apps, not just download them",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_232",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Xbox prices are increasing by up to €200 or £170",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_233",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Skylight&#8217;s smart calendars are up to $90 off during its back-to-school sale",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_234",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "HP’s HyperX Omen 15 isn’t quite the budget-friendly gaming laptop its predecessor was",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_235",
+    "headline_a": "Sam Altman and AI’s decel debate",
+    "headline_b": "Angela Nissel faces down grief with a laugh",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_236",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "TechCrunch Mobility: Two roads diverged — for robotaxis",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_237",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "These App Store hidden gems prove there’s still room for great software in the AI era",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_238",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Inside the London hacker house taking a stand against founder burnout",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_239",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Judge denies xAI’s request to block Minnesota ban on ‘nudify’ apps",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_240",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Should you still buy your next smartphone — or subscribe to it instead?",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_241",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "This $9 key physically locks your most addictive apps",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_242",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Apps that help you break free from doomscrolling and get active",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_243",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Rivian spinoff Also to start delivering e-bikes after months of delays",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_244",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Silicon Valley loves young founders. Until it doesn’t.",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_245",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Google nixes its Earth AI feature one day after launch, amid criticism it would spread misinformation",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_246",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Fresh off its Wiz payout, Index Ventures raises $2B across three funds",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_247",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Fender’s CEO seems to think your bandmates are just analog AI",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_248",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Xbox prices are increasing by up to €200 or £170",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_249",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "HP’s HyperX Omen 15 isn’t quite the budget-friendly gaming laptop its predecessor was",
+    "label": null,
+    "annotator_notes": ""
+  },
+  {
+    "id": "pair_250",
+    "headline_a": "Malaysia is reportedly shutting down Balaji Srinivasan’s Network School",
+    "headline_b": "Foldables are sort of boring now — and that’s great news for Apple",
+    "label": null,
+    "annotator_notes": ""
+  }
+]

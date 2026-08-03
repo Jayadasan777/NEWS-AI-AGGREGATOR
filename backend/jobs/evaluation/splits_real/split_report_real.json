@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-08-03T03:46:52.283Z",
+  "total_items": 250,
+  "train_count": 145,
+  "val_count": 46,
+  "test_count": 59,
+  "train_ratio": 0.58,
+  "val_ratio": 0.184,
+  "test_ratio": 0.236,
+  "strata_count": 10
+}

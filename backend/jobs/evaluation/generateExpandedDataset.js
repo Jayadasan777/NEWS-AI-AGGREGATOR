@@ -1,11 +1,8 @@
 /**
- * Benchmark Dataset Expansion Generator
- * Purpose: Programmatically generates additional headline pairs for the N=500+ benchmark
- * using structured templates across all 14 sectors with controlled difficulty tiers.
- * Combines with existing 150 curated pairs to reach 500+ total.
- * 
- * Each generated pair includes: id, headline_a, headline_b, expected, sector, domain,
- * difficulty, source_a, source_b, annotator_1, annotator_2, notes
+ * ⚠️ WARNING: SYNTHETIC DATASET GENERATOR - DO NOT CITE
+ * DO NOT USE THIS SCRIPT OR ITS OUTPUT FOR ACADEMIC PUBLICATION CLAIMS.
+ * This script generates templated headline pairs with synthetic fields.
+ * Valid evaluations use real ingested RSS articles from MongoDB.
  */
 
 const fs = require('fs');

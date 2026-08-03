@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-08-03T03:47:12.741Z",
+  "dataset": "testCases_v2_real.json",
+  "dataset_source": "real_rss_ingested_v2",
+  "split": "held_out_test_split",
+  "optimal_threshold_from_val": 0.55,
+  "test_metrics": {
+    "accuracy": 0.8305,
+    "precision": 0.7333,
+    "recall": 0.6471,
+    "f1": 0.6875,
+    "mcc": 0.574,
+    "tp": 11,
+    "fp": 4,
+    "tn": 38,
+    "fn": 6
+  },
+  "latency_ms_per_pair": 8.08,
+  "test_sample_count": 59
+}
