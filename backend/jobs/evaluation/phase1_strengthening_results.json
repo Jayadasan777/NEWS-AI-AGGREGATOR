@@ -1,0 +1,92 @@
+{
+  "gating_ablation": [
+    {
+      "Ablation Gating Track": "(a) Lexical-Only (Jaccard τ=0.12)",
+      "Acc (%) [95% CI]": "50.00% [42.93%, 57.07%]",
+      "Prec (%)": "50.00%",
+      "Rec (%)": "1.01%",
+      "F1 (%) [95% CI]": "1.98% [0%, 6.32%]"
+    },
+    {
+      "Ablation Gating Track": "(b) EFSA-Only (τ=0.22)",
+      "Acc (%) [95% CI]": "52.53% [45.96%, 58.59%]",
+      "Prec (%)": "55.56%",
+      "Rec (%)": "25.25%",
+      "F1 (%) [95% CI]": "34.72% [24.62%, 43.48%]"
+    },
+    {
+      "Ablation Gating Track": "(c) Semantic-Embedding-Only (SBERT τ=0.55)",
+      "Acc (%) [95% CI]": "50.00% [42.93%, 57.07%]",
+      "Prec (%)": "50.00%",
+      "Rec (%)": "1.01%",
+      "F1 (%) [95% CI]": "1.98% [0%, 6.32%]"
+    },
+    {
+      "Ablation Gating Track": "(d) EFSA + Semantic Combined",
+      "Acc (%) [95% CI]": "52.53% [45.96%, 58.59%]",
+      "Prec (%)": "55.56%",
+      "Rec (%)": "25.25%",
+      "F1 (%) [95% CI]": "34.72% [24.62%, 43.48%]"
+    }
+  ],
+  "weight_sensitivity": [
+    {
+      "Weight Combination": "Production Default (0.25, 0.30, 0.25, 0.10, 0.10)",
+      "Val Acc (Tuned)": "53.61%",
+      "Val F1 (Tuned)": "43.80%",
+      "Test Acc (Out-of-Sample)": "52.53%",
+      "Test F1 (Out-of-Sample)": "34.72%"
+    },
+    {
+      "Weight Combination": "Equal Weighting (0.20, 0.20, 0.20, 0.20, 0.20)",
+      "Val Acc (Tuned)": "50.00%",
+      "Val F1 (Tuned)": "66.67%",
+      "Test Acc (Out-of-Sample)": "50.00%",
+      "Test F1 (Out-of-Sample)": "66.67%"
+    },
+    {
+      "Weight Combination": "High Lexical Focus (0.40, 0.40, 0.10, 0.05, 0.05)",
+      "Val Acc (Tuned)": "50.00%",
+      "Val F1 (Tuned)": "8.79%",
+      "Test Acc (Out-of-Sample)": "50.00%",
+      "Test F1 (Out-of-Sample)": "5.71%"
+    },
+    {
+      "Weight Combination": "High Entity Focus (0.15, 0.15, 0.50, 0.10, 0.10)",
+      "Val Acc (Tuned)": "52.41%",
+      "Val F1 (Tuned)": "34.71%",
+      "Test Acc (Out-of-Sample)": "55.05%",
+      "Test F1 (Out-of-Sample)": "27.64%"
+    }
+  ],
+  "dpcs_sensitivity": [
+    {
+      "C_pub(0) Initial Score": 50,
+      "Test Accuracy (%)": "50.00%",
+      "Test Precision (%)": "50.00%",
+      "Test Recall (%)": "1.01%",
+      "Test F1-Score (%)": "1.98%"
+    },
+    {
+      "C_pub(0) Initial Score": 70,
+      "Test Accuracy (%)": "52.53%",
+      "Test Precision (%)": "64.71%",
+      "Test Recall (%)": "11.11%",
+      "Test F1-Score (%)": "18.97%"
+    },
+    {
+      "C_pub(0) Initial Score": 85,
+      "Test Accuracy (%)": "55.05%",
+      "Test Precision (%)": "70.83%",
+      "Test Recall (%)": "17.17%",
+      "Test F1-Score (%)": "27.64%"
+    },
+    {
+      "C_pub(0) Initial Score": 100,
+      "Test Accuracy (%)": "52.53%",
+      "Test Precision (%)": "55.56%",
+      "Test Recall (%)": "25.25%",
+      "Test F1-Score (%)": "34.72%"
+    }
+  ]
+}
