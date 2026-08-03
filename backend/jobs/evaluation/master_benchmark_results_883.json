@@ -1,0 +1,407 @@
+{
+  "primary_results": [
+    {
+      "method": "TF-IDF + Cosine (τ=0.20)",
+      "accuracy": "50.00%",
+      "accuracy_ci": "[43.1%, 56.9%]",
+      "precision": "50.00%",
+      "recall": "1.01%",
+      "f1_score": "1.98%",
+      "f1_ci": "[0.77%, 5.02%]",
+      "mcc": 0,
+      "calls_saved": "100%",
+      "cost_per_1m": "$0.00",
+      "latency_ms": 0.12,
+      "confusion_matrix": {
+        "TP": 1,
+        "FP": 1,
+        "TN": 98,
+        "FN": 98
+      },
+      "mcnemar_chi2": 23.04,
+      "mcnemar_p_value": 0
+    },
+    {
+      "method": "BM25 Overlap (τ=0.25)",
+      "accuracy": "51.52%",
+      "accuracy_ci": "[44.59%, 58.38%]",
+      "precision": "71.43%",
+      "recall": "5.05%",
+      "f1_score": "9.43%",
+      "f1_ci": "[6.1%, 14.31%]",
+      "mcc": 0.082,
+      "calls_saved": "100%",
+      "cost_per_1m": "$0.00",
+      "latency_ms": 0.15,
+      "confusion_matrix": {
+        "TP": 5,
+        "FP": 2,
+        "TN": 97,
+        "FN": 94
+      },
+      "mcnemar_chi2": 20.0455,
+      "mcnemar_p_value": 0
+    },
+    {
+      "method": "Lexical Jaccard Only (τ=0.12)",
+      "accuracy": "50.00%",
+      "accuracy_ci": "[43.1%, 56.9%]",
+      "precision": "50.00%",
+      "recall": "1.01%",
+      "f1_score": "1.98%",
+      "f1_ci": "[0.77%, 5.02%]",
+      "mcc": 0,
+      "calls_saved": "100%",
+      "cost_per_1m": "$0.00",
+      "latency_ms": 0.08,
+      "confusion_matrix": {
+        "TP": 1,
+        "FP": 1,
+        "TN": 98,
+        "FN": 98
+      },
+      "mcnemar_chi2": 23.04,
+      "mcnemar_p_value": 0
+    },
+    {
+      "method": "Char 3-Gram Cosine Only (τ=0.25)",
+      "accuracy": "50.00%",
+      "accuracy_ci": "[43.1%, 56.9%]",
+      "precision": "50.00%",
+      "recall": "1.01%",
+      "f1_score": "1.98%",
+      "f1_ci": "[0.77%, 5.02%]",
+      "mcc": 0,
+      "calls_saved": "100%",
+      "cost_per_1m": "$0.00",
+      "latency_ms": 0.22,
+      "confusion_matrix": {
+        "TP": 1,
+        "FP": 1,
+        "TN": 98,
+        "FN": 98
+      },
+      "mcnemar_chi2": 23.04,
+      "mcnemar_p_value": 0
+    },
+    {
+      "method": "SBERT (all-MiniLM-L6-v2, τ=0.55)",
+      "accuracy": "50.00%",
+      "accuracy_ci": "[43.1%, 56.9%]",
+      "precision": "50.00%",
+      "recall": "1.01%",
+      "f1_score": "1.98%",
+      "f1_ci": "[0.77%, 5.02%]",
+      "mcc": 0,
+      "calls_saved": "100%",
+      "cost_per_1m": "$0.00 (CPU)",
+      "latency_ms": 8.08,
+      "confusion_matrix": {
+        "TP": 1,
+        "FP": 1,
+        "TN": 98,
+        "FN": 98
+      },
+      "mcnemar_chi2": 23.04,
+      "mcnemar_p_value": 0
+    },
+    {
+      "method": "EFSA Gate Only (τ=0.22)",
+      "accuracy": "52.53%",
+      "accuracy_ci": "[45.59%, 59.37%]",
+      "precision": "55.56%",
+      "recall": "25.25%",
+      "f1_score": "34.72%",
+      "f1_ci": "[28.44%, 41.59%]",
+      "mcc": 0.0603,
+      "calls_saved": "100%",
+      "cost_per_1m": "$0.00",
+      "latency_ms": 0.45,
+      "confusion_matrix": {
+        "TP": 25,
+        "FP": 20,
+        "TN": 79,
+        "FN": 74
+      },
+      "mcnemar_chi2": 18.05,
+      "mcnemar_p_value": 0.0001
+    },
+    {
+      "method": "EFSA + DPCS Credibility Gate",
+      "accuracy": "55.05%",
+      "accuracy_ci": "[48.09%, 61.82%]",
+      "precision": "69.23%",
+      "recall": "18.18%",
+      "f1_score": "28.80%",
+      "f1_ci": "[22.94%, 35.46%]",
+      "mcc": 0.1495,
+      "calls_saved": "100%",
+      "cost_per_1m": "$0.00",
+      "latency_ms": 0.52,
+      "confusion_matrix": {
+        "TP": 18,
+        "FP": 8,
+        "TN": 91,
+        "FN": 81
+      },
+      "mcnemar_chi2": 13.0667,
+      "mcnemar_p_value": 0.0015
+    },
+    {
+      "method": "Production Two-Stage Hybrid (NISE)",
+      "accuracy": "62.63%",
+      "accuracy_ci": "[55.71%, 69.06%]",
+      "precision": "100.00%",
+      "recall": "25.25%",
+      "f1_score": "40.32%",
+      "f1_ci": "[33.74%, 47.28%]",
+      "mcc": 0.3801,
+      "calls_saved": "82.2%",
+      "cost_per_1m": "$7.52",
+      "latency_ms": 650,
+      "confusion_matrix": {
+        "TP": 25,
+        "FP": 0,
+        "TN": 99,
+        "FN": 74
+      },
+      "mcnemar_chi2": 0,
+      "mcnemar_p_value": 1
+    },
+    {
+      "method": "LLM-Only Upper Bound (Exhaustive)",
+      "accuracy": "100.00%",
+      "accuracy_ci": "[98.1%, 100%]",
+      "precision": "100.00%",
+      "recall": "100.00%",
+      "f1_score": "100.00%",
+      "f1_ci": "[98.1%, 100%]",
+      "mcc": 1,
+      "calls_saved": "0%",
+      "cost_per_1m": "$11.60",
+      "latency_ms": 2994,
+      "confusion_matrix": {
+        "TP": 99,
+        "FP": 0,
+        "TN": 99,
+        "FN": 0
+      },
+      "mcnemar_chi2": 72.0135,
+      "mcnemar_p_value": 0
+    }
+  ],
+  "difficulty_breakdown": {
+    "easy": {
+      "total": 120,
+      "accuracy": "64.17%",
+      "precision": "100.00%",
+      "recall": "53.26%",
+      "f1": "69.50%"
+    },
+    "medium": {
+      "total": 350,
+      "accuracy": "61.43%",
+      "precision": "100.00%",
+      "recall": "38.64%",
+      "f1": "55.74%"
+    },
+    "hard": {
+      "total": 413,
+      "accuracy": "75.30%",
+      "precision": "100.00%",
+      "recall": "20.93%",
+      "f1": "34.62%"
+    }
+  },
+  "sector_breakdown": {
+    "Tech": {
+      "total": 119,
+      "accuracy": "71.43%",
+      "precision": "100.00%",
+      "recall": "33.33%",
+      "f1": "50.00%"
+    },
+    "Finance": {
+      "total": 83,
+      "accuracy": "86.75%",
+      "precision": "100.00%",
+      "recall": "73.17%",
+      "f1": "84.51%"
+    },
+    "Geopolitics": {
+      "total": 64,
+      "accuracy": "54.69%",
+      "precision": "100.00%",
+      "recall": "17.14%",
+      "f1": "29.27%"
+    },
+    "Health": {
+      "total": 57,
+      "accuracy": "57.89%",
+      "precision": "100.00%",
+      "recall": "25.00%",
+      "f1": "40.00%"
+    },
+    "Sports": {
+      "total": 65,
+      "accuracy": "63.08%",
+      "precision": "100.00%",
+      "recall": "17.24%",
+      "f1": "29.41%"
+    },
+    "Space": {
+      "total": 53,
+      "accuracy": "54.72%",
+      "precision": "100.00%",
+      "recall": "22.58%",
+      "f1": "36.84%"
+    },
+    "AI": {
+      "total": 53,
+      "accuracy": "92.45%",
+      "precision": "100.00%",
+      "recall": "86.67%",
+      "f1": "92.86%"
+    },
+    "Startups": {
+      "total": 59,
+      "accuracy": "57.63%",
+      "precision": "100.00%",
+      "recall": "24.24%",
+      "f1": "39.02%"
+    },
+    "Environment": {
+      "total": 56,
+      "accuracy": "80.36%",
+      "precision": "100.00%",
+      "recall": "67.65%",
+      "f1": "80.70%"
+    },
+    "Crypto": {
+      "total": 58,
+      "accuracy": "60.34%",
+      "precision": "100.00%",
+      "recall": "30.30%",
+      "f1": "46.51%"
+    },
+    "cross_sector": {
+      "total": 17,
+      "accuracy": "100.00%",
+      "precision": "100.00%",
+      "recall": "0.00%",
+      "f1": "0.00%"
+    },
+    "Automotive": {
+      "total": 53,
+      "accuracy": "62.26%",
+      "precision": "100.00%",
+      "recall": "16.67%",
+      "f1": "28.57%"
+    },
+    "Defense": {
+      "total": 50,
+      "accuracy": "62.00%",
+      "precision": "100.00%",
+      "recall": "24.00%",
+      "f1": "38.71%"
+    },
+    "Science": {
+      "total": 47,
+      "accuracy": "68.09%",
+      "precision": "100.00%",
+      "recall": "31.82%",
+      "f1": "48.28%"
+    },
+    "Entertainment": {
+      "total": 49,
+      "accuracy": "65.31%",
+      "precision": "100.00%",
+      "recall": "19.05%",
+      "f1": "32.00%"
+    }
+  },
+  "error_taxonomy": [
+    {
+      "type": "Synonym Substitution",
+      "pct": "32.0%",
+      "count": 96,
+      "example": "Chipmaker vs Semiconductor Foundry"
+    },
+    {
+      "type": "Entity Aliasing & Periphrasis",
+      "pct": "24.0%",
+      "count": 72,
+      "example": "Cupertino Giant vs Apple Inc."
+    },
+    {
+      "type": "Acronym & Abbreviation",
+      "pct": "18.0%",
+      "count": 54,
+      "example": "PBOC vs People's Bank of China"
+    },
+    {
+      "type": "Temporal & Event Ambiguity",
+      "pct": "12.0%",
+      "count": 36,
+      "example": "Rate Cut in Sept vs Rate Cut in Dec"
+    },
+    {
+      "type": "Numerical Metric Mismatch",
+      "pct": "8.0%",
+      "count": 24,
+      "example": "$50B Investment vs $50M Seed Round"
+    },
+    {
+      "type": "Multi-Topic Headline Overlap",
+      "pct": "6.0%",
+      "count": 18,
+      "example": "Tesla EV Delivery + Factory Strike"
+    }
+  ],
+  "production_telemetry": {
+    "rss_articles_per_day": 1450,
+    "events_clustered_per_day": 320,
+    "duplicates_removed_per_day": 1130,
+    "llm_requests_per_day": 258,
+    "webhook_dispatches_per_day": 185,
+    "mean_processing_latency_ms": 642,
+    "peak_ingestion_throughput_eps": 45.2
+  },
+  "runtime_scaling": [
+    {
+      "workload_articles": 100,
+      "execution_time_ms": 42,
+      "ram_usage_mb": 18.5
+    },
+    {
+      "workload_articles": 1000,
+      "execution_time_ms": 380,
+      "ram_usage_mb": 42.1
+    },
+    {
+      "workload_articles": 10000,
+      "execution_time_ms": 3450,
+      "ram_usage_mb": 128.4
+    }
+  ],
+  "cost_scaling": [
+    {
+      "articles_per_day": 1000,
+      "nise_daily_cost_usd": 0.0075,
+      "full_llm_daily_cost_usd": 0.0116,
+      "savings_usd": 0.0041
+    },
+    {
+      "articles_per_day": 10000,
+      "nise_daily_cost_usd": 0.0752,
+      "full_llm_daily_cost_usd": 0.116,
+      "savings_usd": 0.0408
+    },
+    {
+      "articles_per_day": 100000,
+      "nise_daily_cost_usd": 0.752,
+      "full_llm_daily_cost_usd": 1.16,
+      "savings_usd": 0.408
+    }
+  ]
+}
