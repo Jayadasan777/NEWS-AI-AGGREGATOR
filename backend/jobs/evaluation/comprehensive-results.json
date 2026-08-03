@@ -1,0 +1,104 @@
+{
+  "timestamp": "2026-08-03T03:00:54.882Z",
+  "splitSizes": {
+    "validation": 127,
+    "test": 129
+  },
+  "tracks": {
+    "production": {
+      "name": "Production (Jaccard + Cosine + EFSA Gate)",
+      "validationGate": {
+        "accuracy": 51.18,
+        "precision": 55.67,
+        "recall": 73.97,
+        "f1": 63.53,
+        "mcc": -0.066,
+        "tp": 54,
+        "fp": 43,
+        "tn": 11,
+        "fn": 19,
+        "total": 127
+      },
+      "testGate": {
+        "accuracy": 54.26,
+        "precision": 57.14,
+        "recall": 81.08,
+        "f1": 67.04,
+        "mcc": -0.009,
+        "tp": 60,
+        "fp": 45,
+        "tn": 10,
+        "fn": 14,
+        "total": 129
+      }
+    },
+    "efsa": {
+      "name": "EFSA Gate Only (τ = 0.22)",
+      "validationGate": {
+        "accuracy": 51.18,
+        "precision": 55.67,
+        "recall": 73.97,
+        "f1": 63.53,
+        "mcc": -0.066,
+        "tp": 54,
+        "fp": 43,
+        "tn": 11,
+        "fn": 19,
+        "total": 127
+      },
+      "testGate": {
+        "accuracy": 54.26,
+        "precision": 57.14,
+        "recall": 81.08,
+        "f1": 67.04,
+        "mcc": -0.009,
+        "tp": 60,
+        "fp": 45,
+        "tn": 10,
+        "fn": 14,
+        "total": 129
+      }
+    },
+    "llm_only": {
+      "name": "LLM-Only Upper Bound (Unconditional)",
+      "validationGate": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "mcc": 0,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0,
+        "total": 127
+      },
+      "testGate": {
+        "accuracy": 57.36,
+        "precision": 57.36,
+        "recall": 100,
+        "f1": 72.91,
+        "mcc": 0,
+        "tp": 74,
+        "fp": 55,
+        "tn": 0,
+        "fn": 0,
+        "total": 129
+      }
+    }
+  },
+  "sbertBaseline": {
+    "threshold": 0.35,
+    "accuracy": 68.22,
+    "precision": 68.97,
+    "recall": 81.08,
+    "f1": 74.53,
+    "mcc": 0.338,
+    "tp": 60,
+    "fp": 27,
+    "tn": 28,
+    "fn": 14,
+    "total": 129,
+    "cluster_purity": 0.6822
+  }
+}

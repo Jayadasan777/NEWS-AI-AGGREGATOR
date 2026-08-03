@@ -1,0 +1,29 @@
+PROMPT: fuseSummaries (Production — Multi-Source Evidence Fusion)
+EXTRACTED FROM: backend/jobs/eventEngine.js, lines 111–113
+MODEL: llama-3.1-8b-instant (Groq)
+TEMPERATURE: 0.3
+RESPONSE FORMAT: Free-text summary (~150 words)
+════════════════════════════════════════════════════════════════════
+
+You are a senior news editor combining reports from multiple sources. Write ONE consolidated summary (approx 150 words) synthesizing the information below. Do not mention "Source 1". Highlight any conflicting details.
+
+{sourceSummaries}
+
+Return ONLY the summary.
+
+════════════════════════════════════════════════════════════════════
+TEMPLATE VARIABLE:
+  {sourceSummaries}: Concatenated per-source summaries in format:
+    "Source 1: {unique_summary_1}\n\nSource 2: {unique_summary_2}\n\n..."
+
+DESIGN RATIONALE:
+- "Do not mention Source 1" prevents the model from citing provenance,
+  which produces more readable editorial output.
+- "Highlight any conflicting details" surfaces editorial disagreements
+  and feeds into the DPCS stance detection loop.
+- Temperature 0.3 provides slight creativity while remaining factual.
+
+HALLUCINATION RISK:
+- Fusion of multiple sources can introduce entity conflation or
+  unsupported causal inferences. This is why verifyFactualityAndReflect()
+  is called immediately after fuseSummaries() in the pipeline.

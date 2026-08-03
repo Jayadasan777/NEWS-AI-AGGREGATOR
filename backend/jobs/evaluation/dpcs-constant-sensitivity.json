@@ -1,0 +1,205 @@
+{
+  "timestamp": "2026-08-02T07:01:35.243Z",
+  "threshold": 0.22,
+  "production_constants": {
+    "alpha": 0.2,
+    "neutralWeight": 0.5,
+    "timeDecayPeriod": 48,
+    "rawVsEmaRatio": "0.20/0.80"
+  },
+  "alpha_sweep": [
+    {
+      "alpha": 0.05,
+      "accuracy": 41.73,
+      "precision": 49.28,
+      "recall": 46.58,
+      "f1": 47.89,
+      "tp": 34,
+      "fp": 35,
+      "tn": 19,
+      "fn": 39,
+      "dpcsConfig": {
+        "alpha": 0.05
+      }
+    },
+    {
+      "alpha": 0.1,
+      "accuracy": 41.73,
+      "precision": 49.28,
+      "recall": 46.58,
+      "f1": 47.89,
+      "tp": 34,
+      "fp": 35,
+      "tn": 19,
+      "fn": 39,
+      "dpcsConfig": {
+        "alpha": 0.1
+      }
+    },
+    {
+      "alpha": 0.2,
+      "accuracy": 42.52,
+      "precision": 50,
+      "recall": 47.95,
+      "f1": 48.95,
+      "tp": 35,
+      "fp": 35,
+      "tn": 19,
+      "fn": 38,
+      "dpcsConfig": {
+        "alpha": 0.2
+      }
+    },
+    {
+      "alpha": 0.3,
+      "accuracy": 42.52,
+      "precision": 50,
+      "recall": 47.95,
+      "f1": 48.95,
+      "tp": 35,
+      "fp": 35,
+      "tn": 19,
+      "fn": 38,
+      "dpcsConfig": {
+        "alpha": 0.3
+      }
+    },
+    {
+      "alpha": 0.5,
+      "accuracy": 42.52,
+      "precision": 50,
+      "recall": 46.58,
+      "f1": 48.23,
+      "tp": 34,
+      "fp": 34,
+      "tn": 20,
+      "fn": 39,
+      "dpcsConfig": {
+        "alpha": 0.5
+      }
+    }
+  ],
+  "neutral_weight_sweep": [
+    {
+      "neutralWeight": 0.25,
+      "accuracy": 40.94,
+      "precision": 48.53,
+      "recall": 45.21,
+      "f1": 46.81,
+      "tp": 33,
+      "fp": 35,
+      "tn": 19,
+      "fn": 40,
+      "dpcsConfig": {
+        "neutralWeight": 0.25
+      }
+    },
+    {
+      "neutralWeight": 0.5,
+      "accuracy": 42.52,
+      "precision": 50,
+      "recall": 47.95,
+      "f1": 48.95,
+      "tp": 35,
+      "fp": 35,
+      "tn": 19,
+      "fn": 38,
+      "dpcsConfig": {
+        "neutralWeight": 0.5
+      }
+    },
+    {
+      "neutralWeight": 0.75,
+      "accuracy": 45.67,
+      "precision": 52.7,
+      "recall": 53.42,
+      "f1": 53.06,
+      "tp": 39,
+      "fp": 35,
+      "tn": 19,
+      "fn": 34,
+      "dpcsConfig": {
+        "neutralWeight": 0.75
+      }
+    }
+  ],
+  "decay_period_sweep": [
+    {
+      "timeDecayPeriod": 24,
+      "accuracy": 42.52,
+      "precision": 50,
+      "recall": 47.95,
+      "f1": 48.95,
+      "tp": 35,
+      "fp": 35,
+      "tn": 19,
+      "fn": 38,
+      "dpcsConfig": {
+        "timeDecayPeriod": 24
+      }
+    },
+    {
+      "timeDecayPeriod": 48,
+      "accuracy": 42.52,
+      "precision": 50,
+      "recall": 47.95,
+      "f1": 48.95,
+      "tp": 35,
+      "fp": 35,
+      "tn": 19,
+      "fn": 38,
+      "dpcsConfig": {
+        "timeDecayPeriod": 48
+      }
+    },
+    {
+      "timeDecayPeriod": 72,
+      "accuracy": 42.52,
+      "precision": 50,
+      "recall": 47.95,
+      "f1": 48.95,
+      "tp": 35,
+      "fp": 35,
+      "tn": 19,
+      "fn": 38,
+      "dpcsConfig": {
+        "timeDecayPeriod": 72
+      }
+    }
+  ],
+  "dpcs_vs_no_dpcs": {
+    "without": {
+      "accuracy": 51.18,
+      "precision": 55.67,
+      "recall": 73.97,
+      "f1": 63.53,
+      "tp": 54,
+      "fp": 43,
+      "tn": 11,
+      "fn": 19
+    },
+    "with": {
+      "accuracy": 42.52,
+      "precision": 50,
+      "recall": 47.95,
+      "f1": 48.95,
+      "tp": 35,
+      "fp": 35,
+      "tn": 19,
+      "fn": 38,
+      "dpcsConfig": {
+        "alpha": 0.2,
+        "neutralWeight": 0.5,
+        "timeDecayPeriod": 48
+      }
+    },
+    "recall_delta": -26.019999999999996,
+    "f1_delta": -14.579999999999998
+  },
+  "production_recommendation": {
+    "recommended": false,
+    "condition": "DPCS is experimental. Enable when N_tot≥10 and τ_EFSA≥0.25.",
+    "constants_justified": true,
+    "equation_9_ratio_justification": "0.80 floor prevents silencing unknown sources; 0.20 ceiling limits credibility influence to avoid false suppression of breaking news."
+  }
+}

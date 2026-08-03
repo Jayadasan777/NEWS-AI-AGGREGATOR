@@ -1,0 +1,23 @@
+PROMPT: isSameEvent (v1 — Gemini era, reconstructed)
+MODEL: Gemini Pro (Google)
+TEMPERATURE: 0.2
+RESPONSE FORMAT: "yes" or "no"
+VERSION: v1 (initial implementation, no longer in use)
+════════════════════════════════════════════════════════════════════
+
+Are these two news headlines about the same real-world event? Answer only "yes" or "no".
+
+Headline 1: "{titleA}"
+Headline 2: "{titleB}"
+
+════════════════════════════════════════════════════════════════════
+KNOWN DEFICIENCIES (documented failure analysis):
+- No few-shot examples → model relies entirely on pre-training priors.
+- "Same event" poorly defined → high false positive rate on same-topic pairs.
+- No instruction to distinguish entity-alias pairs from same-entity-different-event pairs.
+- Binary response format prevents confidence extraction.
+
+FAILURE MODES OBSERVED:
+- "Apple unveils new AI chip" vs "Apple stock rises after chip announcement" → Incorrectly classified SAME (topic similarity)
+- "ECB leaves rate unchanged" vs "Fed considers rate hike" → Incorrectly classified SAME (general monetary policy topic)
+- Estimated precision: ~71% on financial sector pairs

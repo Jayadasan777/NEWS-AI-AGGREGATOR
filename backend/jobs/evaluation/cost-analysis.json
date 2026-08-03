@@ -1,0 +1,98 @@
+{
+  "timestamp": "2026-08-03T03:02:59.755Z",
+  "pricing": {
+    "groq_8b_input_per_1M_tokens": 0.05,
+    "groq_8b_output_per_1M_tokens": 0.08,
+    "groq_70b_input_per_1M_tokens": 0.59,
+    "groq_70b_output_per_1M_tokens": 0.79,
+    "mongodb_per_1M_queries": 0.1,
+    "cpu_cost_per_hour_usd": 0.048,
+    "sbert_pairs_per_cpu_hour": 4500000
+  },
+  "per_1M_articles": [
+    {
+      "name": "LLM-Only (No Gate)",
+      "description": "Unconditional LLM verification for all 5 candidates",
+      "isSameEvent": 82.5,
+      "fusion": 38.5,
+      "stance": 23.9,
+      "hallucination": 512,
+      "llm_total": 656.9,
+      "sbert_cpu": 0,
+      "mongodb": 0.5,
+      "grand_total": 657.4,
+      "llm_reduction_vs_llm_only": 0,
+      "cost_per_pair": 0.0006574
+    },
+    {
+      "name": "Jaccard Gate + LLM",
+      "description": "Lexical pre-filter reduces LLM calls to 60% of candidates",
+      "isSameEvent": 49.5,
+      "fusion": 38.5,
+      "stance": 23.9,
+      "hallucination": 512,
+      "llm_total": 623.9,
+      "sbert_cpu": 0,
+      "mongodb": 0.5,
+      "grand_total": 624.4,
+      "llm_reduction_vs_llm_only": 5,
+      "cost_per_pair": 0.0006244
+    },
+    {
+      "name": "EFSA Gate + LLM (Production)",
+      "description": "EFSA 5-signal gate reduces LLM calls to ~24% of all candidates",
+      "isSameEvent": 19.8,
+      "fusion": 38.5,
+      "stance": 23.9,
+      "hallucination": 512,
+      "llm_total": 594.2,
+      "sbert_cpu": 0,
+      "mongodb": 0.5,
+      "grand_total": 594.7,
+      "llm_reduction_vs_llm_only": 9.5,
+      "cost_per_pair": 0.0005947
+    },
+    {
+      "name": "EFSA + DPCS Gate + LLM",
+      "description": "DPCS credibility filter further reduces calls by ~15%",
+      "isSameEvent": 16.5,
+      "fusion": 38.5,
+      "stance": 23.9,
+      "hallucination": 512,
+      "llm_total": 590.9,
+      "sbert_cpu": 0,
+      "mongodb": 0.5,
+      "grand_total": 591.4,
+      "llm_reduction_vs_llm_only": 10,
+      "cost_per_pair": 0.0005914
+    },
+    {
+      "name": "SBERT Gate + LLM",
+      "description": "SBERT cosine similarity pre-filter (CPU) before LLM verification",
+      "isSameEvent": 17.325,
+      "fusion": 38.5,
+      "stance": 23.9,
+      "hallucination": 512,
+      "llm_total": 591.725,
+      "sbert_cpu": 0.0533,
+      "mongodb": 0.5,
+      "grand_total": 592.2783,
+      "llm_reduction_vs_llm_only": 9.9,
+      "cost_per_pair": 0.00059228
+    },
+    {
+      "name": "EFSA + SBERT + LLM (Hybrid)",
+      "description": "EFSA lexical gate → SBERT semantic gate → LLM verification",
+      "isSameEvent": 13.2,
+      "fusion": 38.5,
+      "stance": 23.9,
+      "hallucination": 512,
+      "llm_total": 587.6,
+      "sbert_cpu": 0.032,
+      "mongodb": 0.5,
+      "grand_total": 588.132,
+      "llm_reduction_vs_llm_only": 10.5,
+      "cost_per_pair": 0.00058813
+    }
+  ]
+}

@@ -1,0 +1,268 @@
+{
+  "timestamp": "2026-08-03T03:03:11.922Z",
+  "totalTestCases": 10,
+  "metrics": {
+    "detectionRatePercent": 100,
+    "specificityPercent": 0,
+    "falsePositiveRatePercent": 100,
+    "overallAccuracyPercent": 50,
+    "confusionMatrix": {
+      "tp": 5,
+      "tn": 0,
+      "fp": 5,
+      "fn": 0
+    }
+  },
+  "results": [
+    {
+      "id": 1,
+      "type": "factual",
+      "expectedPassed": true,
+      "actualPassed": false,
+      "isCorrect": false,
+      "correctionNeeded": "Remove the causal claim about iPhone sales contributing to revenue, and consider adding a clarification that iPhone sales were a subset of the total revenue.",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": false,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "with iPhone sales contributing $39.3 billion"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "factual",
+      "expectedPassed": true,
+      "actualPassed": false,
+      "isCorrect": false,
+      "correctionNeeded": "Replace 'half a percentage point' with '50 basis points' and rephrase 'slowing inflation and employment metrics' to 'cooling inflation and labor market slowing'",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": false,
+          "flagged_content": "half a percentage point"
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "slowing inflation and employment metrics"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "factual",
+      "expectedPassed": true,
+      "actualPassed": false,
+      "isCorrect": false,
+      "correctionNeeded": "Remove the specific test flight number, as it's not mentioned in the sources. Instead, use a more general phrase like 'during a test flight' or 'in a recent test flight'.",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "during its fifth test flight"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "factual",
+      "expectedPassed": true,
+      "actualPassed": false,
+      "isCorrect": false,
+      "correctionNeeded": "Remove 'tech giant' and rephrase 'concluded the tech giant tied Facebook Marketplace directly to its social network' to 'alleged Meta tied Marketplace to personal Facebook accounts'",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": false,
+          "flagged_content": "tech giant"
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "concluded the tech giant tied Facebook Marketplace directly to its social network"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "type": "factual",
+      "expectedPassed": true,
+      "actualPassed": false,
+      "isCorrect": false,
+      "correctionNeeded": "Change 'at 14 manufacturing plants' to 'across 14 domestic Japanese factories' and rephrase 'after transport officials initiated an inquiry into vehicle certification data irregularities' to match the source material.",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": false,
+          "flagged_content": "at 14 manufacturing plants"
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "after transport officials initiated an inquiry into vehicle certification data irregularities"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "fabricated_number",
+      "expectedPassed": false,
+      "actualPassed": false,
+      "isCorrect": true,
+      "correctionNeeded": "Remove fabricated numbers and causal claims, and correct the statement to only include information from the sources.",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": false,
+          "flagged_content": "$500 million in ARR within 48 hours of launch"
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "generating $500 million in ARR within 48 hours of launch"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "unsupported_entity",
+      "expectedPassed": false,
+      "actualPassed": false,
+      "isCorrect": true,
+      "correctionNeeded": "Remove the statement about Jensen Huang and Pat Gelsinger signing a secret partnership, as it is not mentioned in the sources.",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": false,
+          "flagged_content": "Nvidia confirmed Blackwell processor deliveries are proceeding according to plan, while CEO Jensen Huang signed a secret partnership with Intel CEO Pat Gelsinger."
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "Nvidia confirmed Blackwell processor deliveries are proceeding according to plan, while CEO Jensen Huang signed a secret partnership with Intel CEO Pat Gelsinger."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "type": "unsupported_causal",
+      "expectedPassed": false,
+      "actualPassed": false,
+      "isCorrect": true,
+      "correctionNeeded": "Remove fabricated numbers and named entities, and rephrase causal claims to be supported by the sources.",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": false,
+          "flagged_content": "Microsoft to cancel its planned datacenter expansion in neighboring Illinois"
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": false,
+          "flagged_content": "Microsoft"
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "directly causing Microsoft to cancel its planned datacenter expansion in neighboring Illinois"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "type": "fabricated_number",
+      "expectedPassed": false,
+      "actualPassed": false,
+      "isCorrect": true,
+      "correctionNeeded": "Remove fabricated numbers and causal claims, and consider adding information about the acquisition price ($98 billion in cash) and its impact on Pfizer's oncology portfolio.",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": false,
+          "flagged_content": "45% of Seagen staff immediately after closing"
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "laying off 45% of Seagen staff immediately after closing"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "type": "unsupported_entity",
+      "expectedPassed": false,
+      "actualPassed": false,
+      "isCorrect": true,
+      "correctionNeeded": "Remove Elon Musk and the phrase 'under the direct supervision of Elon Musk and Boeing engineers'",
+      "checks": [
+        {
+          "check": "Fabricated Numbers",
+          "passed": true,
+          "flagged_content": ""
+        },
+        {
+          "check": "Unsupported Named Entities",
+          "passed": false,
+          "flagged_content": "Elon Musk"
+        },
+        {
+          "check": "Unsupported Causal Claims",
+          "passed": false,
+          "flagged_content": "under the direct supervision of Elon Musk and Boeing engineers"
+        }
+      ]
+    }
+  ]
+}

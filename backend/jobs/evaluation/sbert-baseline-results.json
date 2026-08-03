@@ -1,0 +1,1348 @@
+{
+  "model": "Xenova/all-MiniLM-L6-v2",
+  "hardware": "CPU-only (ONNX Runtime)",
+  "validation": {
+    "sweep": [
+      {
+        "threshold": 0.35,
+        "accuracy": 69.29,
+        "precision": 71.25,
+        "recall": 78.08,
+        "f1": 74.51,
+        "mcc": 0.363,
+        "tp": 57,
+        "fp": 23,
+        "tn": 31,
+        "fn": 16,
+        "total": 127
+      },
+      {
+        "threshold": 0.4,
+        "accuracy": 65.35,
+        "precision": 73.02,
+        "recall": 63.01,
+        "f1": 67.65,
+        "mcc": 0.312,
+        "tp": 46,
+        "fp": 17,
+        "tn": 37,
+        "fn": 27,
+        "total": 127
+      },
+      {
+        "threshold": 0.45,
+        "accuracy": 59.84,
+        "precision": 78.95,
+        "recall": 41.1,
+        "f1": 54.05,
+        "mcc": 0.284,
+        "tp": 30,
+        "fp": 8,
+        "tn": 46,
+        "fn": 43,
+        "total": 127
+      },
+      {
+        "threshold": 0.5,
+        "accuracy": 50.39,
+        "precision": 75,
+        "recall": 20.55,
+        "f1": 32.26,
+        "mcc": 0.153,
+        "tp": 15,
+        "fp": 5,
+        "tn": 49,
+        "fn": 58,
+        "total": 127
+      },
+      {
+        "threshold": 0.55,
+        "accuracy": 47.24,
+        "precision": 75,
+        "recall": 12.33,
+        "f1": 21.18,
+        "mcc": 0.114,
+        "tp": 9,
+        "fp": 3,
+        "tn": 51,
+        "fn": 64,
+        "total": 127
+      },
+      {
+        "threshold": 0.6,
+        "accuracy": 46.46,
+        "precision": 100,
+        "recall": 6.85,
+        "f1": 12.82,
+        "mcc": 0.174,
+        "tp": 5,
+        "fp": 0,
+        "tn": 54,
+        "fn": 68,
+        "total": 127
+      },
+      {
+        "threshold": 0.65,
+        "accuracy": 44.09,
+        "precision": 100,
+        "recall": 2.74,
+        "f1": 5.33,
+        "mcc": 0.109,
+        "tp": 2,
+        "fp": 0,
+        "tn": 54,
+        "fn": 71,
+        "total": 127
+      },
+      {
+        "threshold": 0.7,
+        "accuracy": 42.52,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "mcc": 0,
+        "tp": 0,
+        "fp": 0,
+        "tn": 54,
+        "fn": 73,
+        "total": 127
+      },
+      {
+        "threshold": 0.75,
+        "accuracy": 42.52,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "mcc": 0,
+        "tp": 0,
+        "fp": 0,
+        "tn": 54,
+        "fn": 73,
+        "total": 127
+      },
+      {
+        "threshold": 0.8,
+        "accuracy": 42.52,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "mcc": 0,
+        "tp": 0,
+        "fp": 0,
+        "tn": 54,
+        "fn": 73,
+        "total": 127
+      },
+      {
+        "threshold": 0.85,
+        "accuracy": 42.52,
+        "precision": 0,
+        "recall": 0,
+        "f1": 0,
+        "mcc": 0,
+        "tp": 0,
+        "fp": 0,
+        "tn": 54,
+        "fn": 73,
+        "total": 127
+      }
+    ],
+    "best_threshold": {
+      "threshold": 0.35,
+      "accuracy": 69.29,
+      "precision": 71.25,
+      "recall": 78.08,
+      "f1": 74.51,
+      "mcc": 0.363,
+      "tp": 57,
+      "fp": 23,
+      "tn": 31,
+      "fn": 16,
+      "total": 127
+    }
+  },
+  "test": {
+    "threshold": 0.35,
+    "accuracy": 68.22,
+    "precision": 68.97,
+    "recall": 81.08,
+    "f1": 74.53,
+    "mcc": 0.338,
+    "tp": 60,
+    "fp": 27,
+    "tn": 28,
+    "fn": 14,
+    "total": 129,
+    "cluster_purity": 0.6822
+  },
+  "latency": {
+    "ms_per_pair_validation": 8,
+    "ms_per_pair_test": 7.4
+  },
+  "cost_estimate": {
+    "cpu_hours_per_1M_pairs": 2.14
+  },
+  "pair_results": [
+    {
+      "id": 118,
+      "headline_a": "Boeing 737 MAX door plug blows out mid-flight on Alaska Airlines jet",
+      "headline_b": "Commercial aircraft suffers cabin depressurization incident at 16,000 feet",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3384,
+      "correct": false
+    },
+    {
+      "id": 232,
+      "headline_a": "Amazon deforestation falls 50% under Brazil's renewed enforcement campaign",
+      "headline_b": "Satellite data shows dramatic decline in tropical rainforest clearing in South America",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5322,
+      "correct": true
+    },
+    {
+      "id": 637,
+      "headline_a": "Lululemon stock plunges after cutting revenue forecast",
+      "headline_b": "Nike reports 10% revenue decline as Chinese consumer demand weakens",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4053,
+      "correct": false
+    },
+    {
+      "id": 384,
+      "headline_a": "GSK's respiratory syncytial virus vaccine Arexvy approved for older adults",
+      "headline_b": "British pharmaceutical company gains clearance for first RSV immunization in elderly",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5492,
+      "correct": true
+    },
+    {
+      "id": 299,
+      "headline_a": "OPEC+ agrees to extend voluntary oil production cuts through Q2 2025",
+      "headline_b": "Oil-producing cartel maintains supply restrictions to support crude prices",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4373,
+      "correct": true
+    },
+    {
+      "id": 415,
+      "headline_a": "Stability AI releases Stable Diffusion 4 with photorealistic image generation",
+      "headline_b": "Open-source image synthesis firm launches next-generation visual AI model",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4925,
+      "correct": true
+    },
+    {
+      "id": 84,
+      "headline_a": "Airbus delivers record 735 commercial aircraft in 2025 fiscal year",
+      "headline_b": "European planemaker surpasses Boeing with highest annual jet deliveries in company history",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5001,
+      "correct": true
+    },
+    {
+      "id": 290,
+      "headline_a": "Philadelphia Eagles sign Saquon Barkley in surprise free agency move",
+      "headline_b": "Dallas Cowboys fire head coach after playoff elimination",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3123,
+      "correct": true
+    },
+    {
+      "id": 87,
+      "headline_a": "Paramount Global agrees to $28 billion merger with Skydance Media",
+      "headline_b": "Shari Redstone's media empire set to combine with David Ellison's production company",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.35,
+      "correct": true
+    },
+    {
+      "id": 77,
+      "headline_a": "Netflix reports Q2 subscriber growth of 8 million, beating estimates by 50%",
+      "headline_b": "Netflix raises subscription prices across all plans in US and Canada",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4206,
+      "correct": false
+    },
+    {
+      "id": 71,
+      "headline_a": "China launches largest-ever military exercises around Taiwan in show of force",
+      "headline_b": "Beijing imposes fresh trade sanctions on Taiwanese semiconductor exports",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3372,
+      "correct": true
+    },
+    {
+      "id": 5,
+      "headline_a": "Oil prices hit $100 for the first time since May",
+      "headline_b": "Google fined €890m by EU for favouring its own apps",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.1882,
+      "correct": true
+    },
+    {
+      "id": 570,
+      "headline_a": "Google Quantum AI achieves quantum error correction below critical threshold",
+      "headline_b": "Tech giant's quantum computing division demonstrates fault-tolerant qubit operations",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5706,
+      "correct": true
+    },
+    {
+      "id": 230,
+      "headline_a": "Runway raises $141 million for generative AI video production platform",
+      "headline_b": "AI video startup secures funding to expand text-to-video creation tools",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5268,
+      "correct": true
+    },
+    {
+      "id": 85,
+      "headline_a": "North Korea successfully tests solid-fuel intercontinental ballistic missile Hwasong-18",
+      "headline_b": "Pyongyang conducts launch of advanced long-range nuclear-capable rocket system",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5484,
+      "correct": true
+    },
+    {
+      "id": 576,
+      "headline_a": "Stacks blockchain enables Bitcoin smart contracts after Nakamoto upgrade",
+      "headline_b": "Layer-2 protocol activates programmable transaction capability on original cryptocurrency network",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3734,
+      "correct": true
+    },
+    {
+      "id": 283,
+      "headline_a": "Novak Djokovic wins record 25th Grand Slam title at Australian Open",
+      "headline_b": "Iga Swiatek completes career Grand Slam with Wimbledon victory",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4535,
+      "correct": false
+    },
+    {
+      "id": 2,
+      "headline_a": "Apple stock rises 4% after chip announcement",
+      "headline_b": "Apple unveils new AI chip for iPhone 18",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3781,
+      "correct": false
+    },
+    {
+      "id": 237,
+      "headline_a": "European Commission proposes ban on per- and polyfluoroalkyl substances",
+      "headline_b": "Brussels seeks to prohibit entire class of 'forever chemicals' in most comprehensive restriction ever",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.563,
+      "correct": true
+    },
+    {
+      "id": 29,
+      "headline_a": "Boeing machinists vote to ratify new contract, ending 7-week factory strike",
+      "headline_b": "FAA grounds Boeing 737 MAX fleet following mid-air door plug blow-out incident",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2726,
+      "correct": true
+    },
+    {
+      "id": 279,
+      "headline_a": "AIG completes separation of life insurance business Corebridge Financial",
+      "headline_b": "MetLife reports 15% earnings growth driven by group benefits expansion",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3339,
+      "correct": true
+    },
+    {
+      "id": 19,
+      "headline_a": "FDA approves first CRISPR gene-editing therapy for sickle cell disease",
+      "headline_b": "US health regulators clear landmark gene therapy Casgevy for commercial use",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4663,
+      "correct": true
+    },
+    {
+      "id": 248,
+      "headline_a": "BlackRock's tokenized money market fund BUIDL reaches $500 million in assets",
+      "headline_b": "World's largest asset manager's blockchain investment product hits major milestone",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4531,
+      "correct": true
+    },
+    {
+      "id": 301,
+      "headline_a": "SCOTUS rules social media companies can moderate content under First Amendment",
+      "headline_b": "US Supreme Court upholds platforms' right to remove posts in landmark speech case",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4451,
+      "correct": true
+    },
+    {
+      "id": 574,
+      "headline_a": "Norway achieves 95% electric vehicle market share in new car sales",
+      "headline_b": "Scandinavian nation virtually eliminates fossil fuel vehicle purchases",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.533,
+      "correct": true
+    },
+    {
+      "id": 582,
+      "headline_a": "Netflix's Squid Game Season 3 breaks premiere viewership record",
+      "headline_b": "Netflix cancels popular fantasy series Sandman after two seasons",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4104,
+      "correct": false
+    },
+    {
+      "id": 376,
+      "headline_a": "Arctic Council suspends Russia from polar governance body",
+      "headline_b": "Northern hemisphere environmental forum expels member state over military aggression",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4087,
+      "correct": true
+    },
+    {
+      "id": 554,
+      "headline_a": "General Dynamics delivers first Block III Virginia-class nuclear submarine",
+      "headline_b": "US Navy receives latest advanced attack submarine from Connecticut shipyard",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5247,
+      "correct": true
+    },
+    {
+      "id": 309,
+      "headline_a": "DARPA awards $100 million contract for quantum computing research",
+      "headline_b": "Pentagon's advanced research agency funds next-generation computing initiative",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3803,
+      "correct": true
+    },
+    {
+      "id": 241,
+      "headline_a": "SEC approves spot Bitcoin ETF applications from BlackRock and Fidelity",
+      "headline_b": "US securities regulator greenlights direct cryptocurrency investment fund products",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4867,
+      "correct": true
+    },
+    {
+      "id": 578,
+      "headline_a": "Klarna files for IPO at $20 billion valuation after return to profitability",
+      "headline_b": "Swedish buy-now-pay-later fintech seeks US stock market listing",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3225,
+      "correct": false
+    },
+    {
+      "id": 8,
+      "headline_a": "Dow drops 507 points as tech selloff deepens on Alphabet, Tesla earnings and Iran tensions",
+      "headline_b": "US stocks fall as oil prices surge amid Middle East conflict, Alphabet AI spending worries weigh on market",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4666,
+      "correct": true
+    },
+    {
+      "id": 42,
+      "headline_a": "Moderna receives FDA approval for mRESVIA respiratory syncytial virus vaccine",
+      "headline_b": "Novavax enters $1.2 billion co-exclusive licensing agreement with Sanofi",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.226,
+      "correct": true
+    },
+    {
+      "id": 115,
+      "headline_a": "Ford Motor Company reports $1.3 billion loss on electric vehicle division",
+      "headline_b": "Ford recalls 550,000 Bronco Sport SUVs over potential transmission failure",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.405,
+      "correct": false
+    },
+    {
+      "id": 378,
+      "headline_a": "EU and Mercosur finalize long-delayed free trade deal",
+      "headline_b": "European and South American blocs conclude decades-long trade negotiations",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5934,
+      "correct": true
+    },
+    {
+      "id": 174,
+      "headline_a": "African Union inaugurates continental free trade agreement",
+      "headline_b": "Pan-African economic bloc launches world's largest free trade zone",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.6472,
+      "correct": true
+    },
+    {
+      "id": 349,
+      "headline_a": "Instacart raises $660 million in IPO",
+      "headline_b": "DoorDash reports first-ever quarterly profit as food delivery market matures",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3042,
+      "correct": true
+    },
+    {
+      "id": 155,
+      "headline_a": "Shopify reports Q1 revenue of $24.9 billion, beating analyst expectations",
+      "headline_b": "E-commerce platform delivers stronger-than-expected quarterly results on merchant growth",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5093,
+      "correct": true
+    },
+    {
+      "id": 24,
+      "headline_a": "Nvidia quarterly revenue reaches record $57 billion on Blackwell demand",
+      "headline_b": "Nvidia faces DOJ antitrust probe over AI chip sales and server bundle practices",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4059,
+      "correct": false
+    },
+    {
+      "id": 108,
+      "headline_a": "Toyota halts production at 14 Japanese factories due to safety certification scandal",
+      "headline_b": "Toyota unveils next-generation solid-state battery technology for 2028 EVs",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.1953,
+      "correct": true
+    },
+    {
+      "id": 9,
+      "headline_a": "Stock Market Today, July 23: Tesla Drops 15%, Leading Tech Stock Slide",
+      "headline_b": "Stock Market Today, July 23: Cleveland-Cliffs Stock Soars on Robust Steel Demand and Pricing",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4596,
+      "correct": false
+    },
+    {
+      "id": 483,
+      "headline_a": "Novak Djokovic wins record 25th Grand Slam title at Australian Open",
+      "headline_b": "Iga Swiatek completes career Grand Slam with Wimbledon victory",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4535,
+      "correct": false
+    },
+    {
+      "id": 168,
+      "headline_a": "Bank of Korea holds benchmark interest rate by 75 basis points",
+      "headline_b": "East Asian central bank maintains monetary policy in latest rate decision",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5428,
+      "correct": true
+    },
+    {
+      "id": 484,
+      "headline_a": "Saudi Arabia announces $3 billion investment in professional golf league",
+      "headline_b": "PGA Tour and LIV Golf reach surprise merger agreement",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3693,
+      "correct": false
+    },
+    {
+      "id": 359,
+      "headline_a": "Uber reports Q1 revenue of $30.7 billion, beating analyst expectations",
+      "headline_b": "Ride-hailing company delivers stronger-than-expected quarterly results on enterprise adoption",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4276,
+      "correct": true
+    },
+    {
+      "id": 313,
+      "headline_a": "NATO Secretary General warns of Russian nuclear rhetoric escalation",
+      "headline_b": "Western military alliance chief expresses concern over Moscow's atomic weapons posturing",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.6149,
+      "correct": true
+    },
+    {
+      "id": 548,
+      "headline_a": "ICC issues arrest warrant for Israeli Prime Minister",
+      "headline_b": "International Court of Justice orders provisional measures in South Africa v Israel case",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5379,
+      "correct": false
+    },
+    {
+      "id": 635,
+      "headline_a": "Argentina wins Copa America 2024 final",
+      "headline_b": "Brazil's Vinicius Junior wins Ballon d'Or after Champions League triumph",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3575,
+      "correct": false
+    },
+    {
+      "id": 431,
+      "headline_a": "Antarctica records highest-ever temperature of 21.3°C at Esperanza station",
+      "headline_b": "South polar continent registers unprecedented warm reading at research base",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4492,
+      "correct": true
+    },
+    {
+      "id": 413,
+      "headline_a": "Mistral AI launches Mistral Large with 128K context and function calling",
+      "headline_b": "French AI startup releases enterprise-grade language model rivaling GPT-4 performance",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2539,
+      "correct": false
+    },
+    {
+      "id": 178,
+      "headline_a": "EU and Mercosur finalize long-delayed free trade deal",
+      "headline_b": "European and South American blocs conclude decades-long trade negotiations",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5934,
+      "correct": true
+    },
+    {
+      "id": 525,
+      "headline_a": "Nvidia quarterly revenue reaches record $57 billion",
+      "headline_b": "Nvidia CEO Jensen Huang meets China's commerce minister in Beijing",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3659,
+      "correct": false
+    },
+    {
+      "id": 583,
+      "headline_a": "BMW Group reports record EV deliveries of 376,000 units",
+      "headline_b": "BMW recalls 250,000 vehicles in China over airbag inflator defect",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3527,
+      "correct": false
+    },
+    {
+      "id": 514,
+      "headline_a": "FDA issues complete response letter rejecting MDMA therapy application",
+      "headline_b": "US drug regulator declines approval of psychedelic-assisted PTSD treatment",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3715,
+      "correct": true
+    },
+    {
+      "id": 370,
+      "headline_a": "Norges Bank increases benchmark interest rate by 125 basis points",
+      "headline_b": "Nordic central bank adjusts monetary policy in latest rate decision",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3986,
+      "correct": true
+    },
+    {
+      "id": 614,
+      "headline_a": "Panama Canal reduces daily vessel transits due to drought",
+      "headline_b": "Suez Canal Authority announces 15% transit fee increase for 2025",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4192,
+      "correct": false
+    },
+    {
+      "id": 28,
+      "headline_a": "SpaceX Starship completes fifth test flight with successful booster catch at launch pad",
+      "headline_b": "FCC rejects SpaceX application for $885 million rural broadband subsidy grant",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2427,
+      "correct": true
+    },
+    {
+      "id": 158,
+      "headline_a": "Palo Alto Networks reports Q4 revenue of $27.1 billion, beating analyst expectations",
+      "headline_b": "Network security giant delivers stronger-than-expected quarterly results on subscription strength",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3909,
+      "correct": true
+    },
+    {
+      "id": 63,
+      "headline_a": "UFC champion Conor McGregor announces retirement from mixed martial arts",
+      "headline_b": "Irish MMA star walks away from fighting career in social media post",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5287,
+      "correct": true
+    },
+    {
+      "id": 308,
+      "headline_a": "IOC bans Russia and Belarus from 2024 Paris Olympics",
+      "headline_b": "International Olympic Committee excludes two Eastern European nations from Games",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.488,
+      "correct": true
+    },
+    {
+      "id": 256,
+      "headline_a": "Drake releases surprise album reaching #1 on Billboard in 24 hours",
+      "headline_b": "Roger Federer inducted into International Tennis Hall of Fame",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": -0.0273,
+      "correct": true
+    },
+    {
+      "id": 287,
+      "headline_a": "England cricket team announces new Test match format with four-day games",
+      "headline_b": "ICC votes to include cricket in 2032 Brisbane Olympics program",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3083,
+      "correct": true
+    },
+    {
+      "id": 211,
+      "headline_a": "Meta releases Llama 4 open-weight foundation model with 400 billion parameters",
+      "headline_b": "Facebook parent open-sources next-generation large language model for research community",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2699,
+      "correct": false
+    },
+    {
+      "id": 521,
+      "headline_a": "Bitcoin crosses $100,000 mark for the first time in history",
+      "headline_b": "Bitcoin drops 12% in flash crash triggered by Mt. Gox creditor distributions",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2802,
+      "correct": true
+    },
+    {
+      "id": 497,
+      "headline_a": "BHP launches $49 billion hostile bid for Anglo American mining group",
+      "headline_b": "World's largest miner makes unsolicited takeover approach for London-listed rival",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5225,
+      "correct": true
+    },
+    {
+      "id": 293,
+      "headline_a": "ECB President Lagarde signals December rate cut is likely",
+      "headline_b": "Head of eurozone monetary authority hints at upcoming policy easing",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4233,
+      "correct": true
+    },
+    {
+      "id": 103,
+      "headline_a": "ASML reports orders surge 400% as chip equipment demand reaches all-time high",
+      "headline_b": "Dutch semiconductor lithography firm posts record quarterly bookings driven by AI chip race",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3431,
+      "correct": false
+    },
+    {
+      "id": 57,
+      "headline_a": "European Union agrees landmark AI regulation framework in trilogue negotiations",
+      "headline_b": "Brussels reaches deal on world's first comprehensive artificial intelligence law",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5452,
+      "correct": true
+    },
+    {
+      "id": 399,
+      "headline_a": "Morocco reaches World Cup semi-finals as first African nation",
+      "headline_b": "Atlas Lions make history with unprecedented continental advancement in global tournament",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3453,
+      "correct": false
+    },
+    {
+      "id": 632,
+      "headline_a": "ITER fusion reactor achieves first sustained plasma",
+      "headline_b": "Bill Gates-backed nuclear startup TerraPower begins constructing first reactor in Wyoming",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.355,
+      "correct": false
+    },
+    {
+      "id": 244,
+      "headline_a": "Tether reaches $100 billion market cap as stablecoin demand surges",
+      "headline_b": "Largest dollar-pegged digital currency crosses landmark valuation milestone",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4117,
+      "correct": true
+    },
+    {
+      "id": 416,
+      "headline_a": "Microsoft Research introduces Phi-4 small language model outperforming larger rivals",
+      "headline_b": "Tech giant's AI lab demonstrates that compact models can match heavyweight competitors",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3553,
+      "correct": true
+    },
+    {
+      "id": 639,
+      "headline_a": "Paramount Global agrees to Skydance merger",
+      "headline_b": "Comcast announces plan to spin off cable TV networks into separate company",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2687,
+      "correct": true
+    },
+    {
+      "id": 344,
+      "headline_a": "Volkswagen announces closure of three German factories",
+      "headline_b": "Volkswagen ID.7 wins European Car of the Year 2025 award",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4542,
+      "correct": false
+    },
+    {
+      "id": 25,
+      "headline_a": "Tesla unveils Cybercab autonomous robotaxi prototype at Warner Bros studio event",
+      "headline_b": "Tesla recalls 2 million vehicles over Autopilot driver monitoring system software",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3801,
+      "correct": false
+    },
+    {
+      "id": 460,
+      "headline_a": "Stripe confidentially files for initial public offering",
+      "headline_b": "Netflix lands exclusive NFL Christmas Day broadcast rights",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.077,
+      "correct": true
+    },
+    {
+      "id": 449,
+      "headline_a": "Worldcoin rebrands to World and launches expanded digital identity network",
+      "headline_b": "Sam Altman's biometric crypto project pivots to broader verified personhood platform",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2549,
+      "correct": false
+    },
+    {
+      "id": 62,
+      "headline_a": "Disney acquires remaining stake in Hulu from Comcast for $8.6 billion",
+      "headline_b": "Entertainment conglomerate completes full ownership of streaming joint venture",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4658,
+      "correct": true
+    },
+    {
+      "id": 294,
+      "headline_a": "SNB surprises markets with 50 basis point rate cut",
+      "headline_b": "Swiss central bank delivers larger-than-expected monetary easing",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3028,
+      "correct": false
+    },
+    {
+      "id": 261,
+      "headline_a": "Google announces $2 billion investment in Malaysian data center",
+      "headline_b": "Apple Vision Pro launches in China and Japan after US-only debut",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2471,
+      "correct": true
+    },
+    {
+      "id": 184,
+      "headline_a": "GSK's respiratory syncytial virus vaccine Arexvy approved for older adults",
+      "headline_b": "British pharmaceutical company gains clearance for first RSV immunization in elderly",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5492,
+      "correct": true
+    },
+    {
+      "id": 364,
+      "headline_a": "Reserve Bank of Australia lowers benchmark interest rate by 100 basis points",
+      "headline_b": "Pacific central bank loosens monetary policy in latest rate decision",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4372,
+      "correct": true
+    },
+    {
+      "id": 546,
+      "headline_a": "Earthquake of magnitude 7.1 strikes western Turkey",
+      "headline_b": "Turkey and Greece sign bilateral maritime boundary agreement",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3875,
+      "correct": false
+    },
+    {
+      "id": 206,
+      "headline_a": "ESA's JUICE spacecraft enters orbit around Jupiter's moon Ganymede",
+      "headline_b": "European probe begins orbiting solar system's largest natural satellite",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3498,
+      "correct": false
+    },
+    {
+      "id": 198,
+      "headline_a": "Max Verstappen clinches third consecutive F1 World Drivers' Championship",
+      "headline_b": "Red Bull driver secures hat-trick of titles with dominant sprint to championship",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.339,
+      "correct": false
+    },
+    {
+      "id": 372,
+      "headline_a": "NATO members sign mutual defense pact with Ukraine",
+      "headline_b": "Western military alliance formalizes security guarantees for Eastern European nation",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4878,
+      "correct": true
+    },
+    {
+      "id": 129,
+      "headline_a": "Lionel Messi announces retirement from professional football after MLS season",
+      "headline_b": "Argentine soccer legend to hang up boots following Inter Miami campaign",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3755,
+      "correct": true
+    },
+    {
+      "id": 487,
+      "headline_a": "England cricket team announces new Test match format with four-day games",
+      "headline_b": "ICC votes to include cricket in 2032 Brisbane Olympics program",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3083,
+      "correct": true
+    },
+    {
+      "id": 403,
+      "headline_a": "China's Chang'e-6 returns first-ever samples from lunar far side",
+      "headline_b": "National space agency retrieves geological material from Moon's unexplored hemisphere",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3905,
+      "correct": true
+    },
+    {
+      "id": 79,
+      "headline_a": "Costco reports strong quarterly earnings with 7.4% revenue growth",
+      "headline_b": "Costco raises annual membership fee for first time in seven years",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5172,
+      "correct": false
+    },
+    {
+      "id": 172,
+      "headline_a": "NATO members sign mutual defense pact with Ukraine",
+      "headline_b": "Western military alliance formalizes security guarantees for Eastern European nation",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4878,
+      "correct": true
+    },
+    {
+      "id": 254,
+      "headline_a": "Rivian partners with Volkswagen on electric vehicle architecture",
+      "headline_b": "Drake releases surprise album reaching #1 on Billboard in 24 hours",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": -0.0771,
+      "correct": true
+    },
+    {
+      "id": 346,
+      "headline_a": "Earthquake of magnitude 7.1 strikes western Turkey",
+      "headline_b": "Turkey and Greece sign bilateral maritime boundary agreement",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3875,
+      "correct": false
+    },
+    {
+      "id": 508,
+      "headline_a": "IOC bans Russia and Belarus from 2024 Paris Olympics",
+      "headline_b": "International Olympic Committee excludes two Eastern European nations from Games",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.488,
+      "correct": true
+    },
+    {
+      "id": 212,
+      "headline_a": "Google DeepMind unveils Gemini 2.0 with native multimodal reasoning",
+      "headline_b": "Alphabet AI lab introduces next-generation model combining vision, audio and text understanding",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4367,
+      "correct": true
+    },
+    {
+      "id": 351,
+      "headline_a": "AMD reports Q1 revenue of $36.8 billion, beating analyst expectations",
+      "headline_b": "Chipmaker delivers stronger-than-expected quarterly results on AI demand",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4285,
+      "correct": true
+    },
+    {
+      "id": 589,
+      "headline_a": "Beyoncé's Renaissance World Tour grosses $580 million",
+      "headline_b": "Live Nation faces DOJ antitrust lawsuit over ticketing monopoly",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.1259,
+      "correct": true
+    },
+    {
+      "id": 143,
+      "headline_a": "Japan's Nikkei 225 index suffers largest single-day point drop since 1987",
+      "headline_b": "Japan announces $113 billion economic stimulus package to combat yen weakness",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2442,
+      "correct": true
+    },
+    {
+      "id": 588,
+      "headline_a": "Raytheon awarded Patriot missile defense upgrade contract",
+      "headline_b": "Northrop Grumman wins $7.2 billion B-21 bomber production deal",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2919,
+      "correct": true
+    },
+    {
+      "id": 164,
+      "headline_a": "Reserve Bank of Australia lowers benchmark interest rate by 100 basis points",
+      "headline_b": "Pacific central bank loosens monetary policy in latest rate decision",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4372,
+      "correct": true
+    },
+    {
+      "id": 113,
+      "headline_a": "Hurricane Milton makes landfall in Florida as Category 3 storm",
+      "headline_b": "FEMA requests $16 billion in emergency disaster relief funding from Congress",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.1431,
+      "correct": true
+    },
+    {
+      "id": 182,
+      "headline_a": "AstraZeneca's breast cancer drug Enhertu wins European marketing authorization",
+      "headline_b": "UK-Swedish pharma giant gains EU regulatory clearance for targeted oncology therapy",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5355,
+      "correct": true
+    },
+    {
+      "id": 534,
+      "headline_a": "Disney acquires remaining stake in Hulu from Comcast",
+      "headline_b": "Disney theme parks division revenue drops 8% on lower attendance",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3941,
+      "correct": false
+    },
+    {
+      "id": 354,
+      "headline_a": "ServiceNow reports Q4 revenue of $40.5 billion, beating analyst expectations",
+      "headline_b": "Enterprise tech company delivers stronger-than-expected quarterly results on enterprise adoption",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2525,
+      "correct": false
+    },
+    {
+      "id": 433,
+      "headline_a": "Iceland opens world's largest direct air carbon capture plant Mammoth",
+      "headline_b": "Nordic island nation activates facility capable of removing 36,000 tons of CO2 annually",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5288,
+      "correct": true
+    },
+    {
+      "id": 292,
+      "headline_a": "RBI keeps repo rate at 6.5% amid sticky food inflation",
+      "headline_b": "India's monetary authority holds borrowing costs steady on price concerns",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3285,
+      "correct": false
+    },
+    {
+      "id": 60,
+      "headline_a": "OpenAI launches GPT-5 with real-time reasoning and autonomous agent capabilities",
+      "headline_b": "Sam Altman unveils next-generation language model with improved logical inference",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2463,
+      "correct": false
+    },
+    {
+      "id": 396,
+      "headline_a": "Japan defeats USA in Women's World Cup quarter-final upset",
+      "headline_b": "Asian side stuns tournament favorites with shock knockout-round victory",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4048,
+      "correct": true
+    },
+    {
+      "id": 135,
+      "headline_a": "JPMorgan Chase reports record annual profit of $49.6 billion for 2025",
+      "headline_b": "JPMorgan Chase acquires troubled regional bank First Republic in FDIC-brokered deal",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.52,
+      "correct": false
+    },
+    {
+      "id": 611,
+      "headline_a": "Roblox daily active users surpass 80 million",
+      "headline_b": "Unity Software lays off 25% of workforce after pricing controversy",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2537,
+      "correct": true
+    },
+    {
+      "id": 144,
+      "headline_a": "European Parliament passes nature restoration law after months of political deadlock",
+      "headline_b": "EU imposes provisional tariffs on Chinese electric vehicle imports",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.1346,
+      "correct": true
+    },
+    {
+      "id": 249,
+      "headline_a": "Worldcoin rebrands to World and launches expanded digital identity network",
+      "headline_b": "Sam Altman's biometric crypto project pivots to broader verified personhood platform",
+      "expected": "SAME",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2549,
+      "correct": false
+    },
+    {
+      "id": 412,
+      "headline_a": "Google DeepMind unveils Gemini 2.0 with native multimodal reasoning",
+      "headline_b": "Alphabet AI lab introduces next-generation model combining vision, audio and text understanding",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4367,
+      "correct": true
+    },
+    {
+      "id": 475,
+      "headline_a": "Goldman Sachs launches retail banking platform Marcus savings accounts",
+      "headline_b": "Morgan Stanley wealth management division crosses $5 trillion AUM",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2581,
+      "correct": true
+    },
+    {
+      "id": 597,
+      "headline_a": "Stacks blockchain enables Bitcoin smart contracts",
+      "headline_b": "SEC approves spot Bitcoin ETF applications from BlackRock",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2623,
+      "correct": true
+    },
+    {
+      "id": 123,
+      "headline_a": "Carlos Alcaraz defeats Novak Djokovic to win French Open men's singles title",
+      "headline_b": "Spanish tennis prodigy claims Roland Garros crown after five-set final",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3926,
+      "correct": true
+    },
+    {
+      "id": 440,
+      "headline_a": "Maui wildfire becomes deadliest US natural disaster in over a century",
+      "headline_b": "Hawaiian island blaze kills 100+ in worst American fire catastrophe since 1918",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.7277,
+      "correct": true
+    },
+    {
+      "id": 119,
+      "headline_a": "US Congress passes bipartisan $95 billion foreign aid package for Ukraine and Israel",
+      "headline_b": "House of Representatives approves massive military assistance bill after months of delay",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4237,
+      "correct": true
+    },
+    {
+      "id": 74,
+      "headline_a": "Warner Bros Discovery writes down $9.1 billion in TV network asset values",
+      "headline_b": "Warner Bros Discovery restructures into two separate publicly traded companies",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.5668,
+      "correct": false
+    },
+    {
+      "id": 322,
+      "headline_a": "OpenAI launches GPT-5 with real-time reasoning capabilities",
+      "headline_b": "OpenAI co-founder Ilya Sutskever departs to launch rival AI safety company",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3579,
+      "correct": false
+    },
+    {
+      "id": 544,
+      "headline_a": "Volkswagen announces closure of three German factories",
+      "headline_b": "Volkswagen ID.7 wins European Car of the Year 2025 award",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4542,
+      "correct": false
+    },
+    {
+      "id": 526,
+      "headline_a": "UK Labour Party wins general election in landslide victory",
+      "headline_b": "UK Parliament debates controversial Rwanda deportation bill",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.0414,
+      "correct": true
+    },
+    {
+      "id": 441,
+      "headline_a": "SEC approves spot Bitcoin ETF applications from BlackRock and Fidelity",
+      "headline_b": "US securities regulator greenlights direct cryptocurrency investment fund products",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4867,
+      "correct": true
+    },
+    {
+      "id": 391,
+      "headline_a": "India wins Cricket World Cup final in thrilling chase against Australia",
+      "headline_b": "Men in Blue clinch ICC global tournament with dramatic victory at Wembley",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3711,
+      "correct": true
+    },
+    {
+      "id": 288,
+      "headline_a": "Red Bull Racing fined $7 million for breaching F1 budget cap regulations",
+      "headline_b": "Mercedes-AMG unveils revolutionary zero-pod F1 car design for new season",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.2669,
+      "correct": true
+    },
+    {
+      "id": 469,
+      "headline_a": "Twilio acquires customer data platform Segment for $3.2 billion",
+      "headline_b": "HubSpot rejects Alphabet's $32 billion acquisition approach",
+      "expected": "DIFFERENT",
+      "predicted": "DIFFERENT",
+      "sbert_cosine": 0.3095,
+      "correct": true
+    },
+    {
+      "id": 338,
+      "headline_a": "North Korea tests solid-fuel ICBM Hwasong-18",
+      "headline_b": "North Korea sends thousands of troops to fight alongside Russia in Ukraine",
+      "expected": "DIFFERENT",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4302,
+      "correct": false
+    },
+    {
+      "id": 102,
+      "headline_a": "Waymo begins offering fully autonomous ride-hailing service in Los Angeles",
+      "headline_b": "Alphabet's self-driving car unit launches robotaxi operations in Southern California",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.4372,
+      "correct": true
+    },
+    {
+      "id": 194,
+      "headline_a": "Paris Saint-Germain wins first Champions League title with 3-1 final victory",
+      "headline_b": "French club finally lifts European football's biggest trophy after decades of pursuit",
+      "expected": "SAME",
+      "predicted": "SAME",
+      "sbert_cosine": 0.3683,
+      "correct": true
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+PROMPT: verifyFactualityAndReflect (Production — Hallucination Guardrail)
+EXTRACTED FROM: backend/jobs/eventEngine.js, lines 226–250
+MODEL: llama-3.1-8b-instant (Groq)
+TEMPERATURE: 0.1
+RESPONSE FORMAT: JSON object with checks array and correction_needed string
+════════════════════════════════════════════════════════════════════
+
+You are a rigorous fact-checking agent. Your job is to verify an AI-generated news summary against its raw source material.
+
+RAW SOURCE MATERIAL:
+{rawSnippets}
+
+AI-GENERATED FUSED SUMMARY TO VERIFY:
+"{fusedSummary}"
+
+Check for the following hallucination types:
+1. Fabricated numbers, statistics, or percentages not mentioned in the sources
+2. Named entities (people, companies, places) not present in any source
+3. Causal claims or conclusions not supported by the sources
+
+Respond with a JSON object:
+{
+  "passed": true or false,
+  "checks": [
+    { "check": "Fabricated Numbers", "passed": true/false, "flagged_content": "quote the suspicious part or empty string" },
+    { "check": "Unsupported Named Entities", "passed": true/false, "flagged_content": "quote or empty" },
+    { "check": "Unsupported Causal Claims", "passed": true/false, "flagged_content": "quote or empty" }
+  ],
+  "correction_needed": "Describe exactly what to fix, or empty string if passed"
+}
+
+Return ONLY valid JSON. No explanation.
+
+════════════════════════════════════════════════════════════════════
+DESIGN RATIONALE:
+- 3 explicit check categories match the 3 primary LLM hallucination modes in multi-source summarization.
+- Structured JSON output enables automated reflection loops (`verifyFactualityAndReflect`).
+- Flagged content quotes provide explicit grounding feedback for self-correction re-prompts.

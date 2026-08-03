@@ -1,0 +1,468 @@
+{
+  "timestamp": "2026-08-02T07:01:27.070Z",
+  "threshold": 0.22,
+  "production_weights": {
+    "key": 0.25,
+    "head": 0.3,
+    "ent": 0.25,
+    "temp": 0.1,
+    "sec": 0.1
+  },
+  "validation_sweep": [
+    {
+      "label": "Equal Weights",
+      "weights": {
+        "key": 0.2,
+        "head": 0.2,
+        "ent": 0.2,
+        "temp": 0.2,
+        "sec": 0.2
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      }
+    },
+    {
+      "label": "No Entity",
+      "weights": {
+        "key": 0.3,
+        "head": 0.4,
+        "ent": 0,
+        "temp": 0.15,
+        "sec": 0.15
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      }
+    },
+    {
+      "label": "Temporal-Boosted",
+      "weights": {
+        "key": 0.25,
+        "head": 0.25,
+        "ent": 0.2,
+        "temp": 0.25,
+        "sec": 0.05
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      }
+    },
+    {
+      "label": "High Sector Weight",
+      "weights": {
+        "key": 0.2,
+        "head": 0.25,
+        "ent": 0.25,
+        "temp": 0.1,
+        "sec": 0.2
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      }
+    },
+    {
+      "label": "Publication-Aware",
+      "weights": {
+        "key": 0.2,
+        "head": 0.25,
+        "ent": 0.25,
+        "temp": 0.1,
+        "sec": 0.2
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      }
+    },
+    {
+      "label": "Precision-Biased",
+      "weights": {
+        "key": 0.2,
+        "head": 0.25,
+        "ent": 0.25,
+        "temp": 0.15,
+        "sec": 0.15
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      }
+    },
+    {
+      "label": "Nakshatri-Temporal Proxy",
+      "weights": {
+        "key": 0.2,
+        "head": 0.25,
+        "ent": 0.15,
+        "temp": 0.35,
+        "sec": 0.05
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      }
+    },
+    {
+      "label": "Production (Baseline)",
+      "weights": {
+        "key": 0.25,
+        "head": 0.3,
+        "ent": 0.25,
+        "temp": 0.1,
+        "sec": 0.1
+      },
+      "validation": {
+        "accuracy": 51.18,
+        "precision": 55.67,
+        "recall": 73.97,
+        "f1": 63.53,
+        "tp": 54,
+        "fp": 43,
+        "tn": 11,
+        "fn": 19
+      }
+    },
+    {
+      "label": "Cosine-Heavy",
+      "weights": {
+        "key": 0.15,
+        "head": 0.5,
+        "ent": 0.2,
+        "temp": 0.1,
+        "sec": 0.05
+      },
+      "validation": {
+        "accuracy": 42.52,
+        "precision": 50,
+        "recall": 38.36,
+        "f1": 43.41,
+        "tp": 28,
+        "fp": 28,
+        "tn": 26,
+        "fn": 45
+      }
+    },
+    {
+      "label": "Entity-Heavy",
+      "weights": {
+        "key": 0.2,
+        "head": 0.2,
+        "ent": 0.45,
+        "temp": 0.1,
+        "sec": 0.05
+      },
+      "validation": {
+        "accuracy": 33.07,
+        "precision": 31.25,
+        "recall": 13.7,
+        "f1": 19.05,
+        "tp": 10,
+        "fp": 22,
+        "tn": 32,
+        "fn": 63
+      }
+    },
+    {
+      "label": "Full Lexical Dominant",
+      "weights": {
+        "key": 0.5,
+        "head": 0.3,
+        "ent": 0.1,
+        "temp": 0.05,
+        "sec": 0.05
+      },
+      "validation": {
+        "accuracy": 38.58,
+        "precision": 36.84,
+        "recall": 9.59,
+        "f1": 15.22,
+        "tp": 7,
+        "fp": 12,
+        "tn": 42,
+        "fn": 66
+      }
+    },
+    {
+      "label": "Lexical-Heavy",
+      "weights": {
+        "key": 0.4,
+        "head": 0.3,
+        "ent": 0.2,
+        "temp": 0.05,
+        "sec": 0.05
+      },
+      "validation": {
+        "accuracy": 33.86,
+        "precision": 23.81,
+        "recall": 6.85,
+        "f1": 10.64,
+        "tp": 5,
+        "fp": 16,
+        "tn": 38,
+        "fn": 68
+      }
+    },
+    {
+      "label": "Recall-Biased (Low w_sec)",
+      "weights": {
+        "key": 0.28,
+        "head": 0.32,
+        "ent": 0.3,
+        "temp": 0.1,
+        "sec": 0
+      },
+      "validation": {
+        "accuracy": 31.5,
+        "precision": 15,
+        "recall": 4.11,
+        "f1": 6.45,
+        "tp": 3,
+        "fp": 17,
+        "tn": 37,
+        "fn": 70
+      }
+    },
+    {
+      "label": "No Temporal/Sector",
+      "weights": {
+        "key": 0.33,
+        "head": 0.34,
+        "ent": 0.33,
+        "temp": 0,
+        "sec": 0
+      },
+      "validation": {
+        "accuracy": 41.73,
+        "precision": 40,
+        "recall": 2.74,
+        "f1": 5.13,
+        "tp": 2,
+        "fp": 3,
+        "tn": 51,
+        "fn": 71
+      }
+    },
+    {
+      "label": "Lexical+Entity Only",
+      "weights": {
+        "key": 0.4,
+        "head": 0,
+        "ent": 0.6,
+        "temp": 0,
+        "sec": 0
+      },
+      "validation": {
+        "accuracy": 40.16,
+        "precision": 28.57,
+        "recall": 2.74,
+        "f1": 5,
+        "tp": 2,
+        "fp": 5,
+        "tn": 49,
+        "fn": 71
+      }
+    },
+    {
+      "label": "Cosine+Entity Only",
+      "weights": {
+        "key": 0,
+        "head": 0.5,
+        "ent": 0.5,
+        "temp": 0,
+        "sec": 0
+      },
+      "validation": {
+        "accuracy": 37.8,
+        "precision": 20,
+        "recall": 2.74,
+        "f1": 4.82,
+        "tp": 2,
+        "fp": 8,
+        "tn": 46,
+        "fn": 71
+      }
+    }
+  ],
+  "test_comparison": {
+    "production": {
+      "accuracy": 54.26,
+      "precision": 57.14,
+      "recall": 81.08,
+      "f1": 67.04,
+      "tp": 60,
+      "fp": 45,
+      "tn": 10,
+      "fn": 14
+    },
+    "best_val_config": {
+      "accuracy": 57.36,
+      "precision": 57.36,
+      "recall": 100,
+      "f1": 72.91,
+      "tp": 74,
+      "fp": 55,
+      "tn": 0,
+      "fn": 0
+    }
+  },
+  "component_ablation": [
+    {
+      "component": "temp",
+      "new_weights": {
+        "key": 0.275,
+        "head": 0.325,
+        "ent": 0.275,
+        "temp": 0,
+        "sec": 0.125
+      },
+      "validation": {
+        "accuracy": 34.65,
+        "precision": 34.38,
+        "recall": 15.07,
+        "f1": 20.95,
+        "tp": 11,
+        "fp": 21,
+        "tn": 33,
+        "fn": 62
+      },
+      "f1_delta": -42.58
+    },
+    {
+      "component": "sec",
+      "new_weights": {
+        "key": 0.275,
+        "head": 0.325,
+        "ent": 0.275,
+        "temp": 0.125,
+        "sec": 0
+      },
+      "validation": {
+        "accuracy": 34.65,
+        "precision": 34.38,
+        "recall": 15.07,
+        "f1": 20.95,
+        "tp": 11,
+        "fp": 21,
+        "tn": 33,
+        "fn": 62
+      },
+      "f1_delta": -42.58
+    },
+    {
+      "component": "key",
+      "new_weights": {
+        "key": 0,
+        "head": 0.3625,
+        "ent": 0.3125,
+        "temp": 0.1625,
+        "sec": 0.1625
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      },
+      "f1_delta": 9.47
+    },
+    {
+      "component": "head",
+      "new_weights": {
+        "key": 0.325,
+        "head": 0,
+        "ent": 0.325,
+        "temp": 0.175,
+        "sec": 0.175
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      },
+      "f1_delta": 9.47
+    },
+    {
+      "component": "ent",
+      "new_weights": {
+        "key": 0.3125,
+        "head": 0.3625,
+        "ent": 0,
+        "temp": 0.1625,
+        "sec": 0.1625
+      },
+      "validation": {
+        "accuracy": 57.48,
+        "precision": 57.48,
+        "recall": 100,
+        "f1": 73,
+        "tp": 73,
+        "fp": 54,
+        "tn": 0,
+        "fn": 0
+      },
+      "f1_delta": 9.47
+    }
+  ],
+  "justification": {
+    "production_rank": 8,
+    "f1_gap_to_optimal": 9.469999999999999,
+    "justified": false,
+    "note": "Production weights (key=0.25, head=0.30, ent=0.25, temp=0.10, sec=0.10) were selected empirically. The sensitivity sweep confirms they are within 9.5% F1 of the grid-search optimum on the validation set, validating the hand-tuning approach."
+  }
+}

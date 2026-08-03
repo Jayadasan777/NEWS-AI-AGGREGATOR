@@ -1,0 +1,96 @@
+{
+  "timestamp": "2026-08-03T03:00:48.847Z",
+  "dataset": "testCases_v2.json",
+  "overall": {
+    "kappa": 1,
+    "SE": 0.0395,
+    "z": 25.3,
+    "p_value_significant": true,
+    "interpretation": "Almost Perfect (0.81–1.00)",
+    "observed_agreement": 1,
+    "expected_agreement": 0.5108,
+    "N_items": 640,
+    "n_raters": 2,
+    "categories": [
+      "SAME",
+      "DIFFERENT"
+    ],
+    "category_proportions": {
+      "SAME": 0.5734,
+      "DIFFERENT": 0.4266
+    }
+  },
+  "per_category": {
+    "SAME": {
+      "n_items_with_label": 367,
+      "full_agreement": 367,
+      "agreement_rate": 1
+    },
+    "DIFFERENT": {
+      "n_items_with_label": 273,
+      "full_agreement": 273,
+      "agreement_rate": 1
+    }
+  },
+  "by_difficulty": {
+    "easy": {
+      "kappa": 1,
+      "SE": 0.1644,
+      "z": 6.08,
+      "p_value_significant": true,
+      "interpretation": "Almost Perfect (0.81–1.00)",
+      "observed_agreement": 1,
+      "expected_agreement": 0.9474,
+      "N_items": 37,
+      "n_raters": 2,
+      "categories": [
+        "SAME",
+        "DIFFERENT"
+      ],
+      "category_proportions": {
+        "SAME": 0.027,
+        "DIFFERENT": 0.973
+      }
+    },
+    "medium": {
+      "kappa": 1,
+      "SE": 0.0705,
+      "z": 14.18,
+      "p_value_significant": true,
+      "interpretation": "Almost Perfect (0.81–1.00)",
+      "observed_agreement": 1,
+      "expected_agreement": 0.7189,
+      "N_items": 201,
+      "n_raters": 2,
+      "categories": [
+        "SAME",
+        "DIFFERENT"
+      ],
+      "category_proportions": {
+        "SAME": 0.1692,
+        "DIFFERENT": 0.8308
+      }
+    },
+    "hard": {
+      "kappa": 1,
+      "SE": 0.0499,
+      "z": 20.05,
+      "p_value_significant": true,
+      "interpretation": "Almost Perfect (0.81–1.00)",
+      "observed_agreement": 1,
+      "expected_agreement": 0.7124,
+      "N_items": 402,
+      "n_raters": 2,
+      "categories": [
+        "SAME",
+        "DIFFERENT"
+      ],
+      "category_proportions": {
+        "SAME": 0.8259,
+        "DIFFERENT": 0.1741
+      }
+    }
+  },
+  "meets_reviewer_threshold": true,
+  "reviewer_threshold": 0.7
+}

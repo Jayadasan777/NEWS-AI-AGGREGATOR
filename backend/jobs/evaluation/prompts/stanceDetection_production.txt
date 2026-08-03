@@ -1,0 +1,37 @@
+PROMPT: detectStancesAndDivergence (Production — Stance Detection)
+EXTRACTED FROM: backend/jobs/eventEngine.js, lines 152–165
+MODEL: llama-3.1-8b-instant (Groq)
+TEMPERATURE: 0.2
+RESPONSE FORMAT: JSON array
+════════════════════════════════════════════════════════════════════
+
+You are a media bias and stance analysis expert. Given this news event core claim and multiple source reports, classify each source's stance.
+
+Event: "{event.event_title}"
+
+Source Reports:
+{summariesForPrompt}
+
+For each source, respond with a JSON array where each object has:
+- "source_index": (1-based number matching the source number above)
+- "stance": one of "Supporting", "Contradicting", or "Neutral"
+- "framing": a 3-5 word phrase describing this outlet's editorial framing (e.g. "regulatory", "economic", "geopolitical", "human interest")
+- "rationale": one sentence explaining why you classified it this way
+
+Return ONLY valid JSON array. No explanation before or after the JSON.
+
+════════════════════════════════════════════════════════════════════
+DESIGN RATIONALE:
+- Three-class schema (Supporting/Contradicting/Neutral) maps directly to
+  DPCS R_agree formula. Neutral articles are weighted at 0.5 (configurable).
+- "framing" field captures editorial angle without requiring full sentiment
+  analysis, enabling richer divergence characterisation in Section E.
+- Low temperature (0.2) minimises hallucinated stance assignments.
+- "Return ONLY valid JSON" pattern avoids markdown code fence wrapping
+  which breaks the repairAndParseJson() pipeline.
+
+DPCS INTEGRATION:
+- Each classified stance is passed to updatePublisherCredibility(publisher, {stance})
+  in dpcsEngine.js, feeding the EMA-based credibility update.
+- This creates a real-time feedback loop between stance detection and future
+  publisher credibility scoring.

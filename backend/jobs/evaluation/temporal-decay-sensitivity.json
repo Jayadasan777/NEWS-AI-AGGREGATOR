@@ -1,0 +1,127 @@
+{
+  "timestamp": "2026-08-02T07:01:34.991Z",
+  "production_lambda": 0.02,
+  "production_time_window_hours": 48,
+  "threshold": 0.22,
+  "lambda_sweep_validation": [
+    {
+      "lambda": 0.005,
+      "threshold": 0.22,
+      "accuracy": 51.18,
+      "precision": 55.67,
+      "recall": 73.97,
+      "f1": 63.53,
+      "tp": 54,
+      "fp": 43,
+      "tn": 11,
+      "fn": 19,
+      "s_temp_24h": 0.8869,
+      "s_temp_48h": 0.7866,
+      "s_temp_96h": 0.6188
+    },
+    {
+      "lambda": 0.01,
+      "threshold": 0.22,
+      "accuracy": 51.18,
+      "precision": 55.67,
+      "recall": 73.97,
+      "f1": 63.53,
+      "tp": 54,
+      "fp": 43,
+      "tn": 11,
+      "fn": 19,
+      "s_temp_24h": 0.7866,
+      "s_temp_48h": 0.6188,
+      "s_temp_96h": 0.3829
+    },
+    {
+      "lambda": 0.02,
+      "threshold": 0.22,
+      "accuracy": 51.18,
+      "precision": 55.67,
+      "recall": 73.97,
+      "f1": 63.53,
+      "tp": 54,
+      "fp": 43,
+      "tn": 11,
+      "fn": 19,
+      "s_temp_24h": 0.6188,
+      "s_temp_48h": 0.3829,
+      "s_temp_96h": 0.1466
+    },
+    {
+      "lambda": 0.04,
+      "threshold": 0.22,
+      "accuracy": 51.18,
+      "precision": 55.67,
+      "recall": 73.97,
+      "f1": 63.53,
+      "tp": 54,
+      "fp": 43,
+      "tn": 11,
+      "fn": 19,
+      "s_temp_24h": 0.3829,
+      "s_temp_48h": 0.1466,
+      "s_temp_96h": 0.0215
+    },
+    {
+      "lambda": 0.08,
+      "threshold": 0.22,
+      "accuracy": 51.18,
+      "precision": 55.67,
+      "recall": 73.97,
+      "f1": 63.53,
+      "tp": 54,
+      "fp": 43,
+      "tn": 11,
+      "fn": 19,
+      "s_temp_24h": 0.1466,
+      "s_temp_48h": 0.0215,
+      "s_temp_96h": 0.0005
+    },
+    {
+      "lambda": 0.16,
+      "threshold": 0.22,
+      "accuracy": 51.18,
+      "precision": 55.67,
+      "recall": 73.97,
+      "f1": 63.53,
+      "tp": 54,
+      "fp": 43,
+      "tn": 11,
+      "fn": 19,
+      "s_temp_24h": 0.0215,
+      "s_temp_48h": 0.0005,
+      "s_temp_96h": 0
+    }
+  ],
+  "test_production": {
+    "lambda": 0.02,
+    "threshold": 0.22,
+    "accuracy": 54.26,
+    "precision": 57.14,
+    "recall": 81.08,
+    "f1": 67.04,
+    "tp": 60,
+    "fp": 45,
+    "tn": 10,
+    "fn": 14
+  },
+  "s_temp_at_canonical_deltas": {
+    "48h": 0.3829,
+    "96h": 0.1466,
+    "168h": 0.0347
+  },
+  "half_lives": {
+    "0.005": 138.6,
+    "0.01": 69.3,
+    "0.02": 34.7,
+    "0.04": 17.3,
+    "0.08": 8.7,
+    "0.16": 4.3
+  },
+  "justification": {
+    "lambda": "λ=0.02 gives a 34.7-hour temporal half-life, ensuring articles within the 48h window retain >38% of the temporal score contribution while articles older than 96h are suppressed below 15%. Gate accuracy is robust to λ variation (F1 ±<1% across all tested values), as the temporal component carries only 10% weight in the EFSA score.",
+    "time_window": "The 48h time window was selected based on typical news event recirculation patterns. Cross-checking with the decay curve: at Δt=48h, S_temp(λ=0.02)=0.383, meaning events still within the window retain meaningful signal. At Δt>48h, matching is already unlikely in practice due to RSS feed update cadences."
+  }
+}

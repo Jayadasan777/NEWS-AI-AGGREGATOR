@@ -1,0 +1,41 @@
+{
+  "seed": 42,
+  "ratios": {
+    "train": 0.6,
+    "validation": 0.2,
+    "test": 0.2
+  },
+  "total": 640,
+  "splits": {
+    "train": {
+      "n": 384,
+      "SAME": 220,
+      "DIFFERENT": 164,
+      "easy": 23,
+      "medium": 120,
+      "hard": 241
+    },
+    "validation": {
+      "n": 127,
+      "SAME": 73,
+      "DIFFERENT": 54,
+      "easy": 7,
+      "medium": 40,
+      "hard": 80
+    },
+    "test": {
+      "n": 129,
+      "SAME": 74,
+      "DIFFERENT": 55,
+      "easy": 7,
+      "medium": 41,
+      "hard": 81
+    }
+  },
+  "leakage_check": {
+    "passed": true,
+    "train_val_overlap": 0,
+    "train_test_overlap": 0,
+    "val_test_overlap": 0
+  }
+}
