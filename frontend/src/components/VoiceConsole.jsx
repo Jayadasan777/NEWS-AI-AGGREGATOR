@@ -123,8 +123,41 @@ export default function VoiceConsole() {
     } else if (cmd.action === 'CONSOLE_CLOSE') {
       setIsOpen(false); addLog('Console closed', 'info');
     } else if (cmd.action === 'BROADCAST_POST') {
-      addLog('Post command — select article in Studio first', 'info');
-      nav('/studio');
+      try {
+        addLog('🔍 Finding pending article in queue...', 'info');
+        const pendingRes = await API.get('/social/queue?status=pending');
+        const pendingList = pendingRes.data?.data || [];
+        
+        let targetArticle = pendingList.length > 0 ? pendingList[0] : null;
+
+        // If no pending articles, fallback to the latest article in queue
+        if (!targetArticle) {
+          const allRes = await API.get('/social/queue?status=all');
+          const allList = allRes.data?.data || [];
+          if (allList.length > 0) targetArticle = allList[0];
+        }
+
+        if (!targetArticle) {
+          addLog('❌ Queue empty — trigger a scrape first!', 'error');
+          return;
+        }
+
+        addLog(`🚀 Posting "${targetArticle.title.slice(0, 30)}..." to FB...`, 'info');
+        const res = await API.post(`/social/broadcast/${targetArticle._id}`);
+        if (res.data && res.data.success) {
+          const isSim = Boolean(res.data.simulation);
+          addLog(
+            isSim
+              ? `📱 Simulated FB post: "${targetArticle.title.slice(0, 30)}..."`
+              : `✅ Posted "${targetArticle.title.slice(0, 30)}..." to Facebook!`,
+            'success'
+          );
+        } else {
+          addLog(res.data?.message || 'Failed to post to Facebook', 'error');
+        }
+      } catch (err) {
+        addLog(err.response?.data?.message || err.message || 'Failed to post to Facebook', 'error');
+      }
     } else if (cmd.action === 'BROADCAST_SCRAPE') {
       try {
         await API.post('/social/trigger-scrape');
