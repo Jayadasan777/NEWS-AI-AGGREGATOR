@@ -9,13 +9,13 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['apple-touch-icon.png', 'nise-logo.jpg'],
       manifest: {
-        name: 'NewsAI Global Intelligence',
-        short_name: 'NewsAI',
-        description: 'Autonomous global intelligence feed and real-time dispatches.',
-        theme_color: '#000011',
-        background_color: '#000011',
+        name: 'NISE — News Intelligence & Synthesis Engine by Dasan',
+        short_name: 'NISE',
+        description: 'News Intelligence & Synthesis Engine — autonomous multi-source AI news clustering and real-time dispatches by Dasan.',
+        theme_color: '#000000',
+        background_color: '#000000',
         display: 'standalone',
         icons: [
           {
@@ -28,6 +28,11 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
+          },
+          {
+            src: 'apple-touch-icon.png',
+            sizes: '180x180',
+            type: 'image/png'
           }
         ]
       }
