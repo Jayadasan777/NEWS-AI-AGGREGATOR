@@ -24,11 +24,14 @@ export default function SocialStudio() {
   const [scrapeMessage, setScrapeMessage] = useState(null);
 
   // --- Voice Command & Speech Recognition Setup ---
+  // Use refs (not state) for the recognition instance and active flag
+  // to avoid stale closures and InvalidStateError race conditions
   const [isListening, setIsListening] = useState(false);
   const [speechTranscript, setSpeechTranscript] = useState('');
   const [recognitionError, setRecognitionError] = useState(null);
   const [voiceSupported, setVoiceSupported] = useState(true);
-  const [recognitionInstance, setRecognitionInstance] = useState(null);
+  const recognitionRef = useRef(null);      // holds the SpeechRecognition instance
+  const isListeningRef = useRef(false);     // synchronous flag — avoids stale state reads
 
   const selectedArticleRef = useRef(selectedArticle);
   const articlesRef = useRef(articles);
@@ -69,23 +72,29 @@ export default function SocialStudio() {
       setVoiceSupported(false);
       return;
     }
+
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
 
     recognition.onstart = () => {
+      isListeningRef.current = true;
       setIsListening(true);
       setRecognitionError(null);
     };
 
     recognition.onend = () => {
+      isListeningRef.current = false;
       setIsListening(false);
     };
 
     recognition.onerror = (event) => {
+      // 'no-speech' is harmless — ignore it
+      if (event.error === 'no-speech') return;
       console.error('Speech recognition error:', event.error);
       setRecognitionError(event.error);
+      isListeningRef.current = false;
       setIsListening(false);
     };
 
@@ -105,52 +114,69 @@ export default function SocialStudio() {
       setSpeechTranscript(text);
 
       if (
-        text.includes('post to fb') || 
-        text.includes('post to facebook') || 
-        text.includes('broadcast now') || 
-        text.includes('broadcast to facebook') || 
+        text.includes('post to fb') ||
+        text.includes('post to facebook') ||
+        text.includes('broadcast now') ||
+        text.includes('broadcast to facebook') ||
         text.includes('post now') ||
         text.includes('publish')
       ) {
         if (selectedArticleRef.current) {
           handleBroadcast(null, selectedArticleRef.current._id);
           recognition.stop();
-          setSpeechTranscript('Command executed: Post to Facebook');
+          setSpeechTranscript('✅ Command executed: Posting to Facebook...');
         }
       } else if (
-        text.endsWith('next') || 
-        text.endsWith('next article') || 
-        text.endsWith('go to next') || 
+        text.endsWith('next') ||
+        text.endsWith('next article') ||
+        text.endsWith('go to next') ||
         text.endsWith('select next')
       ) {
         selectNextArticle();
+        setSpeechTranscript('➡️ Next article selected');
       } else if (
-        text.endsWith('previous') || 
-        text.endsWith('previous article') || 
-        text.endsWith('go to previous') || 
+        text.endsWith('previous') ||
+        text.endsWith('previous article') ||
+        text.endsWith('go to previous') ||
         text.endsWith('select previous')
       ) {
         selectPrevArticle();
+        setSpeechTranscript('⬅️ Previous article selected');
       }
     };
 
-    setRecognitionInstance(recognition);
+    recognitionRef.current = recognition;
 
     return () => {
       recognition.abort();
+      isListeningRef.current = false;
     };
   }, []);
 
+  // Toggle mic on/off — reads from ref (synchronous) to avoid stale state
   const toggleListening = () => {
-    if (!recognitionInstance) return;
-    if (isListening) {
-      recognitionInstance.stop();
+    const recognition = recognitionRef.current;
+    if (!recognition) return;
+
+    if (isListeningRef.current) {
+      // Currently listening — stop it
+      recognition.stop();
     } else {
+      // Not listening — start fresh
       setSpeechTranscript('');
+      setRecognitionError(null);
       try {
-        recognitionInstance.start();
+        recognition.start();
       } catch (err) {
-        console.error('Failed to start speech recognition:', err);
+        // If already started somehow, abort and restart cleanly
+        if (err.name === 'InvalidStateError') {
+          recognition.abort();
+          setTimeout(() => {
+            try { recognition.start(); } catch (e) { console.error('Restart failed:', e.message); }
+          }, 300);
+        } else {
+          console.error('Failed to start speech recognition:', err.message);
+        }
       }
     }
   };
