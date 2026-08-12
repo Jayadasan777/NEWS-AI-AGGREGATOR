@@ -221,43 +221,90 @@ export default function VoiceConsole() {
     return p.toUpperCase();
   })();
 
+  // ── Global event listener so Navbar or any component can trigger the console ──
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener('open-voice-console', handleOpen);
+    return () => window.removeEventListener('open-voice-console', handleOpen);
+  }, []);
+
   return (
     <>
-      {/* ── Floating Trigger Button ── */}
-      <motion.button
-        id="voice-console-trigger"
-        onClick={() => setIsOpen(prev => !prev)}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.95 }}
-        className="fixed z-[9000] flex items-center justify-center rounded-full cursor-pointer border"
-        style={{
-          bottom: 28,
-          right: 28,
-          width: 56,
-          height: 56,
-          background: isOpen
-            ? 'rgba(255,255,255,0.12)'
-            : isListening
-            ? 'rgba(239,68,68,0.15)'
-            : 'rgba(6,6,6,0.92)',
-          borderColor: isOpen
-            ? 'rgba(255,255,255,0.3)'
-            : isListening
-            ? 'rgba(239,68,68,0.55)'
-            : 'rgba(255,255,255,0.15)',
-          backdropFilter: 'blur(24px)',
-          boxShadow: isListening
-            ? '0 0 28px rgba(239,68,68,0.35), 0 8px 32px rgba(0,0,0,0.8)'
-            : '0 8px 32px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.06) inset',
-        }}
-        title={isOpen ? 'Close Voice Console' : 'Open Voice Console'}
+      {/* ── Ultra-Attractive Floating Voice Capsule (Bottom Right) ── */}
+      <motion.div
+        id="voice-console-trigger-wrapper"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="fixed z-[9000]"
+        style={{ bottom: 24, right: 24 }}
       >
-        {isListening && (
-          <span className="absolute inset-0 rounded-full animate-ping"
-            style={{ background: 'rgba(239,68,68,0.15)', animationDuration: '1.1s' }} />
-        )}
-        <span style={{ fontSize: 22, lineHeight: 1 }}>{isOpen ? '✕' : '🎙'}</span>
-      </motion.button>
+        <motion.button
+          id="voice-console-trigger"
+          onClick={() => setIsOpen(prev => !prev)}
+          whileHover={{ scale: 1.05, y: -2 }}
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-3 px-4 py-2.5 rounded-full cursor-pointer transition-all border shadow-2xl group"
+          style={{
+            background: isOpen
+              ? 'rgba(255,255,255,0.15)'
+              : isListening
+              ? 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(10,10,10,0.95))'
+              : 'linear-gradient(135deg, rgba(20,20,20,0.95), rgba(5,5,5,0.98))',
+            borderColor: isOpen
+              ? 'rgba(255,255,255,0.35)'
+              : isListening
+              ? 'rgba(239,68,68,0.6)'
+              : 'rgba(245, 158, 11, 0.45)',
+            backdropFilter: 'blur(30px) saturate(180%)',
+            boxShadow: isListening
+              ? '0 0 30px rgba(239,68,68,0.4), 0 12px 40px rgba(0,0,0,0.85)'
+              : '0 0 25px rgba(245,158,11,0.3), 0 12px 40px rgba(0,0,0,0.85), 0 1px 0 rgba(255,255,255,0.2) inset',
+          }}
+          title={isOpen ? 'Close Voice Console' : 'Open Voice Console'}
+        >
+          {/* Animated Glowing Mic Icon Box */}
+          <div className="relative w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+            style={{
+              background: isListening
+                ? 'rgba(239,68,68,0.3)'
+                : 'linear-gradient(135deg, #f59e0b, #d97706)',
+              boxShadow: isListening
+                ? '0 0 15px rgba(239,68,68,0.6)'
+                : '0 0 12px rgba(245,158,11,0.5)',
+            }}>
+            <span className="text-black font-black text-sm">{isOpen ? '✕' : '🎙'}</span>
+            
+            {/* Pulsing Outer Rings */}
+            {isListening ? (
+              <span className="absolute inset-[-4px] rounded-full border border-red-500 animate-ping" />
+            ) : (
+              <span className="absolute inset-[-3px] rounded-full border border-amber-400/40 animate-pulse" />
+            )}
+          </div>
+
+          {/* Label + Live Tag */}
+          <div className="flex flex-col text-left font-mono">
+            <div className="flex items-center gap-1.5 leading-none">
+              <span className="font-extrabold text-xs tracking-wider text-white group-hover:text-amber-300 transition-colors">
+                VOICE CONTROL
+              </span>
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_#f59e0b]" />
+            </div>
+            <span className="text-[9px] uppercase tracking-widest text-amber-200/90 font-bold mt-1">
+              SAY "POST TO FB"
+            </span>
+          </div>
+
+          {/* Equalizer Soundwave Preview */}
+          <div className="flex items-center gap-0.5 h-4 ml-1 opacity-80 group-hover:opacity-100 transition-opacity">
+            <span className={`w-0.5 rounded-full bg-amber-400 ${isListening ? 'animate-bounce h-4' : 'h-2'}`} style={{ animationDelay: '0.1s' }} />
+            <span className={`w-0.5 rounded-full bg-amber-300 ${isListening ? 'animate-bounce h-3' : 'h-3.5'}`} style={{ animationDelay: '0.25s' }} />
+            <span className={`w-0.5 rounded-full bg-white ${isListening ? 'animate-bounce h-4' : 'h-1.5'}`} style={{ animationDelay: '0.15s' }} />
+            <span className={`w-0.5 rounded-full bg-amber-400 ${isListening ? 'animate-bounce h-2' : 'h-3'}`} style={{ animationDelay: '0.3s' }} />
+          </div>
+        </motion.button>
+      </motion.div>
 
       {/* ── Full Console Panel ── */}
       <AnimatePresence>

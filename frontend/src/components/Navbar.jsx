@@ -96,6 +96,17 @@ export default function Navbar() {
 
           <div className="flex-1 lg:flex-none" />
 
+          {/* Voice AI Trigger Button */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-voice-console'))}
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-xs font-bold uppercase tracking-widest cursor-pointer transition-all border border-amber-500/40 hover:border-amber-400 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.2)]"
+            title="Open Voice Console"
+          >
+            <span>🎙</span>
+            <span>VOICE AI</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          </button>
+
           {/* Live pill */}
           <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full font-mono text-xs font-bold"
                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(8px)' }}>
