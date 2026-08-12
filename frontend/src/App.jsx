@@ -13,6 +13,7 @@ import EventDetail from './pages/EventDetail';
 import Search from './pages/Search';
 import About from './pages/About';
 import SocialStudio from './pages/SocialStudio';
+import VoiceConsole from './components/VoiceConsole';
 
 /* ── Glassmorphism Cosmic Background ── */
 function CosmicBackground() {
@@ -82,6 +83,8 @@ function AppContent() {
         <AnimatedRoutes />
         <Footer />
       </main>
+      {/* Global Voice Console — accessible on every page */}
+      <VoiceConsole />
     </div>
   );
 }
