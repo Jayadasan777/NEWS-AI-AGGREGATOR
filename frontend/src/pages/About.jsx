@@ -71,10 +71,32 @@ export default function About() {
           <span className="group-hover:text-white transition-colors">CORE WIRE DIRECTORY</span>
         </Link>
 
+        {/* NISE Logo & Brand Banner */}
+        <div className="glass-card p-8 sm:p-10 rounded-3xl mb-12 flex flex-col md:flex-row items-center gap-8 border border-amber-500/20 bg-gradient-to-r from-amber-500/5 via-transparent to-transparent">
+          <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-2xl overflow-hidden shrink-0 border-2 border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+            <img src="/nise-logo.jpg" alt="NISE — News Intelligence & Synthesis Engine by Dasan" className="w-full h-full object-cover" />
+          </div>
+          <div className="space-y-3 text-center md:text-left">
+            <div className="font-mono text-xs uppercase tracking-widest text-amber-400 font-extrabold flex items-center justify-center md:justify-start gap-2">
+              <span className="live-dot" style={{ background: '#f59e0b', boxShadow: '0 0 8px #f59e0b' }} />
+              <span>OFFICIAL SYSTEM BRANDING</span>
+            </div>
+            <h2 className="font-display font-black text-3xl sm:text-5xl tracking-tight text-white">
+              NISE <span className="text-gradient">// ENGINE</span>
+            </h2>
+            <p className="font-mono text-sm uppercase tracking-wider text-amber-200/90 font-bold">
+              NEWS INTELLIGENCE & SYNTHESIS ENGINE — BY DASAN
+            </p>
+            <p className="text-xs font-mono text-neutral-400 max-w-xl">
+              An enterprise-grade autonomous intelligence platform that synthesizes live dispatches across 14 sectors, clusters redundant event coverage via Jaccard IoU similarity, and dispatches automated multi-channel social dispatches.
+            </p>
+          </div>
+        </div>
+
         <div className="font-mono text-xs uppercase tracking-widest mb-4 font-bold flex items-center gap-2"
              style={{ color: 'var(--color-paper-dim)' }}>
           <span className="live-dot" style={{ width: 6, height: 6 }} />
-          <span>AUTONOMOUS MEDIA HOUSE & NEURAL ARCHITECTURE v3.0</span>
+          <span>AUTONOMOUS MEDIA HOUSE & NEURAL ARCHITECTURE v4.0</span>
         </div>
 
         <h1 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.04] mb-6"
@@ -84,7 +106,7 @@ export default function About() {
         </h1>
 
         <p className="text-lg sm:text-xl leading-relaxed font-sans max-w-3xl" style={{ color: 'var(--color-paper-dim)' }}>
-          NEWSAI is an autonomous, end-to-end situational awareness platform. By fusing
+          NISE (News Intelligence & Synthesis Engine by Dasan) is an autonomous, end-to-end situational awareness platform. By fusing
           real-time multi-source RSS ingestion with mathematical Jaccard clustering and
           Llama 3 generative synthesis, we deliver zero-noise executive news intelligence.
         </p>

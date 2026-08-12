@@ -301,16 +301,18 @@ export default function VoiceConsole() {
               <div className="flex items-center justify-between px-5 py-4 border-b"
                 style={{ borderColor: 'rgba(255,255,255,0.07)', flexShrink: 0 }}>
                 <div className="flex items-center gap-3">
-                  <div className="relative w-9 h-9 rounded-full flex items-center justify-center"
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                    <span style={{ fontSize: 15 }}>🎙</span>
+                  <div className="relative w-9 h-9 rounded-xl overflow-hidden shrink-0 border border-amber-500/40 shadow-sm">
+                    <img src="/nise-logo.jpg" alt="NISE Logo" className="w-full h-full object-cover" />
                     {isListening && (
-                      <span className="absolute inset-[-3px] rounded-full border border-red-500/40 animate-ping" />
+                      <span className="absolute inset-[-3px] rounded-xl border border-red-500/50 animate-ping" />
                     )}
                   </div>
                   <div>
-                    <div className="font-mono font-extrabold text-[11px] uppercase tracking-[0.18em]"
-                      style={{ color: '#fff' }}>NEWSAI VOICE CONSOLE</div>
+                    <div className="font-mono font-extrabold text-[11px] uppercase tracking-[0.18em] flex items-center gap-1.5"
+                      style={{ color: '#fff' }}>
+                      <span>NISE VOICE CONSOLE</span>
+                      <span className="text-[9px] text-amber-400 font-bold">BY DASAN</span>
+                    </div>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isListening ? 'bg-red-500 animate-pulse' : 'bg-neutral-700'}`} />
                       <span className="font-mono text-[9px] uppercase tracking-wider"

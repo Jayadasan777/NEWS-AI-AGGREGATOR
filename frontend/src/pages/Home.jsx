@@ -134,15 +134,14 @@ export default function Home() {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="relative pt-4"
       >
-        {/* Live Badge */}
-        <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full font-mono text-xs font-bold mb-8"
-             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.25)', backdropFilter: 'blur(10px)' }}>
+        {/* Live Badge with Logo */}
+        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full font-mono text-xs font-bold mb-8"
+             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(245,158,11,0.3)', backdropFilter: 'blur(10px)' }}>
+          <img src="/nise-logo.jpg" alt="NISE Logo" className="w-5 h-5 rounded-md object-cover border border-amber-500/40" />
+          <span className="text-amber-400 font-extrabold">NISE BY DASAN</span>
+          <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
           <span className="live-dot" />
-          <span style={{ color: 'var(--color-paper)' }}>LIVE</span>
-          <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
-          <span style={{ color: 'var(--color-paper)' }}>Neural Synthesis Online</span>
-          <span style={{ color: 'rgba(255,255,255,0.2)' }}>·</span>
-          <span style={{ color: 'var(--color-paper-dim)' }}>Auto-updated 6h</span>
+          <span style={{ color: 'var(--color-paper)' }}>NEURAL SYNTHESIS ONLINE</span>
         </div>
 
         {/* Main Headline */}

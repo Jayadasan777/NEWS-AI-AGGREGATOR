@@ -63,15 +63,14 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center gap-3">
 
           {/* Brand */}
-          <Link to="/" onClick={() => setActiveSector('AI')} className="flex items-center gap-2.5 shrink-0 group">
-            <div className="relative w-9 h-9 rounded-xl flex items-center justify-center"
-                 style={{ background: 'linear-gradient(135deg, #ffffff, #a3a3a3)',
-                          border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(10px)' }}>
-              <span className="font-black text-sm text-black">N</span>
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border-2"
-                    style={{ background: '#ffffff', borderColor: '#000000', boxShadow: '0 0 8px rgba(255,255,255,0.8)' }} />
+          <Link to="/" onClick={() => setActiveSector('AI')} className="flex items-center gap-3 shrink-0 group">
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-amber-500/40 shadow-[0_0_12px_rgba(245,158,11,0.25)] group-hover:border-amber-400 transition-all">
+              <img src="/nise-logo.jpg" alt="NISE Logo" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
             </div>
-            <span className="font-black text-lg tracking-tight text-gradient hidden sm:block">NEWSAI</span>
+            <div className="hidden sm:flex flex-col">
+              <span className="font-black text-lg tracking-tight leading-none text-gradient font-display">NISE</span>
+              <span className="font-mono text-[9px] uppercase tracking-widest text-amber-400/90 font-bold mt-0.5">BY DASAN</span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}

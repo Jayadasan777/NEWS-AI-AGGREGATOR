@@ -69,15 +69,16 @@ export default function Footer() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-14" style={{ borderBottom: '1px solid var(--color-border)' }}>
         {/* Brand */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center border border-white/20 bg-white/10">
-              <span className="text-white font-black text-sm">N</span>
+          <div className="flex items-center gap-3">
+            <img src="/nise-logo.jpg" alt="NISE Logo" className="w-10 h-10 rounded-xl object-cover border border-amber-500/40 shadow-md" />
+            <div>
+              <span className="font-black text-xl tracking-tight text-gradient font-display">NISE</span>
+              <div className="font-mono text-[9px] uppercase tracking-widest text-amber-400 font-bold">BY DASAN</div>
             </div>
-            <span className="font-black text-xl tracking-tight text-gradient">NEWSAI</span>
-            <span className="font-mono text-xs opacity-40" style={{ color: 'var(--color-muted)' }}>// v2.5</span>
+            <span className="font-mono text-xs opacity-40 ml-1" style={{ color: 'var(--color-muted)' }}>// v4.0</span>
           </div>
           <p className="text-sm leading-relaxed max-w-sm" style={{ color: 'var(--color-paper-dim)' }}>
-            Autonomous intelligence platform — multi-source AI clustering, deduplication, and real-time synthesis powered by Llama 3 neural fusion.
+            News Intelligence & Synthesis Engine — autonomous multi-source AI clustering, deduplication, and situational intelligence briefings.
           </p>
           <div className="flex items-center gap-3 font-mono text-xs font-bold">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
@@ -113,7 +114,7 @@ export default function Footer() {
       <div className="pt-7 pb-6 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs uppercase tracking-widest"
            style={{ color: 'var(--color-subtle)' }}>
         <div className="flex flex-wrap items-center justify-center gap-3">
-          {['Llama 3.1 70B', 'Jaccard Similarity', 'Pollinations AI', 'MongoDB Atlas', 'Node.js + Vite'].map((t, i, arr) => (
+          {['Llama 3.1 8B', 'Jaccard IoU Clustering', 'Pollinations AI', 'MongoDB Atlas', 'Node.js + Vite'].map((t, i, arr) => (
             <React.Fragment key={t}>
               <span style={{ color: i % 2 === 0 ? 'var(--color-muted)' : 'var(--color-subtle)' }}>{t}</span>
               {i < arr.length - 1 && <span>·</span>}
@@ -121,7 +122,7 @@ export default function Footer() {
           ))}
         </div>
         <div className="text-center" style={{ color: 'var(--color-subtle)' }}>
-          © {new Date().getFullYear()} NEWSAI — Autonomous Intelligence
+          © {new Date().getFullYear()} NISE — News Intelligence & Synthesis Engine by Dasan
         </div>
       </div>
     </footer>
