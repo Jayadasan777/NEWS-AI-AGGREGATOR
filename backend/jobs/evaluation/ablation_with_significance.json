@@ -1,0 +1,185 @@
+{
+  "summary": {
+    "total_configurations_tested": 6,
+    "test_set_size": 1022,
+    "baseline_accuracy": 50.78,
+    "significant_components": [
+      "sector",
+      "temporal"
+    ],
+    "significant_count": 2,
+    "interpretation": "2 component(s) are statistically significant contributors to EFSA performance"
+  },
+  "ablation_results": [
+    {
+      "configuration": "Full EFSA (All 5 Signals)",
+      "description": "Baseline with all components",
+      "ablated_component": "none",
+      "accuracy": 50.78,
+      "accuracy_ci": "[47.72%, 53.84%]",
+      "precision": 50.51,
+      "recall": 87.89,
+      "f1_score": 64.15,
+      "f1_ci": "[61.16%, 67.03%]",
+      "mcc": 0.0212,
+      "confusion_matrix": {
+        "TP": 450,
+        "FP": 441,
+        "TN": 69,
+        "FN": 62
+      },
+      "mcnemar_vs_full": {
+        "chi2": 0,
+        "p_value": 1,
+        "significant": false,
+        "interpretation": "Baseline configuration"
+      }
+    },
+    {
+      "configuration": "EFSA w/o Sector Match",
+      "description": "Remove S_sec (sector taxonomy binary signal)",
+      "ablated_component": "sector",
+      "accuracy": 67.51,
+      "accuracy_ci": "[64.58%, 70.32%]",
+      "precision": 63.24,
+      "recall": 83.98,
+      "f1_score": 72.15,
+      "f1_ci": "[69.32%, 74.81%]",
+      "mcc": 0.3705,
+      "confusion_matrix": {
+        "TP": 430,
+        "FP": 250,
+        "TN": 260,
+        "FN": 82
+      },
+      "mcnemar_vs_full": {
+        "chi2": 136.9668,
+        "p_value": 0,
+        "significant": true,
+        "disagreement_pairs": {
+          "baseline_correct_ablated_wrong": 20,
+          "baseline_wrong_ablated_correct": 191
+        },
+        "interpretation": "Component is statistically significant (p < 0.05)"
+      }
+    },
+    {
+      "configuration": "EFSA w/o Entity Overlap",
+      "description": "Remove S_ent (named entity overlap ratio)",
+      "ablated_component": "entity",
+      "accuracy": 50.1,
+      "accuracy_ci": "[47.04%, 53.16%]",
+      "precision": 50.1,
+      "recall": 100,
+      "f1_score": 66.75,
+      "f1_ci": "[63.81%, 69.57%]",
+      "mcc": 0,
+      "confusion_matrix": {
+        "TP": 512,
+        "FP": 510,
+        "TN": 0,
+        "FN": 0
+      },
+      "mcnemar_vs_full": {
+        "chi2": 0.2748,
+        "p_value": 0.8716,
+        "significant": false,
+        "disagreement_pairs": {
+          "baseline_correct_ablated_wrong": 69,
+          "baseline_wrong_ablated_correct": 62
+        },
+        "interpretation": "Component is NOT statistically significant (p ≥ 0.05)"
+      }
+    },
+    {
+      "configuration": "EFSA w/o Temporal Decay",
+      "description": "Remove S_temp (exponential time decay)",
+      "ablated_component": "temporal",
+      "accuracy": 64.68,
+      "accuracy_ci": "[61.7%, 67.55%]",
+      "precision": 60.41,
+      "recall": 85.55,
+      "f1_score": 70.82,
+      "f1_ci": "[67.96%, 73.52%]",
+      "mcc": 0.3224,
+      "confusion_matrix": {
+        "TP": 438,
+        "FP": 287,
+        "TN": 223,
+        "FN": 74
+      },
+      "mcnemar_vs_full": {
+        "chi2": 119.7651,
+        "p_value": 0,
+        "significant": true,
+        "disagreement_pairs": {
+          "baseline_correct_ablated_wrong": 12,
+          "baseline_wrong_ablated_correct": 154
+        },
+        "interpretation": "Component is statistically significant (p < 0.05)"
+      }
+    },
+    {
+      "configuration": "EFSA w/o Headline Similarity",
+      "description": "Remove S_head (char 3-gram cosine)",
+      "ablated_component": "headline",
+      "accuracy": 50.1,
+      "accuracy_ci": "[47.04%, 53.16%]",
+      "precision": 50.1,
+      "recall": 100,
+      "f1_score": 66.75,
+      "f1_ci": "[63.81%, 69.57%]",
+      "mcc": 0,
+      "confusion_matrix": {
+        "TP": 512,
+        "FP": 510,
+        "TN": 0,
+        "FN": 0
+      },
+      "mcnemar_vs_full": {
+        "chi2": 0.2748,
+        "p_value": 0.8716,
+        "significant": false,
+        "disagreement_pairs": {
+          "baseline_correct_ablated_wrong": 69,
+          "baseline_wrong_ablated_correct": 62
+        },
+        "interpretation": "Component is NOT statistically significant (p ≥ 0.05)"
+      }
+    },
+    {
+      "configuration": "EFSA w/o Keyword Similarity",
+      "description": "Remove S_key (unigram Jaccard IoU)",
+      "ablated_component": "keyword",
+      "accuracy": 50.1,
+      "accuracy_ci": "[47.04%, 53.16%]",
+      "precision": 50.1,
+      "recall": 100,
+      "f1_score": 66.75,
+      "f1_ci": "[63.81%, 69.57%]",
+      "mcc": 0,
+      "confusion_matrix": {
+        "TP": 512,
+        "FP": 510,
+        "TN": 0,
+        "FN": 0
+      },
+      "mcnemar_vs_full": {
+        "chi2": 0.2748,
+        "p_value": 0.8716,
+        "significant": false,
+        "disagreement_pairs": {
+          "baseline_correct_ablated_wrong": 69,
+          "baseline_wrong_ablated_correct": 62
+        },
+        "interpretation": "Component is NOT statistically significant (p ≥ 0.05)"
+      }
+    }
+  ],
+  "test_metadata": {
+    "threshold": 0.22,
+    "significance_level": 0.05,
+    "statistical_test": "McNemar Test with Yates Continuity Correction",
+    "confidence_intervals": "Wilson 95% CI"
+  }
+}

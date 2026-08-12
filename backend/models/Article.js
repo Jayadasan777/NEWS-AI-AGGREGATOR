@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const articleSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  title_hash: { type: String, default: '', index: true },
+  title_hash: { type: String, default: '' },
   unique_summary: { type: String, required: true },
   sector: { 
     type: String, 

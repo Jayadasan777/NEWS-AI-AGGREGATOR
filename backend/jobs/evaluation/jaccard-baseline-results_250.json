@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-08-03T14:06:45.309Z",
+  "dataset": "candidate_sample_250.json",
+  "ground_truth": "labels_annotator_A.json",
+  "sample_count": 250,
+  "method": "Jaccard-Only",
+  "threshold": 0.12,
+  "confusion_matrix": {
+    "tp": 52,
+    "fp": 55,
+    "tn": 143,
+    "fn": 0
+  },
+  "metrics": {
+    "accuracy": 78,
+    "precision": 48.6,
+    "recall": 100,
+    "f1": 65.41,
+    "mcc": 0.592
+  }
+}

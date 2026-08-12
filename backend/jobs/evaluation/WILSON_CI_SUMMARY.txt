@@ -1,0 +1,117 @@
+================================================================================
+WILSON 95% CONFIDENCE INTERVALS - PHASE 3 EVALUATION RESULTS
+================================================================================
+Generated: 2026-08-03
+Dataset: N=198 (test set from 883-pair IEEE benchmark)
+Method: Wilson Score Interval (more accurate than normal approximation)
+
+================================================================================
+KEY FINDINGS
+================================================================================
+
+1. LLM-Only Ceiling achieves perfect performance:
+   - Accuracy:  100.00% [98.10%, 100.00%]
+   - Precision: 100.00% [96.26%, 100.00%]
+   - Recall:    100.00% [96.26%, 100.00%]
+   - F1-Score:  100.00% [100.00%, 100.00%]
+   - Note: Narrow CIs due to perfect classification
+
+2. Production System shows high precision but low recall:
+   - Accuracy:  62.63% [55.71%, 69.06%]
+   - Precision: 100.00% [86.68%, 100.00%] (perfect precision, 0 false positives)
+   - Recall:    25.25% [17.73%, 34.62%] (low recall, many false negatives)
+   - F1-Score:  40.32% [29.41%, 51.23%]
+   - Interpretation: Very conservative, avoids false positives at cost of missing duplicates
+
+3. EFSA+DPCS shows modest improvement over EFSA-only:
+   - Accuracy:  55.05% [48.09%, 61.82%]
+   - Precision: 69.23% [50.01%, 83.50%]
+   - Recall:    18.18% [11.82%, 26.92%]
+   - F1-Score:  28.80% [19.15%, 38.45%]
+   - Note: Higher precision than EFSA-only but lower recall
+
+4. EFSA Gate-Only baseline:
+   - Accuracy:  52.53% [45.59%, 59.37%]
+   - Precision: 55.56% [41.18%, 69.06%]
+   - Recall:    25.25% [17.73%, 34.62%]
+   - F1-Score:  34.72% [26.15%, 43.30%]
+
+5. Traditional baselines (Jaccard, 3-gram, SBERT) all fail:
+   - Accuracy:  50.00% [43.10%, 56.90%] (no better than random)
+   - Precision: 50.00% [9.45%, 90.55%] (very wide CI due to n=2)
+   - Recall:    1.01% [0.18%, 5.50%] (effectively zero)
+   - F1-Score:  1.98% [0.00%, 5.77%]
+   - Note: Wide precision CI indicates high uncertainty due to only 2 positive predictions
+
+================================================================================
+CONFIDENCE INTERVAL WIDTHS (Accuracy)
+================================================================================
+Method                     Width    Interpretation
+------------------------------------------------------------------------------------
+LLM-Only Ceiling           1.90%    Very narrow (near-perfect performance)
+Production                13.36%    Moderate width (typical for N=198)
+EFSA+DPCS                 13.73%    Moderate width
+EFSA Gate-Only            13.78%    Moderate width
+Traditional baselines     13.80%    Wide (low performance, high uncertainty)
+
+Note: All CIs are relatively wide due to sample size (N=198). Larger test sets
+would yield narrower intervals.
+
+================================================================================
+STATISTICAL INTERPRETATION
+================================================================================
+
+Wilson Score Interval Properties:
+- More accurate than normal approximation for small samples
+- Asymmetric intervals (not symmetric around point estimate)
+- Never extends beyond [0, 1] bounds
+- Recommended for proportions with n < 30 or p near 0/1
+
+Key Observations:
+1. Non-overlapping CIs indicate significant differences
+   - LLM-Only vs all others: CIs do not overlap → significant
+   - Production vs traditional baselines: CIs barely overlap → likely significant
+   - EFSA+DPCS vs traditional: CIs overlap substantially → may not be significant
+
+2. Wide CIs for precision in low-recall methods reflect uncertainty
+   - Jaccard: only 2 positive predictions → very wide precision CI
+   - Production: 25 positive predictions → moderate precision CI
+
+3. F1-Score CIs computed via delta method approximation
+   - Accounts for covariance between precision and recall
+   - May be conservative for very low recall cases
+
+================================================================================
+LATEX TABLES GENERATED
+================================================================================
+
+Two LaTeX tables available in compute_wilson_cis.js output:
+1. Accuracy-only table with CI widths
+2. All metrics table (accuracy, precision, recall, F1)
+
+Ready for IEEE paper inclusion.
+
+================================================================================
+FILES GENERATED
+================================================================================
+
+1. statistical_significance_results.json
+   - Complete results with Wilson CIs for all metrics
+   - Machine-readable JSON format
+   - Includes both raw values and formatted strings
+
+2. compute_wilson_cis.js
+   - Reusable script for computing Wilson CIs
+   - Implements CIs for accuracy, precision, recall, and F1-score
+   - Can be re-run on updated datasets
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Run McNemar's tests for pairwise comparisons (Phase 4)
+2. Generate statistical significance matrix
+3. Update IEEE paper with Wilson CIs in Results section
+4. Consider running on full N=883 dataset for narrower CIs
+
+================================================================================

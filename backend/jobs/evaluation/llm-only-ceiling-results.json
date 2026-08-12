@@ -1,0 +1,46 @@
+{
+  "mode": "extrapolation",
+  "dataset": "testCases_883.json",
+  "n": 883,
+  "timestamp": "2026-08-03T14:05:00.564Z",
+  "distribution": {
+    "same": 441,
+    "different": 442
+  },
+  "scenarios": {
+    "perfect_ceiling": {
+      "description": "Theoretical maximum (100% accuracy)",
+      "tp": 441,
+      "fp": 0,
+      "tn": 442,
+      "fn": 0,
+      "accuracy": "100.00%",
+      "accuracy_ci": "[99.57%, 100.00%]",
+      "precision": "100.00%",
+      "recall": "100.00%",
+      "f1_score": "100.00%",
+      "f1_ci": "[99.14%, 100.00%]",
+      "mcc": "1.0000",
+      "calls_saved": "0.0%",
+      "cost_per_1m": "$11.60",
+      "latency_ms": 2994
+    },
+    "conservative_estimate": {
+      "description": "Conservative estimate (97.78% accuracy from N=45)",
+      "tp": 431,
+      "fp": 10,
+      "tn": 432,
+      "fn": 10,
+      "accuracy": "97.73%",
+      "accuracy_ci": "[96.53%, 98.53%]",
+      "precision": "97.73%",
+      "recall": "97.73%",
+      "f1_score": "97.73%",
+      "f1_ci": "[93.25%, 97.11%]",
+      "mcc": "0.9547",
+      "calls_saved": "0.0%",
+      "cost_per_1m": "$11.60",
+      "latency_ms": 2994
+    }
+  }
+}

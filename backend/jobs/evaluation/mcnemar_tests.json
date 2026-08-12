@@ -1,0 +1,91 @@
+{
+  "timestamp": "2026-08-03T14:34:29.505Z",
+  "test_set_size": 198,
+  "alpha": 0.05,
+  "comparisons": [
+    {
+      "comparison": "Production vs EFSA",
+      "model_1": "Production",
+      "model_2": "EFSA",
+      "hypothesis": "Test if EFSA gate-only improves over Production 2-stage",
+      "n12": 20,
+      "n21": 0,
+      "bothCorrect": 104,
+      "bothWrong": 74,
+      "chi_square": 18.05,
+      "p_value": 0.000022,
+      "significant": true,
+      "interpretation": "Model 1 significantly better than Model 2 (p < 0.05, +100.0% disagreements in favor of Model 1)"
+    },
+    {
+      "comparison": "EFSA vs EFSA+DPCS",
+      "model_1": "EFSA",
+      "model_2": "EFSA+DPCS",
+      "hypothesis": "Test if DPCS domain-pair co-similarity improves EFSA",
+      "n12": 7,
+      "n21": 12,
+      "bothCorrect": 97,
+      "bothWrong": 82,
+      "chi_square": 0.8421,
+      "p_value": 0.358795,
+      "significant": false,
+      "interpretation": "No significant difference between models (p ≥ 0.05)"
+    },
+    {
+      "comparison": "Production vs SBERT",
+      "model_1": "Production",
+      "model_2": "SBERT",
+      "hypothesis": "Test if SBERT semantic embeddings significantly differ from Production",
+      "n12": 25,
+      "n21": 0,
+      "bothCorrect": 99,
+      "bothWrong": 74,
+      "chi_square": 23.04,
+      "p_value": 0.000002,
+      "significant": true,
+      "interpretation": "Model 1 significantly better than Model 2 (p < 0.05, +100.0% disagreements in favor of Model 1)"
+    },
+    {
+      "comparison": "SBERT vs Production",
+      "model_1": "SBERT",
+      "model_2": "Production",
+      "hypothesis": "Test if semantic gate is significantly better than Production",
+      "n12": 0,
+      "n21": 25,
+      "bothCorrect": 99,
+      "bothWrong": 74,
+      "chi_square": 23.04,
+      "p_value": 0.000002,
+      "significant": true,
+      "interpretation": "Model 2 significantly better than Model 1 (p < 0.05, +100.0% disagreements in favor of Model 2)"
+    },
+    {
+      "comparison": "Production vs Jaccard",
+      "model_1": "Production",
+      "model_2": "Jaccard",
+      "hypothesis": "Test if Production 2-stage significantly improves over simple Jaccard",
+      "n12": 25,
+      "n21": 0,
+      "bothCorrect": 99,
+      "bothWrong": 74,
+      "chi_square": 23.04,
+      "p_value": 0.000002,
+      "significant": true,
+      "interpretation": "Model 1 significantly better than Model 2 (p < 0.05, +100.0% disagreements in favor of Model 1)"
+    },
+    {
+      "comparison": "EFSA vs Jaccard",
+      "model_1": "EFSA",
+      "model_2": "Jaccard",
+      "hypothesis": "Test if EFSA ensemble significantly improves over Jaccard baseline",
+      "n12": 24,
+      "n21": 19,
+      "bothCorrect": 80,
+      "bothWrong": 75,
+      "chi_square": 0.3721,
+      "p_value": 0.541865,
+      "significant": false,
+      "interpretation": "No significant difference between models (p ≥ 0.05)"
+    }
+  ]
+}

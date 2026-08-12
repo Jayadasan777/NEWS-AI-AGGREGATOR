@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import API from '../api/axios';
@@ -22,6 +22,138 @@ export default function SocialStudio() {
   const [lastIngestionTime, setLastIngestionTime] = useState(null);
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
+
+  // --- Voice Command & Speech Recognition Setup ---
+  const [isListening, setIsListening] = useState(false);
+  const [speechTranscript, setSpeechTranscript] = useState('');
+  const [recognitionError, setRecognitionError] = useState(null);
+  const [voiceSupported, setVoiceSupported] = useState(true);
+  const [recognitionInstance, setRecognitionInstance] = useState(null);
+
+  const selectedArticleRef = useRef(selectedArticle);
+  const articlesRef = useRef(articles);
+
+  useEffect(() => {
+    selectedArticleRef.current = selectedArticle;
+  }, [selectedArticle]);
+
+  useEffect(() => {
+    articlesRef.current = articles;
+  }, [articles]);
+
+  const selectNextArticle = () => {
+    const list = articlesRef.current;
+    const current = selectedArticleRef.current;
+    if (list.length === 0) return;
+    const idx = current ? list.findIndex((a) => a._id === current._id) : -1;
+    if (idx !== -1 && idx < list.length - 1) {
+      setSelectedArticle(list[idx + 1]);
+      triggerGlitch(100);
+    }
+  };
+
+  const selectPrevArticle = () => {
+    const list = articlesRef.current;
+    const current = selectedArticleRef.current;
+    if (list.length === 0 || !current) return;
+    const idx = list.findIndex((a) => a._id === current._id);
+    if (idx > 0) {
+      setSelectedArticle(list[idx - 1]);
+      triggerGlitch(100);
+    }
+  };
+
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setVoiceSupported(false);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setRecognitionError(null);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+      setRecognitionError(event.error);
+      setIsListening(false);
+    };
+
+    recognition.onresult = (event) => {
+      let finalTranscript = '';
+      let interimTranscript = '';
+
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      const text = (finalTranscript || interimTranscript).toLowerCase().trim();
+      setSpeechTranscript(text);
+
+      if (
+        text.includes('post to fb') || 
+        text.includes('post to facebook') || 
+        text.includes('broadcast now') || 
+        text.includes('broadcast to facebook') || 
+        text.includes('post now') ||
+        text.includes('publish')
+      ) {
+        if (selectedArticleRef.current) {
+          handleBroadcast(null, selectedArticleRef.current._id);
+          recognition.stop();
+          setSpeechTranscript('Command executed: Post to Facebook');
+        }
+      } else if (
+        text.endsWith('next') || 
+        text.endsWith('next article') || 
+        text.endsWith('go to next') || 
+        text.endsWith('select next')
+      ) {
+        selectNextArticle();
+      } else if (
+        text.endsWith('previous') || 
+        text.endsWith('previous article') || 
+        text.endsWith('go to previous') || 
+        text.endsWith('select previous')
+      ) {
+        selectPrevArticle();
+      }
+    };
+
+    setRecognitionInstance(recognition);
+
+    return () => {
+      recognition.abort();
+    };
+  }, []);
+
+  const toggleListening = () => {
+    if (!recognitionInstance) return;
+    if (isListening) {
+      recognitionInstance.stop();
+    } else {
+      setSpeechTranscript('');
+      try {
+        recognitionInstance.start();
+      } catch (err) {
+        console.error('Failed to start speech recognition:', err);
+      }
+    }
+  };
 
   const fetchQueue = async () => {
     setLoading(true);
@@ -522,6 +654,70 @@ export default function SocialStudio() {
           {/* Broadcast Action Button & Feedback Alert */}
           {selectedArticle && (
             <div className="space-y-3 max-w-[360px] mx-auto">
+              {/* Voice Command Console */}
+              <div className="glass-card p-4 rounded-2xl border border-white/10 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--color-paper)' }}>
+                    <span className={`w-2 h-2 rounded-full ${isListening ? 'bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444]' : 'bg-neutral-500'}`} />
+                    <span>VOICE COMMAND CONSOLE</span>
+                  </div>
+                  {voiceSupported ? (
+                    <button
+                      onClick={toggleListening}
+                      className="px-3 py-1 rounded-lg font-mono text-[9px] uppercase tracking-wider font-extrabold border transition-all cursor-pointer flex items-center gap-1.5"
+                      style={{
+                        background: isListening ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.06)',
+                        borderColor: isListening ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255, 255, 255, 0.15)',
+                        color: isListening ? '#ff8888' : 'var(--color-paper-dim)'
+                      }}
+                    >
+                      {isListening ? '⏹ STOP MIC' : '🎙 START MIC'}
+                    </button>
+                  ) : (
+                    <span className="font-mono text-[9px] text-red-400">UNSUPPORTED BY BROWSER</span>
+                  )}
+                </div>
+
+                {voiceSupported && (
+                  <div className="space-y-2">
+                    {/* Live Transcript / Info box */}
+                    <div className="bg-black/30 rounded-xl p-3 border border-white/5 font-mono text-[11px] min-h-[50px] flex items-center justify-center text-center">
+                      {isListening ? (
+                        <p style={{ color: 'var(--color-paper)' }}>
+                          {speechTranscript ? (
+                            <span className="italic">"{speechTranscript}"</span>
+                          ) : (
+                            <span className="animate-pulse" style={{ color: 'var(--color-paper-dim)' }}>Listening for command...</span>
+                          )}
+                        </p>
+                      ) : (
+                        <p style={{ color: 'var(--color-paper-dim)' }}>
+                          Click <strong>START MIC</strong> and say <span style={{ color: '#fff' }}>"post to fb"</span> to broadcast.
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Supported Voice Commands Info */}
+                    <div className="flex flex-wrap gap-1.5 justify-center">
+                      {[
+                        { cmd: '"post to fb"', desc: 'Broadcast selected article' },
+                        { cmd: '"next"', desc: 'Go to next' },
+                        { cmd: '"previous"', desc: 'Go to previous' }
+                      ].map((hint, idx) => (
+                        <div
+                          key={idx}
+                          className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-mono hover:bg-white/10 cursor-help"
+                          style={{ color: 'var(--color-paper-dim)' }}
+                          title={hint.desc}
+                        >
+                          {hint.cmd}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {selectedArticle.broadcast_status === 'failed' && (
                 <div className="p-3 bg-white/10 border border-white/30 rounded-xl text-white font-mono text-xs text-center">
                   <strong>❌ FB BROADCAST FAILED:</strong> {selectedArticle.broadcast_error || 'Network or Make.com execution error'}

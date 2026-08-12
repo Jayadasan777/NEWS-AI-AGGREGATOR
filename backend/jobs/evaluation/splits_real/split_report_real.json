@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-08-03T04:27:22.526Z",
-  "total_items": 883,
-  "train_count": 519,
-  "val_count": 166,
-  "test_count": 198,
-  "train_ratio": 0.5878,
-  "val_ratio": 0.188,
-  "test_ratio": 0.2242,
+  "timestamp": "2026-08-06T18:19:37.263Z",
+  "total_items": 5000,
+  "train_count": 2990,
+  "val_count": 988,
+  "test_count": 1022,
+  "train_ratio": 0.598,
+  "val_ratio": 0.1976,
+  "test_ratio": 0.2044,
   "strata_count": 29
 }

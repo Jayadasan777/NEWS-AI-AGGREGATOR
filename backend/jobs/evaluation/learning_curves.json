@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-08-03T14:33:08.038Z",
+  "description": "Learning curve analysis: baseline performance vs. dataset size",
+  "methodology": "Stratified random sampling with fixed seed=42 for reproducibility",
+  "dataset_source": "testCases_v2_real.json",
+  "sbert_threshold": 0.45,
+  "production_threshold": "Jaccard >= 0.12 OR Char3GramCosine >= 0.25",
+  "sizes": [
+    50,
+    100,
+    150,
+    200,
+    250
+  ],
+  "production_accuracy": [
+    52,
+    53,
+    52,
+    53.5,
+    52.8
+  ],
+  "production_f1": [
+    7.69,
+    14.55,
+    12.2,
+    14.68,
+    13.24
+  ],
+  "sbert_accuracy": [
+    64,
+    67,
+    69.33,
+    69.5,
+    69.6
+  ],
+  "sbert_f1": [
+    43.75,
+    52.17,
+    56.6,
+    56.12,
+    56.82
+  ]
+}

@@ -32,3 +32,16 @@ Thumbs.db
 
 # Vite cache
 .vite/
+
+# Paper drafts and exports (keep only final versions in docs/)
+*.pdf
+*.html
+dasan_paper*.docx
+dasan_paper*.md
+official_ieee*.docx
+paper.txt
+
+# Office temporary files
+~$*.docx
+~$*.xlsx
+~$*.pptx

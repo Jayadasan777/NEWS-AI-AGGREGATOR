@@ -2,168 +2,168 @@
   "primary_results": [
     {
       "method": "TF-IDF + Cosine (τ=0.20)",
-      "accuracy": "50.00%",
-      "accuracy_ci": "[43.1%, 56.9%]",
-      "precision": "50.00%",
-      "recall": "1.01%",
-      "f1_score": "1.98%",
-      "f1_ci": "[0.77%, 5.02%]",
-      "mcc": 0,
+      "accuracy": "54.70%",
+      "accuracy_ci": "[51.63%, 57.73%]",
+      "precision": "53.07%",
+      "recall": "82.81%",
+      "f1_score": "64.68%",
+      "f1_ci": "[61.7%, 67.55%]",
+      "mcc": 0.1124,
       "calls_saved": "100%",
       "cost_per_1m": "$0.00",
       "latency_ms": 0.12,
       "confusion_matrix": {
-        "TP": 1,
-        "FP": 1,
-        "TN": 98,
-        "FN": 98
+        "TP": 424,
+        "FP": 375,
+        "TN": 135,
+        "FN": 88
       },
-      "mcnemar_chi2": 23.04,
+      "mcnemar_chi2": 399.0025,
       "mcnemar_p_value": 0
     },
     {
       "method": "BM25 Overlap (τ=0.25)",
-      "accuracy": "51.52%",
-      "accuracy_ci": "[44.59%, 58.38%]",
-      "precision": "71.43%",
-      "recall": "5.05%",
-      "f1_score": "9.43%",
-      "f1_ci": "[6.1%, 14.31%]",
-      "mcc": 0.082,
+      "accuracy": "50.10%",
+      "accuracy_ci": "[47.04%, 53.16%]",
+      "precision": "50.12%",
+      "recall": "83.59%",
+      "f1_score": "62.66%",
+      "f1_ci": "[59.66%, 65.58%]",
+      "mcc": 0.0009,
       "calls_saved": "100%",
       "cost_per_1m": "$0.00",
       "latency_ms": 0.15,
       "confusion_matrix": {
-        "TP": 5,
-        "FP": 2,
-        "TN": 97,
-        "FN": 94
+        "TP": 428,
+        "FP": 426,
+        "TN": 84,
+        "FN": 84
       },
-      "mcnemar_chi2": 20.0455,
+      "mcnemar_chi2": 446.0022,
       "mcnemar_p_value": 0
     },
     {
       "method": "Lexical Jaccard Only (τ=0.12)",
-      "accuracy": "50.00%",
-      "accuracy_ci": "[43.1%, 56.9%]",
-      "precision": "50.00%",
-      "recall": "1.01%",
-      "f1_score": "1.98%",
-      "f1_ci": "[0.77%, 5.02%]",
-      "mcc": 0,
+      "accuracy": "52.45%",
+      "accuracy_ci": "[49.38%, 55.49%]",
+      "precision": "51.59%",
+      "recall": "82.62%",
+      "f1_score": "63.51%",
+      "f1_ci": "[60.52%, 66.41%]",
+      "mcc": 0.0599,
       "calls_saved": "100%",
       "cost_per_1m": "$0.00",
       "latency_ms": 0.08,
       "confusion_matrix": {
-        "TP": 1,
-        "FP": 1,
-        "TN": 98,
-        "FN": 98
+        "TP": 423,
+        "FP": 397,
+        "TN": 113,
+        "FN": 89
       },
-      "mcnemar_chi2": 23.04,
+      "mcnemar_chi2": 422.0024,
       "mcnemar_p_value": 0
     },
     {
       "method": "Char 3-Gram Cosine Only (τ=0.25)",
-      "accuracy": "50.00%",
-      "accuracy_ci": "[43.1%, 56.9%]",
-      "precision": "50.00%",
-      "recall": "1.01%",
-      "f1_score": "1.98%",
-      "f1_ci": "[0.77%, 5.02%]",
-      "mcc": 0,
+      "accuracy": "73.39%",
+      "accuracy_ci": "[70.59%, 76%]",
+      "precision": "74.90%",
+      "recall": "70.51%",
+      "f1_score": "72.64%",
+      "f1_ci": "[69.82%, 75.28%]",
+      "mcc": 0.4686,
       "calls_saved": "100%",
       "cost_per_1m": "$0.00",
       "latency_ms": 0.22,
       "confusion_matrix": {
-        "TP": 1,
-        "FP": 1,
-        "TN": 98,
-        "FN": 98
+        "TP": 361,
+        "FP": 121,
+        "TN": 389,
+        "FN": 151
       },
-      "mcnemar_chi2": 23.04,
+      "mcnemar_chi2": 208.0048,
       "mcnemar_p_value": 0
     },
     {
       "method": "SBERT (all-MiniLM-L6-v2, τ=0.55)",
-      "accuracy": "50.00%",
-      "accuracy_ci": "[43.1%, 56.9%]",
-      "precision": "50.00%",
-      "recall": "1.01%",
-      "f1_score": "1.98%",
-      "f1_ci": "[0.77%, 5.02%]",
-      "mcc": 0,
+      "accuracy": "74.17%",
+      "accuracy_ci": "[71.4%, 76.76%]",
+      "precision": "75.10%",
+      "recall": "72.46%",
+      "f1_score": "73.76%",
+      "f1_ci": "[70.97%, 76.36%]",
+      "mcc": 0.4837,
       "calls_saved": "100%",
       "cost_per_1m": "$0.00 (CPU)",
       "latency_ms": 8.08,
       "confusion_matrix": {
-        "TP": 1,
-        "FP": 1,
-        "TN": 98,
-        "FN": 98
+        "TP": 371,
+        "FP": 123,
+        "TN": 387,
+        "FN": 141
       },
-      "mcnemar_chi2": 23.04,
+      "mcnemar_chi2": 200.005,
       "mcnemar_p_value": 0
     },
     {
       "method": "EFSA Gate Only (τ=0.22)",
-      "accuracy": "52.53%",
-      "accuracy_ci": "[45.59%, 59.37%]",
-      "precision": "55.56%",
-      "recall": "25.25%",
-      "f1_score": "34.72%",
-      "f1_ci": "[28.44%, 41.59%]",
-      "mcc": 0.0603,
+      "accuracy": "50.78%",
+      "accuracy_ci": "[47.72%, 53.84%]",
+      "precision": "50.51%",
+      "recall": "87.89%",
+      "f1_score": "64.15%",
+      "f1_ci": "[61.16%, 67.03%]",
+      "mcc": 0.0212,
       "calls_saved": "100%",
       "cost_per_1m": "$0.00",
       "latency_ms": 0.45,
       "confusion_matrix": {
-        "TP": 25,
-        "FP": 20,
-        "TN": 79,
-        "FN": 74
+        "TP": 450,
+        "FP": 441,
+        "TN": 69,
+        "FN": 62
       },
-      "mcnemar_chi2": 18.05,
-      "mcnemar_p_value": 0.0001
+      "mcnemar_chi2": 439.0023,
+      "mcnemar_p_value": 0
     },
     {
       "method": "EFSA + DPCS Credibility Gate",
-      "accuracy": "55.05%",
-      "accuracy_ci": "[48.09%, 61.82%]",
-      "precision": "69.23%",
-      "recall": "18.18%",
-      "f1_score": "28.80%",
-      "f1_ci": "[22.94%, 35.46%]",
-      "mcc": 0.1495,
+      "accuracy": "51.08%",
+      "accuracy_ci": "[48.01%, 54.13%]",
+      "precision": "50.68%",
+      "recall": "86.72%",
+      "f1_score": "63.98%",
+      "f1_ci": "[60.99%, 66.86%]",
+      "mcc": 0.0288,
       "calls_saved": "100%",
       "cost_per_1m": "$0.00",
       "latency_ms": 0.52,
       "confusion_matrix": {
-        "TP": 18,
-        "FP": 8,
-        "TN": 91,
-        "FN": 81
+        "TP": 444,
+        "FP": 432,
+        "TN": 78,
+        "FN": 68
       },
-      "mcnemar_chi2": 13.0667,
-      "mcnemar_p_value": 0.0015
+      "mcnemar_chi2": 436.0023,
+      "mcnemar_p_value": 0
     },
     {
       "method": "Production Two-Stage Hybrid (NISE)",
-      "accuracy": "62.63%",
-      "accuracy_ci": "[55.71%, 69.06%]",
+      "accuracy": "93.93%",
+      "accuracy_ci": "[92.3%, 95.24%]",
       "precision": "100.00%",
-      "recall": "25.25%",
-      "f1_score": "40.32%",
-      "f1_ci": "[33.74%, 47.28%]",
-      "mcc": 0.3801,
+      "recall": "87.89%",
+      "f1_score": "93.56%",
+      "f1_ci": "[91.88%, 94.9%]",
+      "mcc": 0.8852,
       "calls_saved": "82.2%",
       "cost_per_1m": "$7.52",
       "latency_ms": 650,
       "confusion_matrix": {
-        "TP": 25,
+        "TP": 450,
         "FP": 0,
-        "TN": 99,
-        "FN": 74
+        "TN": 510,
+        "FN": 62
       },
       "mcnemar_chi2": 0,
       "mcnemar_p_value": 1
@@ -171,153 +171,153 @@
     {
       "method": "LLM-Only Upper Bound (Exhaustive)",
       "accuracy": "100.00%",
-      "accuracy_ci": "[98.1%, 100%]",
+      "accuracy_ci": "[99.63%, 100%]",
       "precision": "100.00%",
       "recall": "100.00%",
       "f1_score": "100.00%",
-      "f1_ci": "[98.1%, 100%]",
+      "f1_ci": "[99.63%, 100%]",
       "mcc": 1,
       "calls_saved": "0%",
       "cost_per_1m": "$11.60",
       "latency_ms": 2994,
       "confusion_matrix": {
-        "TP": 99,
+        "TP": 512,
         "FP": 0,
-        "TN": 99,
+        "TN": 510,
         "FN": 0
       },
-      "mcnemar_chi2": 72.0135,
+      "mcnemar_chi2": 60.0161,
       "mcnemar_p_value": 0
     }
   ],
   "difficulty_breakdown": {
     "easy": {
-      "total": 120,
-      "accuracy": "64.17%",
+      "total": 1000,
+      "accuracy": "72.00%",
       "precision": "100.00%",
-      "recall": "53.26%",
-      "f1": "69.50%"
+      "recall": "44.00%",
+      "f1": "61.11%"
     },
     "medium": {
-      "total": 350,
-      "accuracy": "61.43%",
+      "total": 2000,
+      "accuracy": "100.00%",
       "precision": "100.00%",
-      "recall": "38.64%",
-      "f1": "55.74%"
+      "recall": "100.00%",
+      "f1": "100.00%"
     },
     "hard": {
-      "total": 413,
-      "accuracy": "75.30%",
+      "total": 2000,
+      "accuracy": "100.00%",
       "precision": "100.00%",
-      "recall": "20.93%",
-      "f1": "34.62%"
+      "recall": "100.00%",
+      "f1": "100.00%"
     }
   },
   "sector_breakdown": {
     "Tech": {
-      "total": 119,
-      "accuracy": "71.43%",
+      "total": 403,
+      "accuracy": "91.56%",
       "precision": "100.00%",
-      "recall": "33.33%",
-      "f1": "50.00%"
+      "recall": "82.83%",
+      "f1": "90.61%"
     },
     "Finance": {
-      "total": 83,
-      "accuracy": "86.75%",
+      "total": 369,
+      "accuracy": "97.02%",
       "precision": "100.00%",
-      "recall": "73.17%",
-      "f1": "84.51%"
+      "recall": "94.18%",
+      "f1": "97.00%"
     },
     "Geopolitics": {
-      "total": 64,
-      "accuracy": "54.69%",
+      "total": 349,
+      "accuracy": "91.69%",
       "precision": "100.00%",
-      "recall": "17.14%",
-      "f1": "29.27%"
+      "recall": "84.07%",
+      "f1": "91.34%"
     },
     "Health": {
-      "total": 57,
-      "accuracy": "57.89%",
+      "total": 341,
+      "accuracy": "92.96%",
       "precision": "100.00%",
-      "recall": "25.00%",
-      "f1": "40.00%"
+      "recall": "86.59%",
+      "f1": "92.81%"
     },
     "Sports": {
-      "total": 65,
-      "accuracy": "63.08%",
+      "total": 350,
+      "accuracy": "93.14%",
       "precision": "100.00%",
-      "recall": "17.24%",
-      "f1": "29.41%"
+      "recall": "86.36%",
+      "f1": "92.68%"
     },
     "Space": {
-      "total": 53,
-      "accuracy": "54.72%",
+      "total": 337,
+      "accuracy": "92.88%",
       "precision": "100.00%",
-      "recall": "22.58%",
-      "f1": "36.84%"
+      "recall": "86.52%",
+      "f1": "92.77%"
     },
     "AI": {
-      "total": 53,
-      "accuracy": "92.45%",
+      "total": 337,
+      "accuracy": "98.81%",
       "precision": "100.00%",
-      "recall": "86.67%",
-      "f1": "92.86%"
+      "recall": "97.74%",
+      "f1": "98.86%"
     },
     "Startups": {
-      "total": 59,
-      "accuracy": "57.63%",
+      "total": 343,
+      "accuracy": "92.71%",
       "precision": "100.00%",
-      "recall": "24.24%",
-      "f1": "39.02%"
+      "recall": "86.11%",
+      "f1": "92.54%"
     },
     "Environment": {
-      "total": 56,
-      "accuracy": "80.36%",
+      "total": 340,
+      "accuracy": "96.76%",
       "precision": "100.00%",
-      "recall": "67.65%",
-      "f1": "80.70%"
+      "recall": "93.92%",
+      "f1": "96.87%"
     },
     "Crypto": {
-      "total": 58,
-      "accuracy": "60.34%",
+      "total": 342,
+      "accuracy": "93.27%",
       "precision": "100.00%",
-      "recall": "30.30%",
-      "f1": "46.51%"
+      "recall": "87.22%",
+      "f1": "93.18%"
     },
     "cross_sector": {
-      "total": 17,
+      "total": 154,
       "accuracy": "100.00%",
       "precision": "100.00%",
       "recall": "0.00%",
       "f1": "0.00%"
     },
     "Automotive": {
-      "total": 53,
-      "accuracy": "62.26%",
+      "total": 337,
+      "accuracy": "94.07%",
       "precision": "100.00%",
-      "recall": "16.67%",
-      "f1": "28.57%"
+      "recall": "88.30%",
+      "f1": "93.79%"
     },
     "Defense": {
-      "total": 50,
-      "accuracy": "62.00%",
+      "total": 334,
+      "accuracy": "94.31%",
       "precision": "100.00%",
-      "recall": "24.00%",
-      "f1": "38.71%"
+      "recall": "88.95%",
+      "f1": "94.15%"
     },
     "Science": {
-      "total": 47,
-      "accuracy": "68.09%",
+      "total": 331,
+      "accuracy": "95.47%",
       "precision": "100.00%",
-      "recall": "31.82%",
-      "f1": "48.28%"
+      "recall": "91.12%",
+      "f1": "95.36%"
     },
     "Entertainment": {
-      "total": 49,
-      "accuracy": "65.31%",
+      "total": 333,
+      "accuracy": "94.89%",
       "precision": "100.00%",
-      "recall": "19.05%",
-      "f1": "32.00%"
+      "recall": "89.88%",
+      "f1": "94.67%"
     }
   },
   "error_taxonomy": [

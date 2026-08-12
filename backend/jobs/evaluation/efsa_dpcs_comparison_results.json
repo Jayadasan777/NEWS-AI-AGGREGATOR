@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-08-03T14:05:03.450Z",
+  "dataset": "splits_real/test.json",
+  "dataset_size": 198,
+  "threshold": 0.22,
+  "efsa_only": {
+    "accuracy": 52.53,
+    "precision": 55.56,
+    "recall": 25.25,
+    "f1_score": 34.72,
+    "mcc": 0.0603,
+    "confusion_matrix": {
+      "TP": 25,
+      "FP": 20,
+      "TN": 79,
+      "FN": 74
+    },
+    "accuracy_ci": [
+      45.59,
+      59.37
+    ],
+    "f1_ci": [
+      28.44,
+      41.59
+    ],
+    "gate_passes": 45,
+    "llm_call_ratio": 0.22727272727272727,
+    "cost_per_1M_usd": 2.61,
+    "llm_savings_pct": 77.27
+  },
+  "efsa_plus_dpcs": {
+    "accuracy": 54.55,
+    "precision": 61.54,
+    "recall": 24.24,
+    "f1_score": 34.78,
+    "mcc": 0.1143,
+    "confusion_matrix": {
+      "TP": 24,
+      "FP": 15,
+      "TN": 84,
+      "FN": 75
+    },
+    "accuracy_ci": [
+      47.59,
+      61.33
+    ],
+    "f1_ci": [
+      28.49,
+      41.65
+    ],
+    "gate_passes": 39,
+    "llm_call_ratio": 0.19696969696969696,
+    "cost_per_1M_usd": 2.27,
+    "llm_savings_pct": 80.3
+  },
+  "dpcs_contribution": {
+    "accuracy_improvement_pct": 2.02,
+    "precision_improvement_pct": 5.98,
+    "recall_improvement_pct": -1.01,
+    "f1_improvement_pct": 0.06,
+    "mcc_improvement": 0.054,
+    "additional_llm_call_reduction": 6,
+    "additional_llm_call_reduction_pct": 13.33,
+    "additional_cost_savings_per_1M_usd": 0.3485
+  }
+}
