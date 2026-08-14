@@ -106,7 +106,7 @@ export function BentoCard({ article, className = '', delay = 0, isEvent = false 
                   style={{ borderTop: '1px solid rgba(255,255,255,0.15)', borderRight: '1px solid rgba(255,255,255,0.15)', borderBottom: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)' }}>
                   <p className="font-mono text-[10px] uppercase tracking-widest text-white font-bold flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    <span>Llama 3 Neural Takeaways</span>
+                    <span>Llama 3.3 Neural Takeaways</span>
                   </p>
                   {takeaways.map((pt, i) => (
                     <div key={i} className="flex items-start gap-2 text-xs leading-relaxed text-[var(--color-paper)]">
@@ -234,7 +234,7 @@ export function FlagshipCard({ article, isEvent = false }) {
             <div className="flex items-center gap-2.5 mb-4 font-mono text-[10px] uppercase tracking-widest font-black text-white">
               <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-white animate-pulse" /> PRIORITY INTELLIGENCE</span>
               <span style={{ color: 'rgba(255,255,255,0.3)' }}>·</span>
-              <span style={{ color: 'var(--color-paper-dim)' }}>Llama 3 Neural Synthesis</span>
+              <span style={{ color: 'var(--color-paper-dim)' }}>Llama 3.3 Neural Synthesis</span>
               {data.sources > 1 && <span className="font-mono text-[10px] px-2 py-0.5 rounded border border-white/30 bg-white/10 text-white ml-auto">{data.sources} Sources</span>}
             </div>
 

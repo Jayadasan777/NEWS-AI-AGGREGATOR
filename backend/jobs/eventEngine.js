@@ -8,6 +8,7 @@ const { computeEfsaScore } = require('../utils/efsaEngine');
 const { updatePublisherCredibility } = require('../utils/dpcsEngine');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 
 const {
   calculateJaccardSimilarity,
@@ -46,18 +47,18 @@ Do they describe the SAME specific real-world event, or DIFFERENT events? Respon
   try {
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'llama-3.1-8b-instant',
+      model: GROQ_MODEL,
       temperature: 0.1,
     });
 
     const latencyMs = Date.now() - startMs;
-    recordAiSuccess({ model: 'llama-3.1-8b-instant', latencyMs, usage: completion.usage });
+    recordAiSuccess({ model: GROQ_MODEL, latencyMs, usage: completion.usage });
 
     const answer = completion.choices[0]?.message?.content?.trim().toUpperCase() || '';
     return answer.includes('SAME');
   } catch (error) {
     const latencyMs = Date.now() - startMs;
-    recordAiFailure({ model: 'llama-3.1-8b-instant', latencyMs, error: error.message });
+    recordAiFailure({ model: GROQ_MODEL, latencyMs, error: error.message });
     console.error('Groq API Error in isSameEvent:', error.message);
     return false;
   }
@@ -115,7 +116,7 @@ const fuseSummaries = async (articles) => {
   try {
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'llama-3.1-8b-instant',
+      model: GROQ_MODEL,
       temperature: 0.3,
     });
 
@@ -167,7 +168,7 @@ Return ONLY valid JSON array. No explanation before or after the JSON.`;
   try {
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'llama-3.1-8b-instant',
+      model: GROQ_MODEL,
       temperature: 0.2,
     });
 
@@ -252,7 +253,7 @@ Return ONLY valid JSON. No explanation.`;
   try {
     const verifyCompletion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: verificationPrompt }],
-      model: 'llama-3.1-8b-instant',
+      model: GROQ_MODEL,
       temperature: 0.1,
     });
 
@@ -280,7 +281,7 @@ Write ONE corrected consolidated summary (approx 150 words). Return ONLY the sum
 
       const correctedCompletion = await groq.chat.completions.create({
         messages: [{ role: 'user', content: correctionPrompt }],
-        model: 'llama-3.1-8b-instant',
+        model: GROQ_MODEL,
         temperature: 0.2,
       });
 

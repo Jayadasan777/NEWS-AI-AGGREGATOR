@@ -160,7 +160,7 @@ export default function Home() {
         <p className="text-base sm:text-lg max-w-2xl leading-relaxed mb-8" style={{ color: 'var(--color-paper-dim)' }}>
           Real-time news curation across <strong className="text-white border-b border-white/40 pb-0.5">14 global domains</strong> — algorithmically deduplicated,
           clustered via <strong className="text-white border-b border-white/40 pb-0.5">Jaccard similarity</strong>, and synthesized
-          into executive briefs by <strong className="text-white border-b border-white/40 pb-0.5">Llama 3 neural fusion</strong>.
+          into executive briefs by <strong className="text-white border-b border-white/40 pb-0.5">Llama 3.3 neural fusion</strong>.
         </p>
 
         <div className="flex items-center gap-4 flex-wrap">
@@ -218,7 +218,7 @@ export default function Home() {
       {clusters.length > 0 && (
         <section>
           <SectionHead tag="Neural Clustering" title="Synthesized Event Clusters" accent="indigo"
-            sub="Multi-source events fused by Llama 3.1 · Jaccard similarity indexing"
+            sub="Multi-source events fused by Llama 3.3 · Jaccard similarity indexing"
             right={<Link to="/search" className="section-label hover:text-white transition-colors">All Events →</Link>}
           />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">

@@ -224,7 +224,7 @@ export default function ArticleDetail() {
              style={{ color: 'var(--color-muted)' }}>
           <span className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-white shadow-[0_0_8px_#ffffff]" />
-            <span style={{ color: 'var(--color-paper-dim)' }}>VERIFIED BY LLAMA 3.1 NEURAL FUSION</span>
+            <span style={{ color: 'var(--color-paper-dim)' }}>VERIFIED BY LLAMA 3.3 NEURAL FUSION</span>
           </span>
           <span className="font-bold" style={{ color: 'var(--color-paper)' }}>STATUS: CONFIRMED ACCURATE</span>
         </div>

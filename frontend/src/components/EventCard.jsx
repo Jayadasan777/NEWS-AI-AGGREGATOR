@@ -96,7 +96,7 @@ export default function EventCard({ event }) {
                   >
                     <div className="font-mono text-[10px] uppercase tracking-widest text-white font-bold flex items-center gap-1.5 mb-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                      <span>Llama 3 Neural Takeaways</span>
+                      <span>Llama 3.3 Neural Takeaways</span>
                     </div>
                     {takeaways.map((point, i) => (
                       <div key={i} className="flex items-start gap-2 text-xs leading-relaxed text-[var(--color-paper)]">

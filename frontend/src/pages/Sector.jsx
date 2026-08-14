@@ -141,7 +141,7 @@ export default function Sector() {
                 <span className="live-dot" />
                 <span style={{ color: 'var(--color-paper)' }}>Synthesized Clusters</span>
                 <div className="flex-1 h-px" style={{ background: 'linear-gradient(to right, var(--color-border), transparent)' }} />
-                <span className="badge badge-ai">Llama 3.1 Verified</span>
+                <span className="badge badge-ai">Llama 3.3 Verified</span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {events.map((ev) => <EventCard key={ev._id} event={ev} />)}

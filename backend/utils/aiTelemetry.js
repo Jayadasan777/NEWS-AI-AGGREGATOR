@@ -18,15 +18,17 @@ const state = {
   recentCallLatencies: [] // Rolling window of last 50 call latencies
 };
 
+const DEFAULT_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+
 /**
  * Records a successful AI inference completion call.
  *
  * @param {Object} params
- * @param {string} params.model - Model name (e.g. 'llama-3.1-8b-instant')
+ * @param {string} params.model - Model name (e.g. 'llama-3.3-70b-versatile')
  * @param {number} params.latencyMs - Inference execution latency in milliseconds
  * @param {Object} [params.usage] - Groq completion usage object
  */
-const recordAiSuccess = ({ model = 'llama-3.1-8b-instant', latencyMs = 0, usage = {} }) => {
+const recordAiSuccess = ({ model = DEFAULT_MODEL, latencyMs = 0, usage = {} }) => {
   state.totalCalls += 1;
   state.successCalls += 1;
   state.lastCallTimestamp = new Date().toISOString();
@@ -57,7 +59,7 @@ const recordAiSuccess = ({ model = 'llama-3.1-8b-instant', latencyMs = 0, usage 
  * @param {number} params.latencyMs - Execution latency until failure
  * @param {string} params.error - Error message string
  */
-const recordAiFailure = ({ model = 'llama-3.1-8b-instant', latencyMs = 0, error = '' }) => {
+const recordAiFailure = ({ model = DEFAULT_MODEL, latencyMs = 0, error = '' }) => {
   state.totalCalls += 1;
   state.failedCalls += 1;
   state.totalLatencyMs += latencyMs;

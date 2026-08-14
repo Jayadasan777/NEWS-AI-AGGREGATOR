@@ -38,7 +38,7 @@ export default function Footer() {
               Receive the <span className="text-gradient">Executive Brief</span> daily.
             </h3>
             <p className="text-sm leading-relaxed" style={{ color: 'var(--color-paper-dim)' }}>
-              Llama 3 synthesized top dispatches across 14 domains — zero-noise, 3-minute read, delivered 06:00 UTC.
+              Llama 3.3 synthesized top dispatches across 14 domains — zero-noise, 3-minute read, delivered 06:00 UTC.
             </p>
           </div>
 
@@ -114,7 +114,7 @@ export default function Footer() {
       <div className="pt-7 pb-6 flex flex-col md:flex-row items-center justify-between gap-4 font-mono text-xs uppercase tracking-widest"
            style={{ color: 'var(--color-subtle)' }}>
         <div className="flex flex-wrap items-center justify-center gap-3">
-          {['Llama 3.1 8B', 'Jaccard IoU Clustering', 'Pollinations AI', 'MongoDB Atlas', 'Node.js + Vite'].map((t, i, arr) => (
+          {['Llama 3.3 70B', 'Jaccard IoU Clustering', 'Pollinations AI', 'MongoDB Atlas', 'Node.js + Vite'].map((t, i, arr) => (
             <React.Fragment key={t}>
               <span style={{ color: i % 2 === 0 ? 'var(--color-muted)' : 'var(--color-subtle)' }}>{t}</span>
               {i < arr.length - 1 && <span>·</span>}

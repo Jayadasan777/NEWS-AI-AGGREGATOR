@@ -15,6 +15,7 @@ const validateEnv = () => {
 
   const optional = [
     { name: 'PORT', description: 'HTTP Server Port (default: 5000)' },
+    { name: 'GROQ_MODEL', description: 'Groq Model Name (default: llama-3.3-70b-versatile)' },
     { name: 'SOCIAL_WEBHOOK_URL', description: 'Make.com / Social Webhook Endpoint' },
     { name: 'AUTO_BROADCAST', description: 'Auto Social Broadcasting Flag (true/false)' }
   ];

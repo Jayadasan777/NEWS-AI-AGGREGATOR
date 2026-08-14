@@ -70,6 +70,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // --- Synthesize Article & Generate Instagram/Social Metadata using Llama 3 (Groq) ---
 const synthesizeWithGroq = async (title, description, sector) => {
+  const modelName = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
   const prompt = `You are a professional news editor and social media manager for an autonomous news agency called NewsAI.
 Based on the following news headline and description, return a valid JSON object with four exact fields:
 1. "summary": A professional editorial summary of about 150 words in a neutral, informative tone. Do not copy phrases directly.
@@ -88,14 +89,14 @@ Return ONLY valid JSON without any markdown code blocks or commentary. Example f
   try {
     const completion = await groq.chat.completions.create({
       messages: [{ role: 'user', content: prompt }],
-      model: 'llama-3.1-8b-instant',
+      model: modelName,
       temperature: 0.3,
       response_format: { type: 'json_object' }
     });
 
     const latencyMs = Date.now() - startMs;
     recordAiSuccess({
-      model: 'llama-3.1-8b-instant',
+      model: modelName,
       latencyMs,
       usage: completion.usage
     });
@@ -114,7 +115,7 @@ Return ONLY valid JSON without any markdown code blocks or commentary. Example f
     }
   } catch (error) {
     const latencyMs = Date.now() - startMs;
-    recordAiFailure({ model: 'llama-3.1-8b-instant', latencyMs, error: error.message });
+    recordAiFailure({ model: modelName, latencyMs, error: error.message });
     console.error('❌ Groq Synthesis Error:', error.message);
   }
 
