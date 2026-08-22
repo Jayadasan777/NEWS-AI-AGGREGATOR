@@ -23,9 +23,20 @@ export default function SocialStudio() {
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
 
-  // 🔒 Demo Mode — locked on public Vercel site, open on localhost for admin
-  const DEMO_MODE = !window.location.hostname.includes('localhost') &&
-                    !window.location.hostname.includes('127.0.0.1');
+  // 🔒 Admin unlock: works on localhost OR any device that visited with ?admin=SECRET
+  const ADMIN_SECRET = 'NISE-ADMIN-2026-DASAN-X9K7M2P';
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlToken = urlParams.get('admin');
+  if (urlToken === ADMIN_SECRET) {
+    localStorage.setItem('nise_admin_token', ADMIN_SECRET);
+    // Remove ?admin= from URL cleanly without page reload
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, '', cleanUrl);
+  }
+  const isAdmin = window.location.hostname.includes('localhost') ||
+                  window.location.hostname.includes('127.0.0.1') ||
+                  localStorage.getItem('nise_admin_token') === ADMIN_SECRET;
+  const DEMO_MODE = !isAdmin;
 
   const fetchQueue = async () => {
     setLoading(true);
