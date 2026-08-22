@@ -23,16 +23,26 @@ export default function SocialStudio() {
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
 
-  // 🔒 Admin PIN unlock — works on any device/browser, no URL tricks needed
+  // 🔒 Admin PIN unlock — works on any device/browser
   const ADMIN_PIN = 'DASAN2026';
+  const ADMIN_SECRET = 'NISE-ADMIN-2026-DASAN-X9K7M2P';
   const isLocalhost = typeof window !== 'undefined' &&
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-  const [DEMO_MODE, setDemoMode] = useState(!isLocalhost);
+
+  const [DEMO_MODE, setDemoMode] = useState(() => {
+    if (isLocalhost) return false;
+    if (typeof window !== 'undefined' && localStorage.getItem('nise_admin_token') === ADMIN_SECRET) {
+      return false;
+    }
+    return true;
+  });
+
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
 
   const handleAdminUnlock = () => {
     if (pinInput.trim() === ADMIN_PIN) {
+      localStorage.setItem('nise_admin_token', ADMIN_SECRET);
       setDemoMode(false);
       setPinError(false);
       setPinInput('');
@@ -40,6 +50,11 @@ export default function SocialStudio() {
       setPinError(true);
       setTimeout(() => setPinError(false), 2000);
     }
+  };
+
+  const handleAdminLock = () => {
+    localStorage.removeItem('nise_admin_token');
+    setDemoMode(true);
   };
 
   const fetchQueue = async () => {
@@ -179,8 +194,14 @@ export default function SocialStudio() {
           {pinError && <span className="font-mono text-xs text-red-400">❌ Wrong PIN</span>}
         </div>
       ) : (
-        <div className="text-center py-2 rounded-xl font-mono text-xs font-extrabold tracking-widest uppercase bg-green-500/10 text-green-300 border border-green-500/30">
-          ✅ ADMIN MODE — Full Access Unlocked
+        <div className="flex items-center justify-between px-4 py-2 rounded-xl font-mono text-xs font-extrabold tracking-widest uppercase bg-green-500/10 text-green-300 border border-green-500/30">
+          <span>✅ ADMIN MODE — Full Access Unlocked</span>
+          <button
+            onClick={handleAdminLock}
+            className="text-[10px] px-2 py-0.5 rounded bg-green-500/20 hover:bg-green-500/30 text-green-200 border border-green-500/40 transition-colors cursor-pointer"
+          >
+            🔒 LOCK DEMO
+          </button>
         </div>
       )}
 

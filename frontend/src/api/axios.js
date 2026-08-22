@@ -14,4 +14,13 @@ const API = axios.create({
   baseURL: getBaseURL(),
 });
 
+// Automatically attach admin secret key if available in localStorage or in local dev
+API.interceptors.request.use((config) => {
+  const adminKey = localStorage.getItem('nise_admin_token') || (import.meta.env.DEV ? 'NISE-ADMIN-2026-DASAN-X9K7M2P' : '');
+  if (adminKey) {
+    config.headers['x-admin-key'] = adminKey;
+  }
+  return config;
+});
+
 export default API;
