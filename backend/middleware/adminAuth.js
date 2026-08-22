@@ -12,6 +12,8 @@
 const logger = require('../utils/logger');
 
 const adminAuth = (req, res, next) => {
+  const providedKey = req.headers['x-admin-key'];
+  const secretKey = process.env.ADMIN_SECRET_KEY;
   const clean = (val) => (val ? String(val).trim().replace(/^["']|["']$/g, '') : '');
   const pKey = clean(providedKey);
   const sKey = clean(secretKey);
