@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import API from '../api/axios';
 import SectorBadge from '../components/SectorBadge';
@@ -7,7 +7,6 @@ import { useHUD } from '../context/HUDContext';
 
 export default function SocialStudio() {
   const { triggerGlitch } = useHUD();
-  const location = useLocation();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,26 +22,25 @@ export default function SocialStudio() {
   const [lastIngestionTime, setLastIngestionTime] = useState(null);
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
-  const [DEMO_MODE, setDemoMode] = useState(true); // default locked until check runs
 
-  // 🔒 Admin unlock — checks URL token via React Router, saves to localStorage
-  const ADMIN_SECRET = 'NISE-ADMIN-2026-DASAN-X9K7M2P';
+  // 🔒 Admin PIN unlock — works on any device/browser, no URL tricks needed
+  const ADMIN_PIN = 'DASAN2026';
+  const isLocalhost = typeof window !== 'undefined' &&
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const [DEMO_MODE, setDemoMode] = useState(!isLocalhost);
+  const [pinInput, setPinInput] = useState('');
+  const [pinError, setPinError] = useState(false);
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const urlToken = params.get('admin');
-
-    if (urlToken === ADMIN_SECRET) {
-      localStorage.setItem('nise_admin_token', ADMIN_SECRET);
-      window.history.replaceState({}, '', location.pathname);
+  const handleAdminUnlock = () => {
+    if (pinInput.trim() === ADMIN_PIN) {
+      setDemoMode(false);
+      setPinError(false);
+      setPinInput('');
+    } else {
+      setPinError(true);
+      setTimeout(() => setPinError(false), 2000);
     }
-
-    const isLocalhost = window.location.hostname === 'localhost' ||
-                        window.location.hostname === '127.0.0.1';
-    const hasToken = localStorage.getItem('nise_admin_token') === ADMIN_SECRET;
-
-    setDemoMode(!(isLocalhost || hasToken));
-  }, [location.search]);
+  };
 
   const fetchQueue = async () => {
     setLoading(true);
@@ -156,14 +154,35 @@ export default function SocialStudio() {
   return (
     <div className="space-y-16 pb-20">
 
-      {/* ── Admin / Demo Mode Badge ── */}
-      <div className={`text-center py-2 rounded-xl font-mono text-xs font-extrabold tracking-widest uppercase ${
-        DEMO_MODE
-          ? 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/30'
-          : 'bg-green-500/10 text-green-300 border border-green-500/30'
-      }`}>
-        {DEMO_MODE ? '🔒 DEMO MODE — Controls Locked' : '✅ ADMIN MODE — Full Access Unlocked'}
-      </div>
+      {/* ── Admin Status Banner + PIN Unlock ── */}
+      {DEMO_MODE ? (
+        <div className="flex flex-col sm:flex-row items-center gap-3 p-4 rounded-xl border border-yellow-500/30 bg-yellow-500/5">
+          <span className="font-mono text-xs font-extrabold text-yellow-300 tracking-widest uppercase">🔒 DEMO MODE</span>
+          <div className="flex items-center gap-2 flex-1">
+            <input
+              type="password"
+              value={pinInput}
+              onChange={e => setPinInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleAdminUnlock()}
+              placeholder="Enter admin PIN..."
+              className={`flex-1 bg-white/5 border rounded-lg px-3 py-2 font-mono text-xs text-white outline-none transition-all ${
+                pinError ? 'border-red-500/60' : 'border-white/20 focus:border-white/50'
+              }`}
+            />
+            <button
+              onClick={handleAdminUnlock}
+              className="px-4 py-2 rounded-lg font-mono text-xs font-bold uppercase tracking-wider bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all cursor-pointer"
+            >
+              UNLOCK
+            </button>
+          </div>
+          {pinError && <span className="font-mono text-xs text-red-400">❌ Wrong PIN</span>}
+        </div>
+      ) : (
+        <div className="text-center py-2 rounded-xl font-mono text-xs font-extrabold tracking-widest uppercase bg-green-500/10 text-green-300 border border-green-500/30">
+          ✅ ADMIN MODE — Full Access Unlocked
+        </div>
+      )}
 
       {/* ── Studio Header ── */}
       <motion.div
