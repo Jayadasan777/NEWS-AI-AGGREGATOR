@@ -23,6 +23,9 @@ export default function SocialStudio() {
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
 
+  // 🔒 Demo Mode — actions are locked for public visitors
+  const DEMO_MODE = true;
+
   const fetchQueue = async () => {
     setLoading(true);
     setError(null);
@@ -52,9 +55,13 @@ export default function SocialStudio() {
   }, [activeTab]);
 
   const handleToggleAuto = async () => {
+    if (DEMO_MODE) {
+      setBroadcastMessage({ type: 'locked', text: '🔒 Admin access required. Automation controls are restricted to the platform administrator.' });
+      return;
+    }
     triggerGlitch(150);
     try {
-      const res = await API.post('/social/toggle-auto', { enabled: !isAutoEnabled });
+      const res = await API.post('/social/toggle-auto');
       if (res.data && typeof res.data.autoBroadcastEnabled === 'boolean') {
         setIsAutoEnabled(res.data.autoBroadcastEnabled);
       }
@@ -64,6 +71,10 @@ export default function SocialStudio() {
   };
 
   const handleTriggerScrape = async () => {
+    if (DEMO_MODE) {
+      setScrapeMessage({ type: 'locked', text: '🔒 Admin access required. News scrape is restricted to the platform administrator.' });
+      return;
+    }
     triggerGlitch(200);
     setScraping(true);
     setScrapeMessage(null);
@@ -84,9 +95,12 @@ export default function SocialStudio() {
     if (e && typeof e.stopPropagation === 'function') {
       e.stopPropagation();
     }
+    if (DEMO_MODE) {
+      setBroadcastMessage({ type: 'locked', text: '🔒 Admin access required. Broadcasting is restricted to the platform administrator.' });
+      return;
+    }
     const targetId = articleId || selectedArticle?._id;
     if (!targetId) return;
-    
     triggerGlitch(300);
     setBroadcastingId(targetId);
     setBroadcastMessage(null);
@@ -222,6 +236,8 @@ export default function SocialStudio() {
           className={`p-4 rounded-xl font-mono text-xs text-center border ${
             scrapeMessage.type === 'error'
               ? 'bg-white/10 text-white border-white/30'
+              : scrapeMessage.type === 'locked'
+              ? 'bg-yellow-500/10 text-yellow-200 border-yellow-500/40 backdrop-blur-md'
               : 'bg-white/15 text-white font-bold border-white/40'
           }`}
         >
@@ -569,11 +585,13 @@ export default function SocialStudio() {
                       ? 'bg-red-500/20 text-white border-red-500/40 backdrop-blur-md'
                       : broadcastMessage.type === 'simulation'
                       ? 'bg-amber-500/20 text-white border-amber-500/40 backdrop-blur-md'
+                      : broadcastMessage.type === 'locked'
+                      ? 'bg-yellow-500/10 text-yellow-200 border-yellow-500/40 backdrop-blur-md'
                       : 'bg-emerald-500/20 text-white font-bold border-emerald-500/40 backdrop-blur-md'
                   }`}
                 >
                   <div className="flex items-center justify-center gap-2 mb-1 font-extrabold">
-                    {broadcastMessage.type === 'error' ? '❌ DISPATCH FAILED' : broadcastMessage.type === 'simulation' ? '📱 SIMULATION MODE' : '✅ LIVE DISPATCH SUCCESS'}
+                    {broadcastMessage.type === 'error' ? '❌ DISPATCH FAILED' : broadcastMessage.type === 'simulation' ? '📱 SIMULATION MODE' : broadcastMessage.type === 'locked' ? '🔒 DEMO MODE' : '✅ LIVE DISPATCH SUCCESS'}
                   </div>
                   <div>{broadcastMessage.text}</div>
                 </motion.div>

@@ -4,6 +4,7 @@ const Article = require('../models/Article');
 const { broadcastArticle } = require('../utils/socialBroadcast');
 const runNewsEngine = require('../jobs/newsEngine');
 const { triggerRateLimiter } = require('../middleware/rateLimiter');
+const adminAuth = require('../middleware/adminAuth');
 
 // Global in-memory toggle initialized from environment
 if (typeof global.AUTO_BROADCAST_ENABLED === 'undefined') {
@@ -48,7 +49,7 @@ router.get('/queue', async (req, res) => {
  * POST /api/social/trigger-scrape
  * Manually trigger an immediate news engine scrape across all 14 feeds.
  */
-router.post('/trigger-scrape', triggerRateLimiter, async (req, res) => {
+router.post('/trigger-scrape', adminAuth, triggerRateLimiter, async (req, res) => {
   try {
     console.log('⚡ Manual override: Triggering news engine scrape from Social Studio...');
     runNewsEngine().catch(err => console.error('❌ Manual Scrape Error:', err.message));
@@ -66,7 +67,7 @@ router.post('/trigger-scrape', triggerRateLimiter, async (req, res) => {
  * POST /api/social/broadcast/:id
  * Manually trigger webhook dispatch for a specific article.
  */
-router.post('/broadcast/:id', triggerRateLimiter, async (req, res) => {
+router.post('/broadcast/:id', adminAuth, triggerRateLimiter, async (req, res) => {
   try {
     const { id } = req.params;
     const mongoose = require('mongoose');
@@ -91,7 +92,7 @@ router.post('/broadcast/:id', triggerRateLimiter, async (req, res) => {
  * POST /api/social/toggle-auto
  * Toggle autonomous social broadcast mode.
  */
-router.post('/toggle-auto', (req, res) => {
+router.post('/toggle-auto', adminAuth, (req, res) => {
   try {
     const { enabled } = req.body;
     if (typeof enabled === 'boolean') {
@@ -115,7 +116,7 @@ router.post('/toggle-auto', (req, res) => {
  * GET /api/social/test
  * Instantly broadcast the most recent article in MongoDB to test the webhook!
  */
-router.get('/test', async (req, res) => {
+router.get('/test', adminAuth, async (req, res) => {
   try {
     const latestArticle = await Article.findOne().sort({ timestamp: -1 });
     if (!latestArticle) {
