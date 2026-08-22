@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import API from '../api/axios';
 import SectorBadge from '../components/SectorBadge';
@@ -7,11 +7,12 @@ import { useHUD } from '../context/HUDContext';
 
 export default function SocialStudio() {
   const { triggerGlitch } = useHUD();
+  const location = useLocation();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedArticle, setSelectedArticle] = useState(null);
-  const [activeTab, setActiveTab] = useState('all'); // all | pending | broadcasted
+  const [activeTab, setActiveTab] = useState('all');
   const [isAutoEnabled, setIsAutoEnabled] = useState(false);
   const [webhookConfigured, setWebhookConfigured] = useState(false);
   const [broadcastingId, setBroadcastingId] = useState(null);
@@ -22,24 +23,26 @@ export default function SocialStudio() {
   const [lastIngestionTime, setLastIngestionTime] = useState(null);
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
+  const [DEMO_MODE, setDemoMode] = useState(true); // default locked until check runs
 
-  // 🔒 Admin unlock — runs once at component init, fully reliable
+  // 🔒 Admin unlock — checks URL token via React Router, saves to localStorage
   const ADMIN_SECRET = 'NISE-ADMIN-2026-DASAN-X9K7M2P';
 
-  const [DEMO_MODE] = useState(() => {
-    // Check URL for admin token and save to localStorage
-    const params = new URLSearchParams(window.location.search);
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
     const urlToken = params.get('admin');
+
     if (urlToken === ADMIN_SECRET) {
       localStorage.setItem('nise_admin_token', ADMIN_SECRET);
-      window.history.replaceState({}, '', window.location.pathname);
+      window.history.replaceState({}, '', location.pathname);
     }
-    // Admin if: localhost OR saved token matches
+
     const isLocalhost = window.location.hostname === 'localhost' ||
                         window.location.hostname === '127.0.0.1';
     const hasToken = localStorage.getItem('nise_admin_token') === ADMIN_SECRET;
-    return !(isLocalhost || hasToken);
-  });
+
+    setDemoMode(!(isLocalhost || hasToken));
+  }, [location.search]);
 
   const fetchQueue = async () => {
     setLoading(true);
