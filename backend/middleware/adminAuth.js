@@ -12,11 +12,12 @@
 const logger = require('../utils/logger');
 
 const adminAuth = (req, res, next) => {
-  const providedKey = req.headers['x-admin-key'];
-  const secretKey = process.env.ADMIN_SECRET_KEY;
+  const clean = (val) => (val ? String(val).trim().replace(/^["']|["']$/g, '') : '');
+  const pKey = clean(providedKey);
+  const sKey = clean(secretKey);
 
   // Fail-safe: if no secret key is configured in env, block all access
-  if (!secretKey) {
+  if (!sKey) {
     logger.warn('ADMIN_AUTH', 'ADMIN_SECRET_KEY is not set in .env — blocking all admin route access.');
     return res.status(503).json({
       success: false,
@@ -25,7 +26,7 @@ const adminAuth = (req, res, next) => {
   }
 
   // Reject if no key was provided in the request
-  if (!providedKey) {
+  if (!pKey) {
     logger.warn('ADMIN_AUTH', `Unauthorized access attempt to [${req.method} ${req.originalUrl}] — no key provided.`);
     return res.status(403).json({
       success: false,
@@ -34,7 +35,7 @@ const adminAuth = (req, res, next) => {
   }
 
   // Reject if the key doesn't match
-  if (providedKey !== secretKey) {
+  if (pKey !== sKey) {
     logger.warn('ADMIN_AUTH', `Invalid admin key attempt on [${req.method} ${req.originalUrl}]`);
     return res.status(403).json({
       success: false,
