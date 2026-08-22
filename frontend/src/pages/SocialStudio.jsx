@@ -23,20 +23,23 @@ export default function SocialStudio() {
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
 
-  // 🔒 Admin unlock: works on localhost OR any device that visited with ?admin=SECRET
+  // 🔒 Admin unlock — runs once at component init, fully reliable
   const ADMIN_SECRET = 'NISE-ADMIN-2026-DASAN-X9K7M2P';
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlToken = urlParams.get('admin');
-  if (urlToken === ADMIN_SECRET) {
-    localStorage.setItem('nise_admin_token', ADMIN_SECRET);
-    // Remove ?admin= from URL cleanly without page reload
-    const cleanUrl = window.location.pathname;
-    window.history.replaceState({}, '', cleanUrl);
-  }
-  const isAdmin = window.location.hostname.includes('localhost') ||
-                  window.location.hostname.includes('127.0.0.1') ||
-                  localStorage.getItem('nise_admin_token') === ADMIN_SECRET;
-  const DEMO_MODE = !isAdmin;
+
+  const [DEMO_MODE] = useState(() => {
+    // Check URL for admin token and save to localStorage
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get('admin');
+    if (urlToken === ADMIN_SECRET) {
+      localStorage.setItem('nise_admin_token', ADMIN_SECRET);
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+    // Admin if: localhost OR saved token matches
+    const isLocalhost = window.location.hostname === 'localhost' ||
+                        window.location.hostname === '127.0.0.1';
+    const hasToken = localStorage.getItem('nise_admin_token') === ADMIN_SECRET;
+    return !(isLocalhost || hasToken);
+  });
 
   const fetchQueue = async () => {
     setLoading(true);
@@ -149,6 +152,16 @@ export default function SocialStudio() {
 
   return (
     <div className="space-y-16 pb-20">
+
+      {/* ── Admin / Demo Mode Badge ── */}
+      <div className={`text-center py-2 rounded-xl font-mono text-xs font-extrabold tracking-widest uppercase ${
+        DEMO_MODE
+          ? 'bg-yellow-500/10 text-yellow-300 border border-yellow-500/30'
+          : 'bg-green-500/10 text-green-300 border border-green-500/30'
+      }`}>
+        {DEMO_MODE ? '🔒 DEMO MODE — Controls Locked' : '✅ ADMIN MODE — Full Access Unlocked'}
+      </div>
+
       {/* ── Studio Header ── */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
