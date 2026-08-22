@@ -24,7 +24,7 @@ export default function SocialStudio() {
   const [scrapeMessage, setScrapeMessage] = useState(null);
 
   // 🔒 Admin PIN unlock — works on any device/browser
-  const ADMIN_PIN = 'DASAN2026';
+  const ADMIN_PIN = 'Das@2403';
   const ADMIN_SECRET = 'NISE-ADMIN-2026-DASAN-X9K7M2P';
   const isLocalhost = typeof window !== 'undefined' &&
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
