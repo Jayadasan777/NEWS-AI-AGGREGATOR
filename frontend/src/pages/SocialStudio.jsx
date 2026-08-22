@@ -23,8 +23,9 @@ export default function SocialStudio() {
   const [scraping, setScraping] = useState(false);
   const [scrapeMessage, setScrapeMessage] = useState(null);
 
-  // 🔒 Demo Mode — actions are locked for public visitors
-  const DEMO_MODE = true;
+  // 🔒 Demo Mode — locked on public Vercel site, open on localhost for admin
+  const DEMO_MODE = !window.location.hostname.includes('localhost') &&
+                    !window.location.hostname.includes('127.0.0.1');
 
   const fetchQueue = async () => {
     setLoading(true);
