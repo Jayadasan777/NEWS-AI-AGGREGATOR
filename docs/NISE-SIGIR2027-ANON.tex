@@ -36,17 +36,8 @@
 Reliable evaluation of news-event clustering requires the evaluated implementation, benchmark provenance, labels, model configuration, and per-pair predictions to be traceable. This paper presents a reproducibility audit of NISE (News Intelligence and Synthesis Engine), a news aggregation system whose event-matching component combines unigram Jaccard similarity, character 3-gram cosine similarity, a five-signal Enhanced Fusion Scoring Algorithm (EFSA), and selective large language model (LLM) verification. A read-only audit of repository artifacts covering 5,000 benchmark records found that all records contain two identical annotation fields, but the repository does not establish that these labels were independently produced; 4,755 records are flagged by note-pattern heuristics as programmatic or structured extensions. The audit also identifies incompatible evaluation partitions, a simulated perfect-classifier result, and an evaluation script that does not execute the complete cascade. The production decision rule is an OR gate across Jaccard, character cosine, and EFSA thresholds, contrary to a sequential cascade described in earlier drafts. Consequently, existing accuracy, call-reduction, cost, and latency values are not treated as validated comparative findings. The contribution is a documented audit method, quantified provenance findings, and a reproducible protocol for a future controlled evaluation.
 \end{abstract}
 \keywords{news aggregation, event clustering, candidate filtering, large language models, reproducibility, semantic similarity}
-\begin{document}
-
 \maketitle
-\begin{abstract}
 
-\begin{abstract}
-Reliable evaluation of news-event clustering requires the evaluated implementation, benchmark provenance, labels, model configuration, and per-pair predictions to be traceable. This paper presents a reproducibility audit of NISE (News Intelligence and Synthesis Engine), a news aggregation system whose event-matching component combines unigram Jaccard similarity, character 3-gram cosine similarity, a five-signal Enhanced Fusion Scoring Algorithm (EFSA), and selective large language model (LLM) verification. A read-only audit of repository artifacts covering 5,000 benchmark records found that all records contain two identical annotation fields, but the repository does not establish that these labels were independently produced; 4,755 records are flagged by note-pattern heuristics as programmatic or structured extensions. The audit also identifies incompatible evaluation partitions, a simulated perfect-classifier result, and an evaluation script that does not execute the complete cascade. The production decision rule is an OR gate across Jaccard, character cosine, and EFSA thresholds, contrary to a sequential cascade described in earlier drafts. Consequently, existing accuracy, call-reduction, cost, and latency values are not treated as validated comparative findings. The contribution is a documented audit method, quantified provenance findings, and a reproducible protocol for a future controlled evaluation.
-\end{abstract}
-\keywords{news aggregation, event clustering, candidate filtering, large language models, reproducibility, semantic similarity}
-
-% ============================================================
 \section{Introduction}
 % ============================================================
 
