@@ -80,11 +80,10 @@ Event clustering on streaming text must balance computational cost against misse
 \begin{enumerate}
     \item \textit{Lexical methods} (e.g., token Jaccard similarity or character $n$-grams) execute in microseconds but fail on synonymous phrasing, acronyms (``PBOC'' vs.\ ``People's Bank of China''), and entity aliasing (``Apple Inc.'' vs.\ ``Cupertino Giant'').
     \item \textit{Dense semantic embeddings} (e.g., Sentence-BERT~\cite{reimers2019sentence}) capture contextual similarity effectively, but pairwise vector distance comparisons over an active sliding window scale quadratically, straining unaccelerated CPU deployments.
-    \item \textit{Generative LLMs} achieve superior zero-shot pairwise classification but impose per-call network latency and commercial API costs that make exhaustive pairwise comparisons financially unfeasible at scale.
+    \item \textit{Generative LLMs} can be used as pairwise verifiers, but remote inference introduces per-call latency and potentially variable API cost.
 \end{enumerate}
 
-To resolve this trade-off, this paper presents NISE, a cost-aware cascaded event clustering architecture.
-Rather than querying an LLM for every candidate pair, the pipeline filters candidates through successive sieves of increasing computational intensity:
+To describe the implementation accurately, NISE computes lexical similarity and EFSA signals for each recent event candidate. The configured LLM is called when any one of the candidate-gate conditions passes:
 \begin{itemize}
     \item \textbf{Candidate gate.} The implementation calculates unigram Jaccard similarity and character 3-gram cosine similarity for each recent event candidate.
     \item \textbf{Evidence fusion.} EFSA combines keyword overlap, character 3-gram cosine, rule-based entity overlap, temporal decay, and sector evidence.
@@ -102,16 +101,12 @@ Classical information retrieval uses term weighting and lexical overlap to rank 
 
 \subsection{Sentence Representations and Pairwise Matching}
 
-Sentence-BERT (SBERT)~\cite{reimers2019sentence} introduced Siamese transformer networks that map sentences to dense vector spaces where cosine distance correlates with semantic relatedness.
-Sentence-BERT provides sentence embeddings for semantic similarity comparison~\cite{reimers2019sentence}. Pairwise matching has also been studied using pre-trained language models, including the Ditto entity-matching framework~\cite{li2020ditto}.
+Sentence-BERT maps sentences into dense vector representations for semantic similarity comparison~\\cite{reimers2019sentence}. Pairwise matching has also been studied using pre-trained language models, including the Ditto entity-matching framework~\\cite{li2020ditto}.
 While dense vectors resolve lexical mismatch, pairwise vector distance calculations across continuous high-volume feeds remain computationally demanding on commodity server CPUs.
 The repository also contains an offline SBERT evaluation path, but it is not invoked by the inspected production event-matching module.
 
 \subsection{LLM Verification and Gated Cascades}
-Recent surveys highlight the zero-shot reasoning capabilities of LLMs for semantic matching and entity resolution~\cite{zhao2023}.
-Pairwise semantic matching and evidence verification remain related research problems, but the performance of a method must be assessed on the target task and its own labeled benchmark.
-However, existing studies typically evaluate on static corpora without non-zero API pricing constraints.
-NISE addresses this production gap by gating LLM verification behind multi-signal arithmetic filters, formalizing the relationship between filtering stringency and operational API cost.
+Surveys of large language models discuss capabilities and deployment considerations across a broad range of tasks~\\cite{zhao2023}. For cost-aware event matching, the relevant empirical question is how candidate filtering changes call volume, false-negative coverage, latency, and measured cost. Those outcomes require a common, independently labeled benchmark; this draft does not claim that the current implementation outperforms alternatives.
 
 % ============================================================
 \section{Proposed Methodology}
