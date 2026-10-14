@@ -114,6 +114,7 @@ Surveys of large language models discuss capabilities and deployment considerati
 
 \begin{figure}[!t]
 \centering
+\resizebox{\columnwidth}{!}{%
 \begin{tikzpicture}[
     node distance=0.65cm,
     font=\sffamily\footnotesize,
@@ -130,9 +131,11 @@ Surveys of large language models discuss capabilities and deployment considerati
 \draw[arrow] (signals.east) -- (skip.west);
 \draw[arrow] (ingest) -- (candidate);
 \draw[arrow] (candidate) -- (signals);
-\draw[arrow] (signals) -- node[right,font=\tiny]{at least one gate passes} (llm);
+\draw[arrow] (signals) -- node[left,font=\tiny]{gate passes} (llm);
 \draw[arrow] (llm) -- (store);
-\end{tikzpicture}
+\draw[arrow] (skip.south) |- node[pos=0.25,right,font=\tiny]{new event} (store.east);
+\end{tikzpicture}%
+}
 \caption{Decision path reflected in the current event-matching implementation. The lexical and EFSA conditions act as an OR gate; EFSA is not a mandatory sequential stage after the lexical filters.}
 \label{fig:architecture}
 \end{figure}
@@ -148,8 +151,7 @@ The multi-tier filtering topology is depicted in Fig.~\ref{fig:architecture}.
 For each recent event in the 48-hour window and matching sector, the implementation calculates unigram Jaccard similarity and character 3-gram cosine similarity. The configured thresholds are $\tau_J=0.12$ and $\tau_C=0.25$. The code uses these metrics alongside EFSA to decide whether an LLM verification call is warranted.
 
 \subsection{Enhanced Fusion Scoring Algorithm (EFSA)}
-For each candidate event, EFSA combines five heterogeneous evidence channels into a scalar score.
-EFSA combines five heterogeneous evidence channels into a calibrated scalar score:
+For each candidate event, EFSA combines five heterogeneous evidence channels into a scalar score:
 \begin{equation}
 S_{\text{EFSA}}(A, B) = \sum_{i=1}^{5} w_i S_i(A, B)
 \label{eq:efsa}
