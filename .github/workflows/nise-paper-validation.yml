@@ -1,0 +1,48 @@
+name: NISE paper validation
+
+on:
+  push:
+    branches:
+      - research/paper-evidence-audit
+    paths:
+      - 'docs/NISE-Paper-v3-AUDIT-DRAFT.tex'
+      - 'backend/jobs/evaluation/**'
+      - '.github/workflows/nise-paper-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-and-compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out research branch
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Audit benchmark and result artifacts
+        run: node backend/jobs/evaluation/auditPaperReadiness.js
+
+      - name: Compile IEEE manuscript
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: docs/NISE-Paper-v3-AUDIT-DRAFT.tex
+          latexmk_use_xelatex: false
+          args: -pdf -file-line-error -halt-on-error
+
+      - name: Upload manuscript PDF and audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nise-paper-validation-${{ github.sha }}
+          path: |
+            docs/NISE-Paper-v3-AUDIT-DRAFT.pdf
+            backend/jobs/evaluation/paper_readiness_audit_report.json
+          if-no-files-found: warn
+          retention-days: 14
