@@ -30,7 +30,7 @@
 \renewcommand{\dbltopfraction}{0.95}
 \renewcommand{\dblfloatpagefraction}{0.85}
 
-\title{A Cost-Aware Candidate-Filtering Pipeline for News Event Clustering: System Design and Reproducibility Audit}
+\title{Reproducibility Auditing of a Cost-Aware News Event Clustering System}
 
 \author{
     \IEEEauthorblockN{D. Menaga}
@@ -60,7 +60,7 @@
 \maketitle
 
 \begin{abstract}
-News aggregation systems must identify articles describing the same real-world event despite differences in wording, publication time, and source terminology. Exhaustive large language model (LLM) comparison can increase inference cost, while lexical similarity alone can miss paraphrases. This paper documents NISE (News Intelligence and Synthesis Engine), a deployed news aggregation system with a candidate-filtering event-matching component that combines unigram Jaccard similarity, character 3-gram cosine similarity, a five-signal Enhanced Fusion Scoring Algorithm (EFSA), and selective LLM verification. A repository audit identifies an important distinction between the intended cascade described in earlier manuscript drafts and the current implementation: the production code invokes the LLM when any of the lexical or EFSA gates passes, rather than applying EFSA only after a lexical pass. The audit also finds that existing benchmark artifacts use incompatible test partitions and that some datasets contain programmatically generated pairs or simulated LLM outputs. Therefore, previously reported accuracy, precision, call-reduction, cost, and latency figures are not presented as validated comparative findings in this revision. The paper provides the implemented decision logic, a reproducibility audit, and a protocol for a future evaluation using independently adjudicated pairs, a fixed test split, actual model traces, and measured runtime telemetry. This distinction is necessary to make subsequent empirical claims reproducible and auditable.
+Reliable evaluation of news-event clustering requires the evaluated implementation, benchmark provenance, labels, model configuration, and per-pair predictions to be traceable. This paper presents a reproducibility audit of NISE (News Intelligence and Synthesis Engine), a news aggregation system whose event-matching component combines unigram Jaccard similarity, character 3-gram cosine similarity, a five-signal Enhanced Fusion Scoring Algorithm (EFSA), and selective large language model (LLM) verification. A read-only audit of repository artifacts covering 5,000 benchmark records found that all records contain two identical annotation fields, but the repository does not establish that these labels were independently produced; 4,755 records are flagged by note-pattern heuristics as programmatic or structured extensions. The audit also identifies incompatible evaluation partitions, a simulated perfect-classifier result, and an evaluation script that does not execute the complete cascade. The production decision rule is an OR gate across Jaccard, character cosine, and EFSA thresholds, contrary to a sequential cascade described in earlier drafts. Consequently, existing accuracy, call-reduction, cost, and latency values are not treated as validated comparative findings. The contribution is a documented audit method, quantified provenance findings, and a reproducible protocol for a future controlled evaluation.
 \end{abstract}
 
 \begin{IEEEkeywords}
