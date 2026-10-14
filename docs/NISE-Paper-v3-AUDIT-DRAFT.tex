@@ -90,7 +90,7 @@ To describe the implementation accurately, NISE computes lexical similarity and 
     \item \textbf{Selective LLM verification.} The current implementation calls the configured Groq model when Jaccard, character 3-gram cosine, or EFSA reaches its respective threshold.
 \end{itemize}
 
-The contribution of this work is a system description and evidence audit for cost-aware event matching in a deployed news aggregation application. It documents the similarity signals and decision path present in the repository, distinguishes implemented behavior from features described in earlier manuscript drafts, and specifies the evidence required for a defensible comparative evaluation. Quantitative superiority is not claimed until benchmark provenance and execution traces have been reconciled.
+The contributions are threefold: a code-grounded description of the event-matching decision path; a reproducibility audit of benchmark and result artifacts; and a concrete protocol for evaluating candidate filtering without conflating generated stress cases, independently labeled examples, simulated outputs, and measured inference traces. The work does not claim that NISE outperforms existing methods.
 
 % ============================================================
 \section{Related Work}
@@ -102,14 +102,13 @@ Classical information retrieval uses term weighting and lexical overlap to rank 
 \subsection{Sentence Representations and Pairwise Matching}
 
 Sentence-BERT maps sentences into dense vector representations for semantic similarity comparison~\cite{reimers2019sentence}. Pairwise matching has also been studied using pre-trained language models, including the Ditto entity-matching framework~\cite{li2020ditto}.
-While dense vectors resolve lexical mismatch, pairwise vector distance calculations across continuous high-volume feeds remain computationally demanding on commodity server CPUs.
 The repository also contains an offline SBERT evaluation path, but it is not invoked by the inspected production event-matching module.
 
 \subsection{LLM Verification and Gated Cascades}
 Surveys of large language models discuss capabilities and deployment considerations across a broad range of tasks~\cite{zhao2023}. For cost-aware event matching, the relevant empirical question is how candidate filtering changes call volume, false-negative coverage, latency, and measured cost. Those outcomes require a common, independently labeled benchmark; this draft does not claim that the current implementation outperforms alternatives.
 
 % ============================================================
-\section{Proposed Methodology}
+\section{System Under Audit}
 % ============================================================
 
 \begin{figure}[!t]
@@ -177,7 +176,7 @@ The thresholds in the repository are $\tau_J=0.12$, $\tau_C=0.25$, and $\tau_{\t
 The repository contains SBERT evaluation scripts and result files, but the active event-matching path inspected for this audit does not invoke the ONNX/SBERT fallback. SBERT is therefore treated as an offline baseline, not as a production stage in the architecture.
 
 % ============================================================
-\section{Implementation and Experimental Setup}
+\section{Audit Method and Data Sources}
 % ============================================================
 
 \subsection{Implementation Configuration and Telemetry}
@@ -228,7 +227,7 @@ Total & 5,000 & 4,755 & 5,000/5,000 & 0 \\
 A reproducible evaluation should freeze exact pair IDs and labels; publish dataset and split hashes; identify the source and date for each headline; record independent annotator labels and adjudication; and ensure that thresholds are selected on training/validation data only. The held-out test set must be evaluated only after the model, thresholds, and implementation commit are frozen.
 
 % ============================================================
-\section{Evidence Audit and Evaluation Protocol}
+\section{Audit Results and Evaluation Protocol}
 % ============================================================
 
 \subsection{Status of Quantitative Claims}
