@@ -66,7 +66,7 @@ This paper presents NISE (News Intelligence and Synthesis Engine), a cost-aware 
 The architecture employs parallel lexical gates to eliminate dissimilar candidate pairs, an Enhanced Fusion Scoring Algorithm (EFSA) to combine lexical, entity, temporal, and sector evidence, and an LLM verifier to assess candidates that pass the filtering stages.
 For air-gapped or compute-constrained environments, a local Sentence-BERT alternative is also examined.
 Evaluated on an 883-pair benchmark across 14 news sectors partitioned into training, validation, and held-out test splits (Cohen's $\kappa = 0.845$), the production cascade achieves 100.0\% observed precision on the held-out test split ($\text{TP}=25, \text{FP}=0$) while reducing LLM verification calls by 82.3\% compared to exhaustive comparison, with 62.6\% accuracy and 25.3\% recall.
-The results illustrate the operational trade-off between conservative candidate filtering and event-recall coverage, highlighting an intentional precision-first engineering design where false negatives merely produce duplicate clusters that can be consolidated retroactively, whereas false positives corrupt cluster editorial integrity.
+The results illustrate the operational trade-off between conservative candidate filtering and event-recall coverage, highlighting an intentional precision-first engineering design where false negatives produce cluster fragmentation (an operational outcome that leaves duplicate clusters open for subsequent offline reconciliation passes), whereas false positives irreversibly corrupt cluster editorial integrity.
 Production telemetry across 1,450 daily articles confirms an average pipeline processing latency of 642\,ms.
 \end{abstract}
 
@@ -292,7 +292,8 @@ The measured per-pair API verification latency averaged 650.0\,ms during evaluat
 The cascade exhibits 62.6\% accuracy and 25.3\% recall on this held-out set.
 This performance directly illustrates the core design rationale: early lexical gates intentionally operate conservatively to ensure that no spurious pairs reach the verifier.
 Consequently, pairs characterized by extreme semantic paraphrasing without shared lexical tokens fail the preliminary gate, creating false negatives.
-In production news aggregation, this is an optimal operational tradeoff: a false negative merely creates a duplicate event cluster (which can be consolidated retroactively), whereas a false positive corrupts cluster editorial integrity by conflating distinct real-world events.
+In continuous news aggregation, this represents a deliberate design trade-off: a false negative results in duplicate cluster creation (cluster fragmentation), which can be addressed through subsequent asynchronous consolidation passes or human editorial oversight.
+In contrast, a false positive irreversibly corrupts editorial integrity by erroneously merging distinct real-world incidents into a single synthesized story.
 
 The standalone SBERT alternative achieves 90.0\% accuracy, 95.6\% precision, and 84.0\% recall with 15.07\,ms latency.
 While SBERT provides higher recall at zero API cost, it requires loading a 22.7\,MB model into memory and executing dense tensor operations.
