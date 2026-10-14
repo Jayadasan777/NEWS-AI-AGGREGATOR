@@ -181,10 +181,8 @@ The repository contains SBERT evaluation scripts and result files, but the activ
 \section{Implementation and Experimental Setup}
 % ============================================================
 
-\subsection{Technology Stack and Production Telemetry}
-The system is deployed on DigitalOcean App Platform (2-vCPU, 4\,GB RAM) using Node.js v20.11 LTS and MongoDB Atlas (Table~\ref{tab:tech}).
-Database collections feature compound indexes on \texttt{(createdAt, sector)} to bound sliding-window queries and unique hash indexes on \texttt{title\_hash} to prevent duplicate insertions.
-The repository contains an in-memory AI telemetry utility that accumulates call counts, token counts, model names, and inference latency during a process lifetime, with a rolling window of recent call latencies. The inspected telemetry utility does not itself establish a persisted 30-day record or an end-to-end ingestion latency distribution. Production-volume, webhook, and latency figures are therefore omitted from quantitative claims in this revision until the corresponding timestamped logs or persisted telemetry export can be archived and independently checked.
+\subsection{Implementation Configuration and Telemetry}
+The repository implements a Node.js event-processing backend using Express and MongoDB, with Groq API calls configured through environment variables. The deployment provider, instance size, exact package versions, database indexes, and production configuration must be verified from deployment records before they are reported as experimental setup. The repository contains an in-memory AI telemetry utility that accumulates call counts, token counts, model names, and inference latency during a process lifetime, with a rolling window of recent call latencies. The inspected telemetry utility does not itself establish a persisted 30-day record or an end-to-end ingestion latency distribution. Production-volume, webhook, and latency figures are therefore omitted from quantitative claims in this revision until timestamped logs or a persisted telemetry export can be archived and independently checked.
 
 \begin{table}[!t]
 \centering
@@ -212,8 +210,7 @@ The repository contains multiple evaluation artifacts that must not be treated a
 A reproducible evaluation should freeze exact pair IDs and labels; publish dataset and split hashes; identify the source and date for each headline; record independent annotator labels and adjudication; and ensure that thresholds are selected on training/validation data only. The held-out test set must be evaluated only after the model, thresholds, and implementation commit are frozen.
 
 % ============================================================
-\section{Results and Discussion}% ============================================================
-\section{Results and Discussion}
+\section{Evidence Audit and Evaluation Protocol}
 % ============================================================
 
 \subsection{Status of Quantitative Claims}
@@ -251,20 +248,20 @@ This paper documented NISE's event-matching implementation and audited the evide
 \setlength{\itemsep}{1pt}
 \setlength{\parskip}{0pt}
 
-\bibitem{salton1988}
-G.~Salton and C.~Buckley, ``Term-weighting approaches in automatic text retrieval,'' \textit{Inf. Process. Manage.}, vol.~24, no.~5, pp.\ 513--523, 1988.
+\bibitem{aggarwal2012}
+C.~C.~Aggarwal and C.~Zhai, ``A survey of text clustering algorithms,'' in \textit{Mining Text Data}, Springer, 2012, pp.\ 77--128.
+
+\bibitem{li2020ditto}
+Y.~Li, J.~Li, Y.~Suhara, A.~Doan, and W.-C.~Tan, ``Deep entity matching with pre-trained language models,'' \textit{Proc. VLDB Endowment}, vol.~14, no.~1, pp.~50--60, 2020, doi: 10.14778/3421424.3421431.
 
 \bibitem{reimers2019sentence}
 N.~Reimers and I.~Gurevych, ``Sentence-BERT: Sentence embeddings using Siamese BERT-networks,'' in \textit{Proc.\ 2019 Conf. Empirical Methods Natural Lang. Process. 9th Int. Joint Conf. Natural Lang. Process. (EMNLP-IJCNLP)}, Hong Kong, China, 2019, pp.\ 3982--3992.
 
-\bibitem{aggarwal2012}
-C.~C.~Aggarwal and C.~Zhai, ``A survey of text clustering algorithms,'' in \textit{Mining Text Data}, Springer, 2012, pp.\ 77--128.
+\bibitem{salton1988}
+G.~Salton and C.~Buckley, ``Term-weighting approaches in automatic text retrieval,'' \textit{Inf. Process. Manage.}, vol.~24, no.~5, pp.\ 513--523, 1988.
 
 \bibitem{zhao2023}
 W.~X.~Zhao \textit{et al.}, ``A survey of large language models,'' \textit{arXiv preprint arXiv:2303.18223}, 2023.
-
-\bibitem{li2020ditto}
-Y.~Li, J.~Li, Y.~Suhara, A.~Doan, and W.-C.~Tan, ``Deep entity matching with pre-trained language models,'' \textit{Proc. VLDB Endowment}, vol.~14, no.~1, pp.~50--60, 2020, doi: 10.14778/3421424.3421431.
 
 \end{thebibliography}
 
