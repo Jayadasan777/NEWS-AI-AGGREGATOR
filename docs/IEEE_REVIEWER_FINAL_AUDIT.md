@@ -37,7 +37,7 @@
 | **Held-Out Precision** | $100.0\%$ | `results_v2_final.json` ($25$ TP, $0$ FP) |
 | **Held-Out Recall** | $25.3\%$ | `results_v2_final.json` ($25/99$ positive pairs) |
 | **Held-Out F1-Score** | $40.3\%$ | $2 \times \frac{1.0 \times 0.2525}{1.0 + 0.2525} = 40.32\%$ |
-| **LLM Calls Saved** | $82.2\%$ | $35$ pairs sent to LLM out of $198$ ($1 - \frac{35}{198} = 82.3\%$) |
+| **LLM Calls Saved** | $82.3\%$ | $35$ pairs sent to LLM out of $198$ ($1 - \frac{35}{198} = 82.32\% \approx 82.3\%$) |
 | **SBERT Standalone** | $90.0\%$ Acc, $95.6\%$ Prec, $84.0\%$ Rec | $\tau=0.50$, $15.07$\,ms latency (`sbert-baseline-results_real.json`) |
 | **Daily Ingestion** | 1,450 articles/day, 320 events/day | 30-day live production telemetry |
 | **Mean Pipeline Latency** | 642\,ms | 30-day live production telemetry |

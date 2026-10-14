@@ -60,14 +60,14 @@
 \maketitle
 
 \begin{abstract}
-Real-time news aggregators must determine whether articles from disparate publications describe the same underlying real-world event.
-While Large Language Models (LLMs) provide high pairwise verification accuracy, applying exhaustive $\mathcal{O}(n^2)$ comparisons across high-velocity news streams incurs prohibitive API costs and latency.
-This paper presents NISE (News Intelligence and Synthesis Engine), a cascaded event clustering architecture that couples lightweight parallel lexical gates with a five-signal Enhanced Fusion Scoring Algorithm (EFSA) to selectively gate candidate pairs prior to LLM verification.
-We evaluate the system on an 883-pair benchmark extracted from live RSS feeds across 14 news sectors, partitioned into 519 training, 166 validation, and 198 strictly held-out test pairs with dual-annotator verification (Cohen's $\kappa = 0.845$).
-On the held-out test evaluation, the production cascade achieves 100.0\% precision (zero false event mergers) and reduces LLM invocations by 82.2\% compared to exhaustive verification, with 62.6\% accuracy and 25.3\% recall.
-This performance quantitatively reflects an intentional, precision-first architectural design: in live news aggregation, a false negative merely creates a duplicate cluster that can be consolidated retroactively, whereas a false positive corrupts cluster editorial integrity by conflating distinct stories.
-For resource-constrained or air-gapped environments, a standalone CPU-based Sentence-BERT alternative achieves 90.0\% accuracy and 95.6\% precision at zero API cost.
-In continuous production deployment, the pipeline processes approximately 1,450 daily articles with a mean latency of 642\,ms.
+News aggregation systems must identify articles describing the same real-world event despite differences in wording, publication time, and source terminology.
+Exhaustive large language model (LLM) verification introduces unnecessary inference cost and quadratic latency ($\mathcal{O}(n^2)$), whereas lexical similarity alone fails to recognize semantically related headlines.
+This paper presents NISE (News Intelligence and Synthesis Engine), a cost-aware news event clustering pipeline combining lightweight parallel lexical filtering, multi-signal evidence fusion, and selective LLM verification.
+The architecture employs parallel lexical gates to eliminate dissimilar candidate pairs, an Enhanced Fusion Scoring Algorithm (EFSA) to combine lexical, entity, temporal, and sector evidence, and an LLM verifier to assess candidates that pass the filtering stages.
+For air-gapped or compute-constrained environments, a local Sentence-BERT alternative is also examined.
+Evaluated on an 883-pair benchmark across 14 news sectors partitioned into training, validation, and held-out test splits (Cohen's $\kappa = 0.845$), the production cascade achieves 100.0\% observed precision on the held-out test split ($\text{TP}=25, \text{FP}=0$) while reducing LLM verification calls by 82.3\% compared to exhaustive comparison, with 62.6\% accuracy and 25.3\% recall.
+The results illustrate the operational trade-off between conservative candidate filtering and event-recall coverage, highlighting an intentional precision-first engineering design where false negatives merely produce duplicate clusters that can be consolidated retroactively, whereas false positives corrupt cluster editorial integrity.
+Production telemetry across 1,450 daily articles confirms an average pipeline processing latency of 642\,ms.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -99,9 +99,8 @@ Rather than querying an LLM for every candidate pair, the pipeline filters candi
     \item \textbf{Stage 4: Local SBERT Fallback.} An ONNX-optimized Sentence-BERT pipeline for zero-cost or air-gapped CPU operation without external network dependencies.
 \end{itemize}
 
-The primary contribution of this work is an empirical design rationale and operational trade-off analysis of cascaded news clustering in a live production environment.
-We show that prioritizing high precision at early filtering stages reduces LLM invocations by 82.2\% on held-out evaluation, guaranteeing zero false event mergers (100.0\% precision) while bounding operational expenditure.
-We also report negative results regarding dynamic publisher credibility scoring to provide reproducible guidance for practical news aggregation systems.
+The primary contribution of this work is an empirical design rationale and operational trade-off analysis of cost-aware news clustering in a live production environment.
+Specifically: (1) we formulate and evaluate a cascaded architecture combining parallel lexical filtering and multi-signal evidence fusion that reduces LLM verification invocations by 82.3\% on held-out test data while achieving 100.0\% observed precision on evaluated pairs; (2) we quantify the trade-off between conservative filtering and recall coverage under continuous ingestion; and (3) we document negative results regarding dynamic publisher consensus tracking (DPCS) to guide practical system deployments.
 
 % ============================================================
 \section{Related Work}
@@ -128,7 +127,7 @@ However, existing studies typically evaluate on static corpora without non-zero 
 NISE addresses this production gap by gating LLM verification behind multi-signal arithmetic filters, formalizing the relationship between filtering stringency and operational API cost.
 
 % ============================================================
-\section{System Architecture and Methodology}
+\section{Proposed Methodology}
 % ============================================================
 
 \begin{figure}[!t]
@@ -178,18 +177,23 @@ The multi-tier filtering topology is depicted in Fig.~\ref{fig:architecture}.
 
 \subsection{Stage 1: Parallel Lexical Gates}
 Each candidate pair $(A, B)$ is evaluated across two parallel token-level similarity metrics:
-whitespace unigram Jaccard similarity $J(A, B) = |A \cap B| / |A \cup B|$ and character 3-gram cosine similarity $\cos(V_A, V_B) = (V_A \cdot V_B) / (\|V_A\| \|V_B\|)$.
+whitespace unigram Jaccard similarity:
+\begin{equation}
+J(A, B) = \frac{|A \cap B|}{|A \cup B|}
+\label{eq:jaccard}
+\end{equation}
+and character 3-gram cosine similarity $\cos(V_A, V_B) = (V_A \cdot V_B) / (\|V_A\| \|V_B\|)$.
 A pair passes Stage 1 if $(J \ge \tau_J) \lor (\cos \ge \tau_C)$, with operating thresholds $\tau_J = 0.12$ and $\tau_C = 0.25$ selected on training data to maximize recall.
-Pairs failing both criteria are rejected immediately, executing in an average of 0.22\,ms.
+Pairs failing both criteria are rejected immediately in an average of 0.22\,ms.
 
 \subsection{Stage 2: Enhanced Fusion Scoring Algorithm (EFSA)}
 Candidate pairs surviving Stage 1 undergo multi-signal evidence aggregation.
 EFSA combines five heterogeneous evidence channels into a calibrated scalar score:
 \begin{equation}
-S_{\text{EFSA}} = w_1 S_{\text{key}} + w_2 S_{\text{head}} + w_3 S_{\text{ent}} + w_4 S_{\text{temp}} + w_5 S_{\text{sec}}
+S_{\text{EFSA}}(A, B) = \sum_{i=1}^{5} w_i S_i(A, B)
 \label{eq:efsa}
 \end{equation}
-The component signals and production weights (calibrated on the validation partition to sum to 1.00) are defined as:
+The component signals $S_i$ and production weights $w_i$ (calibrated on the validation partition to sum to 1.00) are defined as:
 \begin{itemize}
     \item $S_{\text{key}}$ ($w_1 = 0.25$): Keyword intersection-over-union after English stopword removal.
     \item $S_{\text{head}}$ ($w_2 = 0.30$): Character 3-gram cosine similarity between headline strings.
@@ -197,10 +201,14 @@ The component signals and production weights (calibrated on the validation parti
     \item $S_{\text{temp}}$ ($w_4 = 0.10$): Exponential temporal decay $S_{\text{temp}} = e^{-\lambda \Delta t}$, where $\Delta t$ is publication delta in hours and $\lambda = 0.02$.
     \item $S_{\text{sec}}$ ($w_5 = 0.10$): Sector taxonomy match indicator (1.0 for matching sectors, 0.5 otherwise).
 \end{itemize}
-Candidate pairs satisfying $S_{\text{EFSA}} \ge \tau_{\text{EFSA}} = 0.22$ advance to Stage 3.
 
 \subsection{Stage 3: Selective LLM Verification}
-Candidate pairs exceeding the EFSA threshold are submitted to Llama 3.1-8B-Instant hosted on Groq LPU hardware.
+The routing decision to the LLM verifier is governed by the EFSA threshold rule:
+\begin{equation}
+\text{Decision}(A, B) = \begin{cases} \text{Verify via LLM}, & \text{if } S_{\text{EFSA}}(A, B) \ge \tau_{\text{EFSA}} \\ \text{Reject (Different)}, & \text{if } S_{\text{EFSA}}(A, B) < \tau_{\text{EFSA}} \end{cases}
+\label{eq:decision}
+\end{equation}
+Candidate pairs exceeding $\tau_{\text{EFSA}} = 0.22$ are submitted to Llama 3.1-8B-Instant hosted on Groq LPU hardware.
 Inference uses zero-shot prompting:
 \texttt{"Given Headline A: '\{title\_a\}' and Headline B: '\{title\_b\}', determine if both describe the same real-world news event. Respond exclusively with JSON: \{\char`\"{}match\char`\"{}: true|false\}"}.
 If confirmed, article $A$ is merged into cluster $B$; otherwise, a new cluster is initialized.
@@ -211,8 +219,14 @@ Pairwise cosine similarity is evaluated directly against existing event centroid
 Pairs with similarity $\ge \tau_{\text{SBERT}} = 0.50$ (calibrated on validation data) are classified as identical events without invoking remote APIs.
 
 % ============================================================
-\section{System Implementation and Telemetry}
+\section{Implementation and Experimental Setup}
 % ============================================================
+
+\subsection{Technology Stack and Production Telemetry}
+The system is deployed on DigitalOcean App Platform (2-vCPU, 4\,GB RAM) using Node.js v20.11 LTS and MongoDB Atlas (Table~\ref{tab:tech}).
+Database collections feature compound indexes on \texttt{(createdAt, sector)} to bound sliding-window queries and unique hash indexes on \texttt{title\_hash} to prevent duplicate insertions.
+Over a 30-day continuous audit window, production telemetry recorded an average ingestion volume of 1,450 articles per day, resulting in 320 newly formed or updated event clusters, 1,130 discarded duplicates, 258 LLM verification queries, and 185 outbound webhook notifications.
+Average end-to-end processing latency across all ingested items in production was 642\,ms.
 
 \begin{table}[!t]
 \centering
@@ -234,20 +248,15 @@ Frontend & React.js v18 & Admin monitoring dashboard \\
 }
 \end{table}
 
-The system is deployed on DigitalOcean App Platform (2-vCPU, 4\,GB RAM) using Node.js v20.11 LTS and MongoDB Atlas (Table~\ref{tab:tech}).
-Database collections feature compound indexes on \texttt{(createdAt, sector)} to bound sliding-window queries and unique hash indexes on \texttt{title\_hash} to prevent duplicate insertions.
-Over a 30-day continuous audit window, production telemetry recorded an average ingestion volume of 1,450 articles per day, resulting in 320 newly formed or updated event clusters, 1,130 discarded duplicates, 258 LLM verification queries, and 185 outbound webhook notifications.
-Average end-to-end processing latency across all ingested items was 642\,ms, with peak ingestion throughput reaching 45.2 events per second.
-
-% ============================================================
-\section{Experimental Evaluation and Results}
-% ============================================================
-
 \subsection{Benchmark Dataset Construction}
 Evaluation was conducted on an 883-pair benchmark constructed from live RSS streams across 14 news sectors over a 90-day observation window (January--March 2026).
 The dataset was partitioned into 519 training pairs (used for threshold grid searches), 166 validation pairs (used for EFSA weight calibration and SBERT threshold tuning), and an isolated 198-pair held-out test split (99 positive, 99 negative pairs) reserved strictly for final out-of-sample evaluation ($519 + 166 + 198 = 883$).
 Negative instances were explicitly sampled to include hard negatives: same-sector divergent events, corporate entity overlap, and high lexical overlap under distinct factual contexts.
 An independent 250-pair stratified sample was dual-annotated by two computer science researchers, achieving Cohen's $\kappa = 0.845$ (``Almost Perfect'' agreement under Landis-Koch standards).
+
+% ============================================================
+\section{Results and Discussion}
+% ============================================================
 
 \subsection{Held-Out Test Set Performance ($N = 198$)}
 
@@ -264,16 +273,21 @@ Lexical Jaccard ($\tau_J = 0.12$) & 52.5\% & 51.6\% & 82.6\% & 63.5\% & 100.0\% 
 Char 3-Gram ($\tau_C = 0.25$) & 73.4\% & 74.9\% & 70.5\% & 72.6\% & 100.0\% & 0.22\,ms \\
 Sentence-BERT ($\tau = 0.50$) & 90.0\% & 95.6\% & 84.0\% & 89.4\% & 100.0\% & 15.07\,ms \\
 EFSA Gate Only ($\tau = 0.22$) & 52.5\% & 55.6\% & 25.3\% & 34.7\% & 100.0\% & 0.45\,ms \\
-\textbf{NISE Cascade (Prod.)} & \textbf{62.6\%} & \textbf{100.0\%} & \textbf{25.3\%} & \textbf{40.3\%} & \textbf{82.2\%} & \textbf{650.0\,ms} \\
-Exhaustive LLM Ceiling & 100.0\% & 100.0\% & 100.0\% & 100.0\% & 0.0\% & 2,994.0\,ms \\
+\textbf{NISE Cascade (Prod.)} & \textbf{62.6\%} & \textbf{100.0\%}* & \textbf{25.3\%} & \textbf{40.3\%} & \textbf{82.3\%} & \textbf{650.0\,ms}$^\dagger$ \\
+Exhaustive LLM Reference$^\ddagger$ & 100.0\% & 100.0\% & 100.0\% & 100.0\% & 0.0\% & 2,994.0\,ms \\
 \bottomrule
+\multicolumn{7}{l}{\footnotesize *100.0\% observed precision on the 198-pair test set ($\text{TP}=25, \text{FP}=0, \text{TN}=99, \text{FN}=74$).} \\
+\multicolumn{7}{l}{\footnotesize $^\dagger$Isolated per-pair API verification roundtrip; continuous production stream latency averages 642.0\,ms.} \\
+\multicolumn{7}{l}{\footnotesize $^\ddagger$Zero-shot Llama 3.1-8B evaluated across all 198 pairs matched consensus labels on this test partition,} \\
+\multicolumn{7}{l}{\footnotesize \ \ serving as an empirical reference point rather than a universal theoretical upper bound.}
 \end{tabular}%
 }
 \end{table}
 
 Table~\ref{tab:perf} compares clustering methods on the 198-pair held-out test split.
-The NISE production cascade achieves 100.0\% precision with zero observed false-positive event mergers ($\text{TP}=25, \text{FP}=0, \text{TN}=99, \text{FN}=74$).
-It routes only 35 of the 198 candidate pairs to the LLM verifier, achieving an 82.2\% reduction in LLM API calls ($1 - 35/198 = 0.823$) compared to exhaustive comparison.
+The NISE production cascade achieves 100.0\% observed precision with zero observed false-positive event mergers ($\text{TP}=25, \text{FP}=0, \text{TN}=99, \text{FN}=74$).
+It routes only 35 of the 198 candidate pairs to the LLM verifier, achieving an 82.3\% reduction in LLM API calls ($1 - 35/198 = 0.8232$) compared to exhaustive comparison.
+The measured per-pair API verification latency averaged 650.0\,ms during evaluation, distinct from the 642\,ms end-to-end pipeline ingestion average.
 
 The cascade exhibits 62.6\% accuracy and 25.3\% recall on this held-out set.
 This performance directly illustrates the core design rationale: early lexical gates intentionally operate conservatively to ensure that no spurious pairs reach the verifier.
@@ -282,13 +296,14 @@ In production news aggregation, this is an optimal operational tradeoff: a false
 
 The standalone SBERT alternative achieves 90.0\% accuracy, 95.6\% precision, and 84.0\% recall with 15.07\,ms latency.
 While SBERT provides higher recall at zero API cost, it requires loading a 22.7\,MB model into memory and executing dense tensor operations.
-For lightweight serverless environments where hosting transformer models is impractical, the NISE cascade provides a viable alternative that guarantees 100.0\% precision while keeping LLM invocations minimal.
+For lightweight serverless environments where hosting transformer models is impractical, the NISE cascade provides a viable alternative that achieves 100.0\% observed precision on our benchmark while keeping LLM invocations minimal.
 
 \subsection{Economic Cost Analysis}
 Verification costs were modeled using official Groq pricing for Llama 3.1-8B-Instant (\$0.05 per 1M input tokens, \$0.08 per 1M output tokens).
 Empirical payload monitoring showed an average of 42 prompt tokens and 18 completion tokens per verification query:
 \begin{equation}
 \text{Cost per Call} = \frac{42 \times \$0.05 + 18 \times \$0.08}{10^6} \approx \$0.00000354
+\label{eq:cost}
 \end{equation}
 In continuous production processing 1,450 daily articles, Stage 1 and Stage 2 pre-filtering restrict daily LLM verification queries to approximately 258 calls.
 This equates to an operational expenditure of under \$0.001 per day (less than \$0.40 annually), compared to exhaustive pairwise comparisons which scale quadratically with stream volume.
@@ -311,7 +326,7 @@ Second, the system is calibrated for English-language newswires; expanding to cr
 % ============================================================
 
 This paper presented NISE, a cascaded pipeline for real-time news event clustering that gates expensive LLM verifications behind fast parallel lexical filters and a five-signal evidence fusion scoring algorithm (EFSA).
-Evaluated on an 883-pair benchmark partitioned into training, validation, and held-out test splits, the cascade achieves 100.0\% precision and reduces LLM invocations by 82.2\% on held-out evaluation, substantiating an intentional precision-first architectural design that safeguards editorial integrity against false event mergers.
+Evaluated on an 883-pair benchmark partitioned into training, validation, and held-out test splits, the cascade achieves 100.0\% observed precision on evaluated pairs and reduces LLM invocations by 82.3\% on held-out evaluation, substantiating an intentional precision-first architectural design that prioritizes cluster editorial integrity against spurious event mergers.
 A standalone CPU-based Sentence-BERT alternative provides 90.0\% accuracy with zero API dependency for infrastructure-constrained deployments.
 Production telemetry across a 30-day live deployment confirms a mean processing latency of 642\,ms across 1,450 daily articles.
 Future work will explore domain-specific acronym expansion dictionaries and automated per-sector threshold adaptation.
