@@ -8,7 +8,7 @@ const { computeEfsaScore } = require('../utils/efsaEngine');
 const { updatePublisherCredibility } = require('../utils/dpcsEngine');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const GROQ_MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+const GROQ_MODEL = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
 
 const {
   calculateJaccardSimilarity,

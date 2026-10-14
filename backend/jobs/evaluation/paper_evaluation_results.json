@@ -1,0 +1,205 @@
+{
+  "metadata": {
+    "timestamp": "2026-10-13T18:57:46.480Z",
+    "test_size": 198,
+    "positive_pairs": 157,
+    "negative_pairs": 41,
+    "config": {
+      "TEST_SIZE": 198,
+      "LEXICAL_JACCARD_TAU": 0.12,
+      "LEXICAL_3GRAM_TAU": 0.25,
+      "EFSA_DEFAULT_TAU": 0.22,
+      "EFSA_SWEEP_TAUS": [
+        0.1,
+        0.15,
+        0.18,
+        0.2,
+        0.22,
+        0.25
+      ],
+      "EFSA_WEIGHTS": {
+        "keyword": 0.25,
+        "headline": 0.3,
+        "entity": 0.25,
+        "temporal": 0.1,
+        "sector": 0.1
+      }
+    },
+    "note": "LLM calls simulated as perfect classifier (ground truth) for stage pass count analysis"
+  },
+  "methods": {
+    "nise_cascade": {
+      "stage_counts": {
+        "stage1_passed": 158,
+        "stage1_rejected": 40,
+        "stage1_pass_rate": 79.8,
+        "stage2_passed": 154,
+        "stage2_rejected": 4,
+        "stage2_pass_rate": 97.47,
+        "llm_calls": 154,
+        "llm_calls_saved": 44,
+        "llm_reduction_pct": 22.22
+      },
+      "accuracy": 84.85,
+      "precision": 100,
+      "recall": 80.89,
+      "f1": 89.44,
+      "confusion_matrix": {
+        "TP": 127,
+        "FP": 0,
+        "TN": 41,
+        "FN": 30
+      }
+    },
+    "jaccard_only": {
+      "accuracy": 69.19,
+      "precision": 80.38,
+      "recall": 80.89,
+      "f1": 80.63,
+      "confusion_matrix": {
+        "TP": 127,
+        "FP": 31,
+        "TN": 10,
+        "FN": 30
+      }
+    },
+    "threegram_only": {
+      "accuracy": 80.81,
+      "precision": 94.07,
+      "recall": 80.89,
+      "f1": 86.99,
+      "confusion_matrix": {
+        "TP": 127,
+        "FP": 8,
+        "TN": 33,
+        "FN": 30
+      }
+    },
+    "llm_only": {
+      "accuracy": 100,
+      "precision": 100,
+      "recall": 100,
+      "f1": 100,
+      "confusion_matrix": {
+        "TP": 157,
+        "FP": 0,
+        "TN": 41,
+        "FN": 0
+      }
+    }
+  },
+  "threshold_sweep": [
+    {
+      "threshold": 0.1,
+      "llm_calls": 158,
+      "llm_reduction_pct": 20.2,
+      "accuracy": 84.85,
+      "precision": 100,
+      "recall": 80.89,
+      "f1": 89.44
+    },
+    {
+      "threshold": 0.15,
+      "llm_calls": 158,
+      "llm_reduction_pct": 20.2,
+      "accuracy": 84.85,
+      "precision": 100,
+      "recall": 80.89,
+      "f1": 89.44
+    },
+    {
+      "threshold": 0.18,
+      "llm_calls": 158,
+      "llm_reduction_pct": 20.2,
+      "accuracy": 84.85,
+      "precision": 100,
+      "recall": 80.89,
+      "f1": 89.44
+    },
+    {
+      "threshold": 0.2,
+      "llm_calls": 154,
+      "llm_reduction_pct": 22.22,
+      "accuracy": 84.85,
+      "precision": 100,
+      "recall": 80.89,
+      "f1": 89.44
+    },
+    {
+      "threshold": 0.22,
+      "llm_calls": 154,
+      "llm_reduction_pct": 22.22,
+      "accuracy": 84.85,
+      "precision": 100,
+      "recall": 80.89,
+      "f1": 89.44
+    },
+    {
+      "threshold": 0.25,
+      "llm_calls": 154,
+      "llm_reduction_pct": 22.22,
+      "accuracy": 84.85,
+      "precision": 100,
+      "recall": 80.89,
+      "f1": 89.44
+    }
+  ],
+  "ablation_study": [
+    {
+      "configuration": "w/o keyword",
+      "excluded_signal": "keyword",
+      "accuracy": 20.71,
+      "recall": 0,
+      "f1": 0,
+      "llm_calls": 0,
+      "delta_accuracy": -64.14
+    },
+    {
+      "configuration": "w/o headline",
+      "excluded_signal": "headline",
+      "accuracy": 20.71,
+      "recall": 0,
+      "f1": 0,
+      "llm_calls": 0,
+      "delta_accuracy": -64.14
+    },
+    {
+      "configuration": "w/o entity",
+      "excluded_signal": "entity",
+      "accuracy": 20.71,
+      "recall": 0,
+      "f1": 0,
+      "llm_calls": 0,
+      "delta_accuracy": -64.14
+    },
+    {
+      "configuration": "w/o temporal",
+      "excluded_signal": "temporal",
+      "accuracy": 20.71,
+      "recall": 0,
+      "f1": 0,
+      "llm_calls": 0,
+      "delta_accuracy": -64.14
+    },
+    {
+      "configuration": "w/o sector",
+      "excluded_signal": "sector",
+      "accuracy": 20.71,
+      "recall": 0,
+      "f1": 0,
+      "llm_calls": 0,
+      "delta_accuracy": -64.14
+    }
+  ],
+  "cost_analysis": {
+    "cost_per_call": 0.00000354,
+    "input_tokens_per_call": 42,
+    "output_tokens_per_call": 18,
+    "input_cost_per_million_tokens": 0.05,
+    "output_cost_per_million_tokens": 0.08,
+    "llm_only_cost_per_million_comparisons": 3.54,
+    "nise_cost_per_million_comparisons": 2.75,
+    "savings_per_million_comparisons": 0.79,
+    "savings_pct": 22.22
+  }
+}

@@ -45,3 +45,7 @@ paper.txt
 ~$*.docx
 ~$*.xlsx
 ~$*.pptx
+
+# Media & Temporary Backups
+demo_video.mp4
+*.BACKUP.tex

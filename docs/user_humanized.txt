@@ -1,0 +1,126 @@
+<USER_REQUEST>
+TITLE
+
+A Cost-Aware Multi-Stage Framework for News Event Clustering: Combining Lexical, Semantic, and LLM-Based Verification
+
+ABSTRACT
+
+Modern news aggregation platforms are constantly collecting reports of the same real-world events from hundreds of different publishers. Clustering together similar reports is critical to prevent information overload, but applying Large Language Model (LLM) verification to each possible pair of articles is too expensive at web scale, and word-matching filters are insufficient when journalists use different lexicons to describe the same concepts.
+
+This paper presents NISE - the News Intelligence and Synthesis Engine - a cost aware multi-stage framework for real-time news event clustering and autonomous syndication. NISE passes article pairs through two light lexical filters and a five-signal fusion scorer before any ambiguous pairs are sent to an LLM for final adjudication. On a balanced benchmark of 5,000 labeled headline pairs, the pipeline achieves 93.93% accuracy with an 82.2% reduction in LLM queries compared to na{\"i}ve pairwise comparison, and 90% accuracy on a CPU-only semantic alternative using sentence embeddings that incurs zero API costs. An ablation analysis demonstrates the value of each stage, and telemetry from production shows the system processing approximately 1,500 articles per day across 18 wire feeds.
+
+Keywords: Cost-aware AI, event clustering, large language models, news aggregation, semantic similarity, sentence embeddings, text deduplication.  1. INTRODUCTION
+Modern news aggregators routinely syndicate tens of thousands of articles from hundreds of thousands of publishers around the world. The same real-world event frequently gets reported under distinct headlines, utilizing significantly different journalistic framing, or varying degrees of terminological overlap. Grouping similar-looking news articles into unified event clusters presents an important challenge: it reduces noise for the end-consumer and avoids flooding users with near-duplicates. However, determining which articles to cluster presents an inherently non-trivial task.
+
+Early methods focused on lexical overlap, utilizing thresholds of Jaccard similarity \cite{Jaccard1908} or character-based patterns. Unfortunately, these approaches fail to generalize when comparing articles that use paraphrasing, e.g., "Semiconductor foundry" $vs$ "Chipmaker", or "Cupertino giant" $vs$ "Apple Inc.". Neural sentence embeddings provide a better domain for event clustering at the expense of massive computational overhead: language models that reason about semantic meaning are expensive to invoke at scale. One might attempt to compare each article with each other article, but such an approach would prove cost-prohibitive for anything larger than an experimental dataset.
+
+The primary contribution of this work is the design and implementation of NISE - a hierarchical and cost-aware gating architecture that operates in three distinct stages:
+
+Parallel Lexical Sieve (Stage 1): two fast text Matchers operate in parallel, with any pair passing the overall gate if it gets through either Matcher.
+Enhanced Fusion Scoring Algorithm $-$ EFSA (Stage 2): fuses five evidence signals into a single confidence score
+Selective LLM Verification (Stage 3): ambiguous EFSA scores get verified by an external LLM
+Zero-cost CPU Semantic Alternative: for the infrequent cases when no internet connection is available, one may load a local sentence embedding model that performs semantic matching of text strings.
+The main contributions of this study are:
+
+A production-grade multi-stage event clustering pipeline that decreases the utilization of expensive LLM-based APIs by 82.2% while demonstrating 93.93% accuracy on a held-out event clustering validation set.
+A methodological contribution that evaluates the performance using a dual-corpus approach: one validation set is built from a live RSS wire (250 pairs, κ = 0.8454), while the other uses a hand-crafted 5,000 pair benchmark spanning 14 news verticals.
+A comprehensive Leave-One-Signal-Out (LOSO) ablation analysis that quantifies the importance of each signal.
+A negative result that demonstrates that the Dynamic Publisher Credibility Scoring (DPCS) approach does not provide any accuracy improvements, which serves as a cautionary example for the broader community.  2. RELATED WORK
+Event detection and news clustering have developed in three major research directions.
+
+2.1 Lexical, Topic, and Graph-Based Clustering
+Earlier news deduplication systems relied on term-frequency weighting, TF-IDF vector space, and Jaccard token overlap. Carta et al. performed hierarchical clustering of financial news streams, whereas topic models, including LDA, organize articles according to latent topics. These methods have linear complexity and are thus storage- and computationally efficient. However, all are overly permissive with false negatives on short texts such as headlines due to vocabulary and conceptual mismatch, and graph-based methods scale poorly with the continuous stream of incoming articles.
+
+2.2 Dense Semantic Embeddings
+A common approach to address the lexical mismatch is to encode text representations in dense semantic space through neural networks. Reimers and Gurevych introduced Sentence-BERT (SBERT), which encodes sentences as dense vectors comparable via cosine similarity. Shelke et al. investigated methods to compress SBERT for low-resources settings, whereas Fujita et al. applied a mixture-of-Gaussians clustering on top of it for short-text topic modeling. While efficient and effective, such embeddings are prohibitively expensive to compute for every pair of articles in a high-throughput system unless sufficient GPU resources are available.
+
+2.3 LLM Verification and Cost-Aware Cascades
+Modern large language models (LLMs) have shown remarkable zero-shot capabilities in fact verification, entity resolution, and document summarization. Kim et al. proposed sparse verification schemes to reduce the number of input pairs passed to the LLM. However, each of the existing methods for LLM-based news clustering processes all possible pairs of articles to find semantically matching ones. In other words, there is no LLM-based deduplication cascade design that can effectively handle the production traffic of a real-time news system while balancing the accuracy-cost-latency triage.  3. METHODOLOGY / PROPOSED SYSTEM
+3.1 Pipeline Overview
+The system consumes continuous RSS wire feeds through a four stage process: Ingestion, Multi-Stage Event Clustering, Event Synthesis and Autonomous Social Media Distribution, with persistence and similarity computation layers (Fig. 1), applying a cost aware gating philosophy in which cheap filters prune obvious mismatches before expensive computation occurs.
+
+3.2 Ingestion Registry & Anti-Duplication Lock
+The ingestion engine continuously polls 18 RSS feeds spanning 14 news sectors. Before being added to the clustering pipeline, any article is checked for duplication with previously stored articles, using three criteria: matching URL, matching MD5 hash of lowercased headline text, or title match. Articles passing any of these three conditions are discarded to avoid processing the same story more than once.
+
+3.3 Multi-Stage Lexical/LLM Clustering Gate
+Stage 1 performs two parallel text similarity checks on every pair of articles published within the last 48 hours.
+
+The first is Jaccard headline similarity (intersection over union of word sets) and the second is character 3-gram cosine similarity, which captures spelling variants and common roots that the former would miss.
+
+A pair of articles passes Stage 1 if they pass either similarity test (logical OR), which makes it a very inclusive gate. This is intentional, as we want to maximize recall: no story matching should be missed before moving on to the next gate.
+
+3.4 Enhanced Fusion Scoring Algorithm (EFSA)
+Pairs of articles passing Stage 1 are then passed to EFSA, which fuses together 5 different evidence signals as a weighted sum:
+
+Keyword IoU (weight 0.25): word set intersection over union after filtering stopwords
+Character 3-Gram Cosine (weight 0.3): cosine similarity of character trigrams.
+Named Entity Overlap (weight 0.25): Jaccard overlap of recognized person/places/entities in headlines.
+Temporal Decay (weight 0.1): linear decay similarity function with time since story publication
+Sector Match (weight 0.1): whether both articles are in the same news sector.
+Pairs scoring 0.22 or higher on this metric are passed to Stage 3, while pairs scoring below 0.22 are confidently classified as distinct and do not receive an LLM call.
+
+3.5 Dynamic Publisher Credibility Scoring (DPCS)
+As an experimental addition we investigated a Dynamic Publisher Credibility Scoring mechanism, which attempted to increase or decrease the matching threshold depending on how reliable the publisher had been in the past. In practice this penalized early discovery of events by publishers who later proved to be consistently reliable, lowering recall by 2.83% (87.86% -> 85.03%) without improving precision, so this feature is currently disabled in production.
+
+3.6 Semantic Similarity Alternative
+For environments without internet connectivity or GPU inference capabilities, we have an alternate local semantic similarity pathway. Using a sentence transformer (all-MiniLM-L6-v2) converted to ONNX format and run on CPU, we embed headlines as 384 dimensional vectors and compare them with cosine similarity. Any pair of headlines with cosine similarity of 0.65 or higher are considered similar, and this single-stage approach achieves 90% accuracy using only local CPU resources, requiring no external API calls.
+
+3.7 Event Synthesis & Confidence Assessment
+Once a cluster has been identified as matching, the LLM is asked to create a single editorial summary combining information from all matching articles in the cluster. Confidence in the synthesis depends on the number of matching articles: 35% confidence for a single article, 65% for two articles, and 90% for three or more. A publisher divergence check is also used to identify contradictions between different articles, in which case a secondary reflection pass is used to detect and correct factual errors before publishing.
+
+3.8 Autonomous Social Media Distribution
+Synthesized events are added to a publishing queue for autonomous social media distribution. Dynamic summary text, hashtags and media attachments are created within the constraints of each platform's character limits. An asynchronous retry worker with exponential back-off handles rate limiting to prevent social media publishing from slowing down the upstream clustering pipeline.
+
+3.9 Computational Cost Reduction
+Without any gating mechanism, checking for duplicates requires an exponentially increasing number of LLM calls as more articles are processed. The cascading stages of NISE ensure that each later stage only sees a small fraction of the pairs passed to it, reducing the total number of LLM invocations. In practice this allows us to eliminate 82.2% of all LLM calls while still achieving 93.93% accuracy.  4. SYSTEM IMPLEMENTATION  5. RESULTS AND DISCUSSION
+Evaluation was performed on a balanced benchmark of 5,000 labeled headline pairs across 14 news sectors; 2,500 same-event pairs and 2,500 different-event pairs, with inter-annotator agreement of κ = 0.884; telemetry from live production RSS wire feeds were also analyzed.
+
+5.1 Multi-stage filtering and classification performance
+The NISE production pipeline achieved 93.93% accuracy and 100% precision, reducing the number of LLM API calls by 82.2%. Evaluation on a separate human-annotated live wire sample of 250 headline pairs (κ = 0.8454) demonstrated that Stage 1 lexical gating achieved 100% recall, confirming that the first filter never fails to pass a true positive.
+
+For comparison, pure Jaccard gating achieves 51.20% accuracy, and pure 3-gram cosine achieves 52.10%, both significantly below the baseline of the full pipeline. The CPU semantic alternative achieved 90.02% accuracy, offering a compelling fallback option. Exhaustive LLM verification achieves 100% accuracy, but at 2,994 ms per pair with no savings in API costs.
+
+5.2 EFSA leave-one-signal-out ablation
+To determine the contribution of each signal, we removed one signal at a time and measured the resulting accuracy drop:
+
+Signal Removed	Accuracy	Drop
+Full EFSA (baseline)	93.93%	—
+Character 3-Gram Cosine	86.51%	−7.42%
+Keyword IoU	88.75%	−5.18%
+Named Entity Overlap	89.63%	−4.30%
+Sector Match	91.78%	−2.15%
+Temporal Decay	92.05%	−1.88%
+Character-level morphological matching emerges as the most critical signal, and all components contribute meaningfully to the accuracy, justifying the five-signal design choice. Figure 4 shows the evaluation results across all dimensions.
+
+5.3 Event synthesis and distribution
+The LLM synthesis module consistently generates accurate editorial summaries. The reflection mechanism identifies factual discrepancies prior to syndication, and confidence tiers are appropriately correlated with source count across all tested events.
+
+5.4 Error analysis
+Three recurring error patterns were identified in cases where the system failed:
+
+Abbreviation mismatches — one headline uses "ECB" while the other specifies "European Central Bank".
+Numeric reporting variations — finance headlines describing the same market movement but reporting different index values or percentages.
+High-similarity negatives — daily template headlines such as market roundups that share identical phrasing but describe different specific company developments; Stage 3 LLM verification correctly filters out most of these false positives.
+6. CONCLUSION AND FUTURE WORK
+This paper has demonstrated that accurate, large-scale news event clustering does not require pairwise comparison of every article with a large language model. By combining a series of fast lexical filters, five-signal evidence fusion, and targeted LLM verification, the NISE pipeline achieves 93.93% accuracy on a 5,000-pair multi-sector benchmark while reducing the number of all LLM calls by 82.2%. The local CPU semantic alternative provides a viable zero-cost fallback option at 90% accuracy. Future work will focus on cross-lingual news clustering, sector-specific threshold optimization, and enhanced post-publication engagement analytics. 4.1 Technology Stack
+This research utilizes the Node.js with Express framework for the backend, MongoDB Atlas for database storage, and React.js for the administrative dashboard. The large language model (LLM) inference is powered by Groq’s hardware hosting Llama 3.1-8B-Instant for both selective verification and event synthesis. For the local semantic alternative the all-MiniLM-L6-v2 model runs on ONNX Runtime CPU. The benchmarking was conducted on an Intel Xeon Platinum 8375C with 8 virtual CPUs and 16 GB RAM without the need for a GPU at any point. 4.2 RSS Feed Ingestion and Anti-Duplication Registry
+The ingestion engine monitors 18 RSS feeds across 14 news sectors every 15 minutes. Each incoming article is scanned for duplicates using a hash lookup in an indexed database containing all previous headlines, resulting in efficient filtering of the roughly 1,450 articles that enter the pipeline daily. 4.3 Multi-Stage Event Clustering Implementation
+Stage 1 lexical filtering is implemented in the textSimilarity.js module: the Jaccard similarity and 3-gram cosine similarity are computed in parallel with an OR gate that feeds surviving candidate pairs to the EFSA scoring engine. 4.4 Enhanced Fusion Scoring Algorithm Implementation
+The EFSA module extracts keywords, character n-grams, and named entity mentions, then applies the temporal decay function and the sector alignment check before performing a weighted fusion of the five signals with coefficients [0.25, 0.30, 0.25, 0.10, 0.10]. The resulting scores of 0.22 or higher trigger a Stage 3 LLM verification. 4.5 Semantic Similarity Alternative Implementation
+When enabled for offline processing, the single-stage semantic gate replaces all three processing stages in the pipeline, classifying candidate pairs with a cosine similarity of 0.65 or higher as identical events. This alternative achieves 90% accuracy in event identification without requiring any external API calls. 4.6 Event Synthesis and Confidence Assessment
+The confirmed event clusters are sent to the Llama 3.1-8B-Instant model via Groq API to generate a set of editorial summaries, short captions, and social media posts in parallel. The confidence level is labeled 35% for one-source events, 65% for two-source events, and 90% for three-source events. 4.7 Database and Persistence Layer
+Both processed articles and synthesized events are stored in separate collections within MongoDB Atlas (Fig. 2). The compound indexes on the pipeline’s creation date and news sector, combined with a unique index on the title hash, ensure rapid 48-hour candidate queries and prevent duplicate entries. 4.8 Social Media Distribution and Broadcast Queue
+The broadcast queue manages the social media publishing workflow, with workers handling character-limit formatting, hashtag suggestions, and retry logic with exponential back-off. As a result, any rate-limited or failed posts can automatically retry without user intervention. 4.9 Dashboard Interface and System Monitoring
+The React.js dashboard (Fig. 3) displays the number of currently processing event clusters, highlights which gates each detected event cluster has passed, and provides an overview of the system’s performance and health, including a mean end-to-end latency of 642 ms across all 14 monitored news sectors. THIS ARE MY HUMANISED CONTENTS NOW GIVE A FULL LATREX CODE CORRECTLY WITHOUT CHANGES ANYTHINH
+
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-25T12:00:10+05:30.
+
+The user's current state is as follows:
+Active Document: e:\ai-news-aggregator\docs\NISE-Paper.tex (LANGUAGE_LATEX)
+Cursor is on line: 366
+Other open documents:
+- e:\ai-news-aggregator\docs\NISE-Paper.tex (LANGUAGE_LATEX)
+- e:\ai-news-aggregator\docs\NISE_REVISED_MANUSCRIPT_CLEAN.md (LANGUAGE_MARKDOWN)
+</ADDITIONAL_METADATA>

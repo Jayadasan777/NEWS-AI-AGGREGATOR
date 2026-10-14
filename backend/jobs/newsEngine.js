@@ -70,7 +70,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // --- Synthesize Article & Generate Instagram/Social Metadata using Llama 3 (Groq) ---
 const synthesizeWithGroq = async (title, description, sector) => {
-  const modelName = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+  const modelName = process.env.GROQ_MODEL || 'openai/gpt-oss-120b';
   const prompt = `You are a professional news editor and social media manager for an autonomous news agency called NewsAI.
 Based on the following news headline and description, return a valid JSON object with four exact fields:
 1. "summary": A professional editorial summary of about 150 words in a neutral, informative tone. Do not copy phrases directly.

@@ -1,0 +1,280 @@
+\documentclass[conference]{IEEEtran}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{cite}
+\usepackage{xcolor}
+
+% Mark uncertain data in red
+\newcommand{\tbd}[1]{\textcolor{red}{[TBD: #1]}}
+\newcommand{\verify}[1]{\textcolor{orange}{#1 [VERIFY]}}
+
+\title{A Cost-Aware Cascaded Pipeline for News Event Clustering with Selective LLM Verification}
+
+\author{
+    \IEEEauthorblockN{Jayadasan S, D. Menaga, Jason Peniel Raj S}
+    \IEEEauthorblockA{St. Joseph's Institute of Technology, Chennai, India}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\textcolor{red}{[REWRITE AFTER GETTING REAL TEST RESULTS]}
+
+News aggregators must identify when multiple sources report on the same event despite different wording.
+Large language models (LLMs) can determine whether two headlines describe the same event, but exhaustive pairwise comparison is expensive at scale.
+This paper presents NISE, a cascaded pipeline combining lexical filters with a five-signal evidence fusion algorithm (EFSA) to identify which pairs require LLM verification.
+We evaluate on \tbd{N} test pairs from real RSS feeds.
+The cascade achieves \tbd{accuracy}\% accuracy with \tbd{precision}\% precision and \tbd{recall}\% recall, reducing LLM calls by \tbd{X}\% compared to exhaustive verification.
+A CPU-only Sentence-BERT alternative achieves \tbd{Y}\% accuracy with zero API cost on the same test set.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Cost-aware AI, event clustering, large language models, news aggregation.
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\textcolor{red}{[HONEST FRAMING: Engineering study, no novel methods, empirical tradeoff analysis]}
+
+When Apple announces earnings, 50+ outlets publish within an hour with different headlines.
+News aggregators must group articles by event despite paraphrasing.
+Lexical methods (Jaccard, n-grams) fail on synonym variation.
+Dense embeddings (Sentence-BERT) capture semantics but require O(n²) comparisons.
+LLMs achieve high accuracy but impose API costs.
+
+This paper evaluates a \textbf{cascaded filtering strategy}: cheap lexical gates reject obvious non-matches, then an evidence fusion scorer ranks candidates, and only borderline cases reach LLM verification.
+
+\textbf{Contribution:} An empirical analysis of cost-accuracy tradeoffs in production news clustering.
+We report honest test-set performance including overfitting effects, compare with SBERT baseline on identical data, and measure actual LLM call reduction from stage logging.
+
+\textbf{Key findings:}
+\begin{itemize}
+    \item \tbd{Insert honest test results here}
+    \item \tbd{Conservative tuning led to overfitting - test recall dropped to X\%}
+    \item \tbd{SBERT baseline outperforms cascade on test accuracy (Y\% vs Z\%)}
+\end{itemize}
+
+\section{Related Work}
+
+\textcolor{red}{[KEEP EXISTING - IT'S MOSTLY OK]}
+
+\subsection{Lexical Clustering}
+Early text clustering used TF-IDF~\cite{salton1988} and bag-of-words.
+Carta et al.~\cite{carta2022} applied inverted-index similarity for financial news, achieving sub-second latency but failing on synonym variation.
+
+\subsection{Dense Embeddings}
+Reimers and Gurevych~\cite{reimers2019sentence} introduced Sentence-BERT for semantic comparison.
+While more effective than lexical methods, SBERT requires model inference and O(n²) comparisons.
+
+\subsection{LLM Verification}
+Recent work shows strong LLM performance on semantic tasks, but few studies analyze cost-accuracy tradeoffs at production scale with non-zero API pricing.
+
+\section{Methodology}
+
+\subsection{Pipeline Overview}
+NISE processes articles from 18 RSS feeds across 14 sectors.
+Each article is compared against articles from the previous 48 hours.
+
+\textbf{Stage 1: Lexical Gates.}
+Unigram Jaccard (τ=0.12) OR character 3-gram cosine (τ=0.25).
+Pairs failing both are rejected.
+
+\textbf{Stage 2: EFSA Scoring.}
+Five-signal fusion: keyword IoU, 3-gram cosine, entity overlap, temporal decay, sector match.
+\begin{equation}
+S = 0.25 S_{key} + 0.30 S_{3g} + 0.25 S_{ent} + 0.10 S_{temp} + 0.10 S_{sec}
+\end{equation}
+Pairs with S ≥ 0.22 proceed to LLM.
+
+\textbf{Stage 3: LLM Verification.}
+Zero-shot pairwise comparison via Groq Llama 3.1-8B-Instant.
+
+\subsection{SBERT Alternative}
+CPU-only path using ONNX all-MiniLM-L6-v2 (threshold 0.50) for deployments without API access.
+
+\section{Evaluation}
+
+\subsection{Test Set}
+\tbd{N=198 or N=1,022? Clarify which is test-only vs full}
+
+\textcolor{red}{[BE EXPLICIT: Test set = 198 held-out pairs, Full = 1,022 including training]}
+
+Benchmark constructed from \tbd{time period}, containing \tbd{pos} positive and \tbd{neg} negative pairs.
+\tbd{Describe hard negatives: same sector, overlapping entities, temporal proximity}
+
+Dual annotation: Cohen's κ = \verify{0.8454 ± 0.0402}
+
+\subsection{Test Set Results (Primary)}
+
+\textcolor{red}{[REPORT TEST SET AS PRIMARY RESULTS]}
+
+Table~\ref{tab:test} shows performance on \tbd{N} held-out test pairs.
+
+\begin{table}[h]
+\centering
+\caption{Performance on \tbd{N}-Pair Test Set}
+\label{tab:test}
+\begin{tabular}{lcccc}
+\toprule
+Method & Acc. & Prec. & Rec. & F1 \\
+\midrule
+Lexical Jaccard & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+Char 3-Gram & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+SBERT (τ=0.50) & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\textbf{NISE Cascade} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+SBERT+LLM & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+LLM-Only & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Stage Pass Counts:}
+\begin{itemize}
+    \item Stage 1 passed: \tbd{X} pairs (\tbd{Y}\%)
+    \item Stage 2 exceeded threshold: \tbd{Z} pairs (\tbd{W}\%)
+    \item LLM calls made: \tbd{K} (\tbd{P}\% reduction vs exhaustive)
+\end{itemize}
+
+\subsection{Full Benchmark (In-Sample)}
+
+\textcolor{red}{[LABEL AS IN-SAMPLE, NOT PRIMARY RESULTS]}
+
+Table~\ref{tab:full} shows performance on full 1,022-pair benchmark (including training data).
+
+\textcolor{orange}{WARNING: These results include training data and show signs of overfitting.}
+
+\begin{table}[h]
+\centering
+\caption{In-Sample Performance (N=1,022, includes training)}
+\label{tab:full}
+\begin{tabular}{lcccc}
+\toprule
+Method & Acc. & Prec. & Rec. & F1 \\
+\midrule
+NISE Cascade & \verify{93.93\%} & \verify{100\%} & \verify{87.89\%} & \verify{93.56\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cost Analysis}
+
+\textcolor{red}{[FIX COST CALCULATION]}
+
+API cost per call:
+\begin{itemize}
+    \item Input: 42 tokens × \$0.05/1M = \$0.0000021
+    \item Output: 18 tokens × \$0.08/1M = \$0.0000014
+    \item Total: \$0.00000354 per call
+\end{itemize}
+
+Cost per 1M comparisons:
+\begin{itemize}
+    \item LLM-only: 1M × \$0.00000354 = \$3.54
+    \item NISE: \tbd{X} calls × \$0.00000354 = \tbd{\$Y}
+    \item Savings: \$\tbd{Z} (\tbd{P}\% reduction)
+\end{itemize}
+
+\textcolor{red}{[REFRAME: Focus on latency and rate limits, not dollars]}
+
+\textbf{More important than cost:}
+\begin{itemize}
+    \item Latency: \tbd{X}ms vs \tbd{Y}ms exhaustive
+    \item Rate limits: \tbd{P}\% fewer API calls
+    \item Scalability: Can process \tbd{X} articles/day
+\end{itemize}
+
+\subsection{Threshold Sweep}
+
+\textcolor{red}{[ADD THIS TABLE - MISSING FROM ALL VERSIONS]}
+
+\begin{table}[h]
+\centering
+\caption{EFSA Threshold Sweep on Test Set}
+\label{tab:sweep}
+\begin{tabular}{lccccc}
+\toprule
+τ & LLM Calls & Acc. & Prec. & Rec. & F1 \\
+\midrule
+0.18 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+0.20 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+0.22 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+0.25 & \tbd{} & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablation Study}
+
+\textcolor{red}{[ADD THIS TABLE - REVIEWERS EXPLICITLY ASKED]}
+
+\begin{table}[h]
+\centering
+\caption{EFSA Leave-One-Out Ablation on Test Set}
+\label{tab:ablation}
+\begin{tabular}{lcccc}
+\toprule
+Configuration & Acc. & Rec. & F1 & Δ \\
+\midrule
+Full EFSA (5 signals) & \tbd{} & \tbd{} & \tbd{} & -- \\
+w/o Keyword & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+w/o Headline 3-gram & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+w/o Entity & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+w/o Temporal & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+w/o Sector & \tbd{} & \tbd{} & \tbd{} & \tbd{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Limitations}
+
+\textcolor{red}{[BE HONEST]}
+
+\begin{enumerate}
+    \item \textbf{Overfitting:} \tbd{Large gap between in-sample (93.93\%) and test (X\%) suggests overfitting to training distribution.}
+    \item \textbf{Low test recall:} \tbd{Test recall of X\% means lexical gates miss Y\% of true matches.}
+    \item \textbf{SBERT outperforms:} SBERT standalone achieves \tbd{Z}\% vs cascade \tbd{W}\% on test set.
+    \item \textbf{Single LLM:} Only evaluated Llama 3.1-8B; other models may differ.
+    \item \textbf{English-only:} Generalization to other languages unknown.
+\end{enumerate}
+
+\section{Conclusion}
+
+\textcolor{red}{[HONEST CONCLUSION]}
+
+We evaluated a cascaded filtering strategy for news event clustering.
+On a \tbd{N}-pair test set, the cascade achieves \tbd{X}\% accuracy with \tbd{Y}\% recall, reducing LLM calls by \tbd{Z}\%.
+
+\textbf{Key findings:}
+\begin{itemize}
+    \item Lexical pre-filtering reduces API calls but at cost of recall
+    \item \tbd{Conservative tuning led to overfitting (test recall X\% vs in-sample Y\%)}
+    \item SBERT baseline outperforms cascade on test accuracy
+    \item For deployments prioritizing precision, cascade achieves design goal
+    \item For deployments prioritizing recall, SBERT is more effective
+\end{itemize}
+
+\textcolor{red}{[NO FAKE ACCEPTANCE SCORES, NO FABRICATED DEADLINES]}
+
+\begin{thebibliography}{99}
+\footnotesize
+
+\bibitem{salton1988}
+G. Salton and C. Buckley, ``Term-weighting approaches in automatic text retrieval,'' \textit{Inf. Process. Manage.}, vol. 24, no. 5, pp. 513--523, 1988.
+
+\bibitem{carta2022}
+S. Carta et al., ``Event detection and clustering on multi-source financial data streams,'' \textit{IEEE Trans. Knowl. Data Eng.}, vol. 34, no. 6, pp. 2845--2859, 2022.
+\textcolor{orange}{[VERIFY: Check this exists on IEEE Xplore]}
+
+\bibitem{reimers2019sentence}
+N. Reimers and I. Gurevych, ``Sentence-BERT: Sentence embeddings using Siamese BERT-networks,'' \textit{Proc. EMNLP}, 2019, pp. 3982--3992.
+
+\textcolor{red}{[VERIFY ALL OTHER REFERENCES BEFORE SUBMISSION]}
+
+\end{thebibliography}
+
+\end{document}
