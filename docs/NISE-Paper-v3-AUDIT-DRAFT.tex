@@ -76,7 +76,7 @@ For example, one wire service may headline ``Federal Reserve Lowers Benchmark Ra
 Despite sharing negligible surface token overlap, both headlines describe the exact same macroeconomic event.
 Detecting this semantic equivalence is essential to organize incoming feeds into coherent event clusters, enabling users to examine diverse editorial perspectives without redundant coverage.
 
-However, event clustering on streaming text faces an acute operational dilemma between computational cost and semantic accuracy:
+Event clustering on streaming text must balance computational cost against missed matches and incorrect merges:
 \begin{enumerate}
     \item \textit{Lexical methods} (e.g., token Jaccard similarity or character $n$-grams) execute in microseconds but fail on synonymous phrasing, acronyms (``PBOC'' vs.\ ``People's Bank of China''), and entity aliasing (``Apple Inc.'' vs.\ ``Cupertino Giant'').
     \item \textit{Dense semantic embeddings} (e.g., Sentence-BERT~\cite{reimers2019sentence}) capture contextual similarity effectively, but pairwise vector distance comparisons over an active sliding window scale quadratically, straining unaccelerated CPU deployments.
@@ -97,13 +97,13 @@ The contribution of this work is a system description and evidence audit for cos
 \section{Related Work}
 % ============================================================
 
-\\subsection{Lexical Similarity and Event Matching}
-Classical information retrieval uses term weighting and lexical overlap to rank or compare text~\\cite{salton1988}. Such methods are computationally inexpensive, but surface-form overlap may be insufficient when headlines describe the same occurrence using different wording. News-event clustering must distinguish topical similarity from event identity: two articles can mention the same organization without reporting the same incident.
+\subsection{Lexical Similarity and Event Matching}
+Classical information retrieval uses term weighting and lexical overlap to rank or compare text~\cite{salton1988,aggarwal2012}. Such methods are computationally inexpensive, but surface-form overlap may be insufficient when headlines describe the same occurrence using different wording. News-event clustering must distinguish topical similarity from event identity: two articles can mention the same organization without reporting the same incident.
 
-\\subsection{Sentence Representations and Pairwise Matching}
+\subsection{Sentence Representations and Pairwise Matching}
 
 Sentence-BERT (SBERT)~\cite{reimers2019sentence} introduced Siamese transformer networks that map sentences to dense vector spaces where cosine distance correlates with semantic relatedness.
-Sentence-BERT provides sentence embeddings for semantic similarity comparison~\\cite{reimers2019sentence}. Pairwise matching has also been studied using pre-trained language models, including the Ditto entity-matching framework~\\cite{li2020ditto}.
+Sentence-BERT provides sentence embeddings for semantic similarity comparison~\cite{reimers2019sentence}. Pairwise matching has also been studied using pre-trained language models, including the Ditto entity-matching framework~\cite{li2020ditto}.
 While dense vectors resolve lexical mismatch, pairwise vector distance calculations across continuous high-volume feeds remain computationally demanding on commodity server CPUs.
 The repository also contains an offline SBERT evaluation path, but it is not invoked by the inspected production event-matching module.
 
@@ -157,11 +157,11 @@ EFSA combines five heterogeneous evidence channels into a calibrated scalar scor
 S_{\text{EFSA}}(A, B) = \sum_{i=1}^{5} w_i S_i(A, B)
 \label{eq:efsa}
 \end{equation}
-The component signals $S_i$ and production weights $w_i$ (calibrated on the validation partition to sum to 1.00) are defined as:
+The component signals $S_i$ and configured weights $w_i$, which sum to 1.00 in the current implementation, are defined as:
 \begin{itemize}
     \item $S_{\text{key}}$ ($w_1 = 0.25$): Keyword intersection-over-union after English stopword removal.
     \item $S_{\text{head}}$ ($w_2 = 0.30$): Character 3-gram cosine similarity between headline strings.
-    \item $S_{\text{ent}}$ ($w_3 = 0.25$): Named entity overlap ratio $J_{\text{ent}} = |E_A \cap E_B| / |E_A \cup E_B|$, where entity sets $E$ are extracted via rule-based capitalization and verified entity dictionaries.
+    \item $S_{\text{ent}}$ ($w_3 = 0.25$): Entity overlap ratio $J_{\text{ent}} = |E_A \cap E_B| / |E_A \cup E_B|$, where entity candidates are extracted with a capitalization- and number-based regular expression.
     \item $S_{\text{temp}}$ ($w_4 = 0.10$): Exponential temporal decay $S_{\text{temp}} = e^{-\lambda \Delta t}$, where $\Delta t$ is publication delta in hours and $\lambda = 0.02$.
     \item $S_{\text{sec}}$ ($w_5 = 0.10$): Sector taxonomy match indicator (1.0 for matching sectors, 0.5 otherwise).
 \end{itemize}
