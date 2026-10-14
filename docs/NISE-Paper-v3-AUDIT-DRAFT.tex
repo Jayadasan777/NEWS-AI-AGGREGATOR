@@ -103,14 +103,13 @@ Classical information retrieval uses term weighting and lexical overlap to rank 
 \\subsection{Sentence Representations and Pairwise Matching}
 
 Sentence-BERT (SBERT)~\cite{reimers2019sentence} introduced Siamese transformer networks that map sentences to dense vector spaces where cosine distance correlates with semantic relatedness.
-Subsequent efforts investigated model compression; Shelke et al.~\cite{shelke2022} evaluated layer pruning to reduce inference overhead in resource-constrained environments, while Fujita et al.~\cite{fujita2023} combined SBERT with Gaussian mixture models for short-text grouping.
+Sentence-BERT provides sentence embeddings for semantic similarity comparison~\\cite{reimers2019sentence}. Pairwise matching has also been studied using pre-trained language models, including the Ditto entity-matching framework~\\cite{li2020ditto}.
 While dense vectors resolve lexical mismatch, pairwise vector distance calculations across continuous high-volume feeds remain computationally demanding on commodity server CPUs.
 The repository also contains an offline SBERT evaluation path, but it is not invoked by the inspected production event-matching module.
 
 \subsection{LLM Verification and Gated Cascades}
 Recent surveys highlight the zero-shot reasoning capabilities of LLMs for semantic matching and entity resolution~\cite{zhao2023}.
-Jin et al.~\cite{jin2023} demonstrated that compact specialized models can perform reliable text verification.
-Kim et al.~\cite{kim2022} introduced sparse semantic verification patterns to mitigate computational overhead in neural text processing, while Phan et al.~\cite{phan2021} explored evidence-based fact verification.
+Pairwise semantic matching and evidence verification remain related research problems, but the performance of a method must be assessed on the target task and its own labeled benchmark.
 However, existing studies typically evaluate on static corpora without non-zero API pricing constraints.
 NISE addresses this production gap by gating LLM verification behind multi-signal arithmetic filters, formalizing the relationship between filtering stringency and operational API cost.
 
@@ -260,6 +259,9 @@ C.~C.~Aggarwal and C.~Zhai, ``A survey of text clustering algorithms,'' in \text
 
 \bibitem{reimers2019sentence}
 N.~Reimers and I.~Gurevych, ``Sentence-BERT: Sentence embeddings using Siamese BERT-networks,'' in \textit{Proc.\ 2019 Conf. Empirical Methods Natural Lang. Process. 9th Int. Joint Conf. Natural Lang. Process. (EMNLP-IJCNLP)}, Hong Kong, China, 2019, pp.\ 3982--3992.
+
+\bibitem{li2020ditto}
+Y.~Li, J.~Li, Y.~Suhara, A.~Doan, and W.-C.~Tan, ``Deep entity matching with pre-trained language models,'' \textit{Proc. VLDB Endowment}, vol.~14, no.~1, pp.~50--60, 2020, doi: 10.14778/3421424.3421431.
 
 \bibitem{zhao2023}
 W.~X.~Zhao \textit{et al.}, ``A survey of large language models,'' \textit{arXiv preprint arXiv:2303.18223}, 2023.
