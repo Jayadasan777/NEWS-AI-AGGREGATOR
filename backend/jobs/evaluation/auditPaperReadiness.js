@@ -181,7 +181,7 @@ function main() {
     'sbert-full-evaluation.json',
     'statistical_significance_results.json',
     'iaa_report_real.json',
-    'split_report_real.json',
+    'splits_real/split_report_real.json',
   ];
   const resultAudits = resultFiles.map(file => {
     const loaded = readJson(file);
