@@ -42,7 +42,7 @@ jobs:
         with:
           name: nise-paper-validation-${{ github.sha }}
           path: |
-            docs/NISE-Paper-v3-AUDIT-DRAFT.pdf
+            NISE-Paper-v3-AUDIT-DRAFT.pdf
             backend/jobs/evaluation/paper_readiness_audit_report.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 14
