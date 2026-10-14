@@ -30,6 +30,9 @@ jobs:
       - name: Audit benchmark and result artifacts
         run: node backend/jobs/evaluation/auditPaperReadiness.js
 
+      - name: Audit annotator-file alignment and agreement
+        run: node backend/jobs/evaluation/auditAnnotationIndependence.js
+
       - name: Compile IEEE manuscript
         uses: xu-cheng/latex-action@v3
         with:
@@ -53,5 +56,6 @@ jobs:
             NISE-Paper-v3-AUDIT-DRAFT.pdf
             NISE-SIGIR2027-ANON.pdf
             backend/jobs/evaluation/paper_readiness_audit_report.json
+            backend/jobs/evaluation/annotation_independence_audit.json
           if-no-files-found: error
           retention-days: 14
