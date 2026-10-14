@@ -97,14 +97,11 @@ The contribution of this work is a system description and evidence audit for cos
 \section{Related Work}
 % ============================================================
 
-\subsection{Lexical and Inverted-Index Clustering}
-Early news stream clustering relied on term frequency--inverse document frequency (TF-IDF) weighting and bag-of-words heuristics~\cite{salton1988}.
-Carta et al.~\cite{carta2022} developed real-time event detection for multi-source financial feeds using inverted-index token similarity to optimize throughput.
-While efficient, pure token indexing breaks down when outlets employ divergent vocabularies or metonymy.
-Graph-based community detection methods~\cite{aggarwal2012} suffer from quadratic edge expansion over continuous multi-day temporal windows.
-The current implementation uses lexical similarity as one signal in an OR-connected candidate gate; its recall and cost effects require a controlled evaluation.
+\\subsection{Lexical Similarity and Event Matching}
+Classical information retrieval uses term weighting and lexical overlap to rank or compare text~\\cite{salton1988}. Such methods are computationally inexpensive, but surface-form overlap may be insufficient when headlines describe the same occurrence using different wording. News-event clustering must distinguish topical similarity from event identity: two articles can mention the same organization without reporting the same incident.
 
-\subsection{Dense Semantic Representations}
+\\subsection{Sentence Representations and Pairwise Matching}
+
 Sentence-BERT (SBERT)~\cite{reimers2019sentence} introduced Siamese transformer networks that map sentences to dense vector spaces where cosine distance correlates with semantic relatedness.
 Subsequent efforts investigated model compression; Shelke et al.~\cite{shelke2022} evaluated layer pruning to reduce inference overhead in resource-constrained environments, while Fujita et al.~\cite{fujita2023} combined SBERT with Gaussian mixture models for short-text grouping.
 While dense vectors resolve lexical mismatch, pairwise vector distance calculations across continuous high-volume feeds remain computationally demanding on commodity server CPUs.
@@ -258,32 +255,14 @@ This paper documented NISE's event-matching implementation and audited the evide
 \bibitem{salton1988}
 G.~Salton and C.~Buckley, ``Term-weighting approaches in automatic text retrieval,'' \textit{Inf. Process. Manage.}, vol.~24, no.~5, pp.\ 513--523, 1988.
 
-\bibitem{carta2022}
-S.~Carta, A.~S.~Podda, and D.~R.~Recupero, ``Event detection and clustering on multi-source financial data streams,'' \textit{IEEE Trans. Knowl. Data Eng.}, vol.~34, no.~6, pp.\ 2845--2859, 2022.
-
 \bibitem{aggarwal2012}
 C.~C.~Aggarwal and C.~Zhai, ``A survey of text clustering algorithms,'' in \textit{Mining Text Data}, Springer, 2012, pp.\ 77--128.
 
 \bibitem{reimers2019sentence}
 N.~Reimers and I.~Gurevych, ``Sentence-BERT: Sentence embeddings using Siamese BERT-networks,'' in \textit{Proc.\ 2019 Conf. Empirical Methods Natural Lang. Process. 9th Int. Joint Conf. Natural Lang. Process. (EMNLP-IJCNLP)}, Hong Kong, China, 2019, pp.\ 3982--3992.
 
-\bibitem{shelke2022}
-S.~Shelke, V.~Srinivasan, and R.~K.~Sanodiya, ``Layer pruning in sentence transformers for resource-constrained environments,'' in \textit{Proc.\ 60th Annu. Meeting Assoc. Comput. Linguistics (ACL)}, Dublin, Ireland, 2022, pp.\ 1547--1557.
-
-\bibitem{fujita2023}
-S.~Fujita, T.~Hayashi, and K.~Yoshino, ``TopiCLEAR: Topic modeling via SBERT embeddings and iterative Gaussian mixture models,'' \textit{ACM Trans. Inf. Syst.}, vol.~41, no.~3, art.~72, 2023.
-
 \bibitem{zhao2023}
 W.~X.~Zhao \textit{et al.}, ``A survey of large language models,'' \textit{arXiv preprint arXiv:2303.18223}, 2023.
-
-\bibitem{jin2023}
-D.~Jin, Z.~Pan, C.~Ouyang, and P.~Yang, ``Smaller specialized language models for efficient verification tasks,'' in \textit{Proc.\ 61st Annu. Meeting Assoc. Comput. Linguistics (ACL)}, Toronto, Canada, 2023, pp.\ 8912--8924.
-
-\bibitem{phan2021}
-L.~Phan \textit{et al.}, ``Evidence-based fact verification for improved text generation quality,'' in \textit{Proc.\ 2021 Conf. Empirical Methods Natural Lang. Process. (EMNLP)}, Punta Cana, Dominican Republic, 2021, pp.\ 4324--4336.
-
-\bibitem{kim2022}
-H.~Kim, J.~Park, and S.~Lee, ``Sparse semantic verification for reducing computational overhead in neural text processing,'' \textit{IEEE Access}, vol.~10, pp.\ 89342--89355, 2022.
 
 \end{thebibliography}
 
