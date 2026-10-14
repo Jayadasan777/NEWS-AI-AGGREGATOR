@@ -6,6 +6,7 @@ on:
       - research/paper-evidence-audit
     paths:
       - 'docs/NISE-Paper-v3-AUDIT-DRAFT.tex'
+      - 'docs/NISE-SIGIR2027-ANON.tex'
       - 'backend/jobs/evaluation/**'
       - '.github/workflows/nise-paper-validation.yml'
   workflow_dispatch:
@@ -36,13 +37,21 @@ jobs:
           latexmk_use_xelatex: false
           args: -pdf -file-line-error -halt-on-error
 
-      - name: Upload manuscript PDF and audit report
+      - name: Compile anonymized ACM SIGIR-format manuscript
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: docs/NISE-SIGIR2027-ANON.tex
+          latexmk_use_xelatex: false
+          args: -pdf -file-line-error -halt-on-error
+
+      - name: Upload manuscript PDFs and audit report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nise-paper-validation-${{ github.sha }}
           path: |
             NISE-Paper-v3-AUDIT-DRAFT.pdf
+            NISE-SIGIR2027-ANON.pdf
             backend/jobs/evaluation/paper_readiness_audit_report.json
           if-no-files-found: error
           retention-days: 14
