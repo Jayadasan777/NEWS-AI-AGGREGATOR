@@ -91,8 +91,7 @@ Rather than querying an LLM for every candidate pair, the pipeline filters candi
     \item \textbf{Selective LLM verification.} The current implementation calls the configured Groq model when Jaccard, character 3-gram cosine, or EFSA reaches its respective threshold.
 \end{itemize}
 
-The primary contribution of this work is an empirical design rationale and operational trade-off analysis of cost-aware news clustering in a live production environment.
-Specifically: (1) we formulate and evaluate a cascaded architecture combining parallel lexical filtering and multi-signal evidence fusion that reduces LLM verification invocations by 82.3\% on held-out test data while achieving 100.0\% observed precision on evaluated pairs; (2) we quantify the trade-off between conservative filtering and recall coverage under continuous ingestion; and (3) we document negative results regarding dynamic publisher consensus tracking (DPCS) to guide practical system deployments.
+The contribution of this work is a system description and evidence audit for cost-aware event matching in a deployed news aggregation application. It documents the similarity signals and decision path present in the repository, distinguishes implemented behavior from features described in earlier manuscript drafts, and specifies the evidence required for a defensible comparative evaluation. Quantitative superiority is not claimed until benchmark provenance and execution traces have been reconciled.
 
 % ============================================================
 \section{Related Work}
@@ -103,7 +102,7 @@ Early news stream clustering relied on term frequency--inverse document frequenc
 Carta et al.~\cite{carta2022} developed real-time event detection for multi-source financial feeds using inverted-index token similarity to optimize throughput.
 While efficient, pure token indexing breaks down when outlets employ divergent vocabularies or metonymy.
 Graph-based community detection methods~\cite{aggarwal2012} suffer from quadratic edge expansion over continuous multi-day temporal windows.
-NISE adopts lexical filtering solely as an initial high-recall sieve to discard unambiguous non-matches before semantic evaluation.
+The current implementation uses lexical similarity as one signal in an OR-connected candidate gate; its recall and cost effects require a controlled evaluation.
 
 \subsection{Dense Semantic Representations}
 Sentence-BERT (SBERT)~\cite{reimers2019sentence} introduced Siamese transformer networks that map sentences to dense vector spaces where cosine distance correlates with semantic relatedness.
@@ -146,7 +145,7 @@ NISE addresses this production gap by gating LLM verification behind multi-signa
 \end{figure}
 
 \subsection{Pipeline Overview}
-The system ingests articles across 14 news sectors via 18 RSS wire feeds.
+The repository documentation reports different feed counts in different locations; the exact feed inventory and sector count should be frozen from the deployment configuration before submission.
 Incoming articles are pre-screened for exact duplicates using URL hashing and MD5 title signatures:
 $\text{Match} = (\text{url} = U) \lor (\text{MD5}(T_1) = \text{MD5}(T_2))$.
 Unique articles are evaluated against active event clusters initiated within the previous 48 hours.
@@ -156,7 +155,7 @@ The multi-tier filtering topology is depicted in Fig.~\ref{fig:architecture}.
 For each recent event in the 48-hour window and matching sector, the implementation calculates unigram Jaccard similarity and character 3-gram cosine similarity. The configured thresholds are $\tau_J=0.12$ and $\tau_C=0.25$. The code uses these metrics alongside EFSA to decide whether an LLM verification call is warranted.
 
 \subsection{Enhanced Fusion Scoring Algorithm (EFSA)}
-Candidate pairs surviving Stage 1 undergo multi-signal evidence aggregation.
+For each candidate event, EFSA combines five heterogeneous evidence channels into a scalar score.
 EFSA combines five heterogeneous evidence channels into a calibrated scalar score:
 \begin{equation}
 S_{\text{EFSA}}(A, B) = \sum_{i=1}^{5} w_i S_i(A, B)
