@@ -26,7 +26,7 @@ function read(file) {
   };
 }
 function normalized(s) {
-  return String(s || '').trim().replace(/\\s+/g, ' ').toLowerCase();
+  return String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
 }
 function pairKey(row) {
   const a = normalized(row.headline_a);
@@ -118,7 +118,7 @@ const report = {
     'Do not use this report as evidence of full-dataset human annotation unless the annotation protocol and audit trail independently establish that fact.'
   ],
 };
-fs.writeFileSync(OUT, JSON.stringify(report, null, 2) + '\\n');
+fs.writeFileSync(OUT, JSON.stringify(report, null, 2) + '\n');
 console.log(JSON.stringify({
   report: path.relative(process.cwd(), OUT),
   nA: A.rows.length,
