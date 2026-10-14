@@ -101,12 +101,12 @@ Classical information retrieval uses term weighting and lexical overlap to rank 
 
 \subsection{Sentence Representations and Pairwise Matching}
 
-Sentence-BERT maps sentences into dense vector representations for semantic similarity comparison~\\cite{reimers2019sentence}. Pairwise matching has also been studied using pre-trained language models, including the Ditto entity-matching framework~\\cite{li2020ditto}.
+Sentence-BERT maps sentences into dense vector representations for semantic similarity comparison~\cite{reimers2019sentence}. Pairwise matching has also been studied using pre-trained language models, including the Ditto entity-matching framework~\cite{li2020ditto}.
 While dense vectors resolve lexical mismatch, pairwise vector distance calculations across continuous high-volume feeds remain computationally demanding on commodity server CPUs.
 The repository also contains an offline SBERT evaluation path, but it is not invoked by the inspected production event-matching module.
 
 \subsection{LLM Verification and Gated Cascades}
-Surveys of large language models discuss capabilities and deployment considerations across a broad range of tasks~\\cite{zhao2023}. For cost-aware event matching, the relevant empirical question is how candidate filtering changes call volume, false-negative coverage, latency, and measured cost. Those outcomes require a common, independently labeled benchmark; this draft does not claim that the current implementation outperforms alternatives.
+Surveys of large language models discuss capabilities and deployment considerations across a broad range of tasks~\cite{zhao2023}. For cost-aware event matching, the relevant empirical question is how candidate filtering changes call volume, false-negative coverage, latency, and measured cost. Those outcomes require a common, independently labeled benchmark; this draft does not claim that the current implementation outperforms alternatives.
 
 % ============================================================
 \section{Proposed Methodology}
@@ -126,9 +126,11 @@ Surveys of large language models discuss capabilities and deployment considerati
 \node[gate, below=of candidate, text width=7.0cm] (signals) {\textbf{Parallel evidence signals}\\Jaccard $\geq 0.12$ \quad OR \quad character 3-gram cosine $\geq 0.25$ \quad OR \quad EFSA $\geq 0.22$};
 \node[box, below=of signals, text width=7.0cm] (llm) {\textbf{Configured Groq LLM verifier}\\Only called when at least one candidate gate passes};
 \node[box, below=of llm, text width=7.0cm] (store) {\textbf{Event update or new event}\\MongoDB-backed event storage and synthesis};
+\node[box, right=0.6cm of signals, text width=2.0cm] (skip) {\textbf{Skip}\\No gate passes};
+\draw[arrow] (signals.east) -- (skip.west);
 \draw[arrow] (ingest) -- (candidate);
 \draw[arrow] (candidate) -- (signals);
-\draw[arrow] (signals) -- node[right,font=\tiny]{no gate passes: skip candidate} (llm);
+\draw[arrow] (signals) -- node[right,font=\tiny]{at least one gate passes} (llm);
 \draw[arrow] (llm) -- (store);
 \end{tikzpicture}
 \caption{Decision path reflected in the current event-matching implementation. The lexical and EFSA conditions act as an OR gate; EFSA is not a mandatory sequential stage after the lexical filters.}
