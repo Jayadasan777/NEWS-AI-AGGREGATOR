@@ -4,7 +4,7 @@
 \usepackage{booktabs}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning}
-\title{Reproducibility Auditing of a Cost-Aware News Event Clustering System}
+\title{Reproducibility Audit of a News Event-Clustering System: Dataset Provenance, Decision Logic, and Evaluation Traceability}
 \begin{CCSXML}
 <ccs2012>
  <concept>
@@ -29,7 +29,7 @@
 \ccsdesc[300]{Information systems~Clustering}
 \begin{document}
 \begin{abstract}
-Reliable evaluation of news-event clustering requires the evaluated implementation, benchmark provenance, labels, model configuration, and per-pair predictions to be traceable. This paper presents a reproducibility audit of NISE (News Intelligence and Synthesis Engine), a news aggregation system whose event-matching component combines unigram Jaccardrd similarity, character 3-gram cosine similarity, a five-signal Enhanced Fusion Scoring Algorithm (EFSA), and selective large language model (LLM) verification. A read-only audit of repository artifacts covering 5,000 benchmark records found that all records contain two identical annotation fields, but the repository does not establish that these labels were independently produced; 4,755 records are flagged by note-pattern heuristics as programmatic or structured extensions. The audit also identifies incompatible evaluation partitions, a simulated perfect-classifier result, and an evaluation script that does not execute the complete cascade. The production decision rule is an OR gate across Jaccard, character cosine, and EFSA thresholds, contrary to a sequential cascade described in earlier drafts. Consequently, existing accuracy, call-reduction, cost, and latency values are not treated as validated comparative findings. The contribution is a documented audit method, quantified provenance findings, and a reproducible protocol for a future controlled evaluation.
+Reliable evaluation of news-event clustering requires the evaluated implementation, benchmark provenance, labels, model configuration, and per-pair predictions to be traceable. This paper presents a reproducibility audit of a news aggregation system whose event-matching component combines unigram Jaccardrdrd similarity, character 3-gram cosine similarity, a five-signal Enhanced Fusion Scoring Algorithm (EFSA), and selective large language model (LLM) verification. A read-only audit of repository artifacts covering 5,000 benchmark records found that all records contain two identical annotation fields, but the repository does not establish that these labels were independently produced; 4,755 records are flagged by note-pattern heuristics as programmatic or structured extensions. The audit also identifies incompatible evaluation partitions, a simulated perfect-classifier result, and an evaluation script that does not execute the complete cascade. The production decision rule is an OR gate across Jaccard, character cosine, and EFSA thresholds, contrary to a sequential cascade described in earlier drafts. Consequently, existing accuracy, call-reduction, cost, and latency values are not treated as validated comparative findings. The contribution is a documented audit method, quantified provenance findings, and a reproducible protocol for a future controlled evaluation.
 \end{abstract}
 \keywords{news aggregation, event clustering, candidate filtering, large language models, reproducibility, semantic similarity}
 \maketitle
@@ -49,7 +49,7 @@ Event clustering on streaming text must balance computational cost against misse
     \item \textit{Generative LLMs} can be used as pairwise verifiers, but remote inference introduces per-call latency and potentially variable API cost.
 \end{enumerate}
 
-To describe the implementation accurately, NISE computes lexical similarity and EFSA signals for each recent event candidate. The configured LLM is called when any one of the candidate-gate conditions passes:
+To describe the implementation accurately, The inspected implementation computes lexical similarity and EFSA signals for each recent event candidate. The configured LLM is called when any one of the candidate-gate conditions passes:
 \begin{itemize}
     \item \textbf{Candidate gate.} The implementation calculates unigram Jaccard similarity and character 3-gram cosine similarity for each recent event candidate.
     \item \textbf{Evidence fusion.} EFSA combines keyword overlap, character 3-gram cosine, rule-based entity overlap, temporal decay, and sector evidence.
@@ -223,7 +223,7 @@ First, the audit does not establish the independent origin or correctness of all
 A follow-up study should establish a source-traceable corpus, independently annotate and adjudicate a frozen test set, and release privacy- and copyright-compliant pair identifiers with dataset hashes and annotation instructions. The evaluation harness should execute the committed decision path rather than read precomputed summaries, record a prediction and stage trace for every pair, and compare lexical, EFSA, embedding, and actual LLM-based methods on identical held-out examples. Model identifiers, prompts, thresholds, API failures, token usage, latency boundaries, and applicable prices should be fixed or logged before the run; uncertainty estimates and paired significance tests should be computed from the resulting predictions. Any generated examples should be reported separately as stress tests, and the manuscript should be updated only from archived artifacts that can be independently reproduced.\n\n\section{Conclusion}
 % ============================================================
 
-This paper presented a repository-level reproducibility audit of NISE's news event-matching component. The audit documents an OR-connected candidate gate and identifies limitations in benchmark provenance, annotation independence, result consistency, simulated model outputs, and execution traces. The findings do not establish that the event matcher lacks utility; they establish that the current artifacts are insufficient for defensible comparative performance claims. The next step is a frozen, independently adjudicated benchmark, followed by rerunning the actual implementation and every baseline under identical conditions. Accuracy, cost reduction, confidence intervals, and latency should be reported only from those traceable runs.
+This paper presented a repository-level reproducibility audit of a news event-matching component. The audit documents an OR-connected candidate gate and identifies limitations in benchmark provenance, annotation independence, result consistency, simulated model outputs, and execution traces. The findings do not establish that the event matcher lacks utility; they establish that the current artifacts are insufficient for defensible comparative performance claims. The next step is a frozen, independently adjudicated benchmark, followed by rerunning the actual implementation and every baseline under identical conditions. Accuracy, cost reduction, confidence intervals, and latency should be reported only from those traceable runs.
 
 % ============================================================
 \begin{thebibliography}{99}
